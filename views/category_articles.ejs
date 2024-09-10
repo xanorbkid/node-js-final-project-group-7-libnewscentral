@@ -1,4 +1,4 @@
-<div class="breadcrumbs panel z-1 py-2 bg-gray-25 dark:bg-gray-100 dark:bg-opacity-5 dark:text-white">
+<div class="breadcrumbs panel z-1 py-2 bg-gray-25 dark:bg-gray-100 dark:bg-opacity-5 dark:text-white"></div>
     <div class="container max-w-xl">
         <ul class="breadcrumb nav-x justify-center gap-1 fs-7 sm:fs-6 m-0">
             <li><a href="/">Home</a></li>
@@ -14,9 +14,13 @@
         <div class="container max-w-xl">
             <div class="section-inner panel vstack gap-3 sm:gap-6 lg:gap-9" data-anime="targets: >*; translateY: [48, 0]; opacity: [0, 1]; easing: spring(1, 80, 10, 0); duration: 450; delay: anime.stagger(100);">
                 <header class="page-header vstack justify-center items-center gap-2 md:gap-4 text-center max-w-650px mx-auto">
-                    <h1 class="h4m-0">Latest News & Blog</h1>
+                    <h1 class="h4m-0">News & Articles in <span class="text-secondary"> <%= category.name %></span></h1>
                 </header>
+                <!-- Check if there are any articles -->
+                <% if (articles.length > 0) { %>
+                    <!-- Loop through and display each article -->
                 <div class="row child-cols-12 sm:child-cols-4 col-match gy-4 sm:gy-6 xl:gy-8 gx-2 xl:gx-4">
+                    <% articles.forEach(article => { %>
                     <div>
                         <article class="post type-post panel vstack gap-2">
                             <div class="post-image panel overflow-hidden">
@@ -64,8 +68,10 @@
                             </div>
                         </article>
                     </div>
+                    <% }); %>
+
                     
-                    <div>
+                    <!-- <div>
                         <article class="post type-post panel vstack gap-2">
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
@@ -448,27 +454,39 @@
                                 </div>
                             </div>
                         </article>
-                    </div>
+                    </div> -->
                 </div>
+                
+                 <!-- Pagination -->
                 <div class="nav-pagination fw-medium">
-                    <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary" data-uc-margin="">
-                        <li>
-                            <a href="#"><span class="icon icon-1 unicon-chevron-left"></span></a>
-                        </li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#" class="uc-active">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li class="uc-disabled"><span>…</span></li>
-                        <li><a href="#">8</a></li>
-                        <li><a href="#">9</a></li>
-                        <li>
-                            <a href="#"><span class="icon icon-1 unicon-chevron-right"></span></a>
-                        </li>
+                    <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary">
+                        <!-- Previous Page -->
+                        <% if (currentPage > 1) { %>
+                            <li><a href="?page=<%= currentPage - 1 %>"><span class="icon icon-1 unicon-chevron-left"></span></a></li>
+                        <% } else { %>
+                            <li class="uc-disabled"><span class="icon icon-1 unicon-chevron-left"></span></li>
+                        <% } %>
+
+                        <!-- Page Numbers -->
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <% if (i === currentPage) { %>
+                                <li><a href="#" class="uc-active"><%= i %></a></li>
+                            <% } else { %>
+                                <li><a href="?page=<%= i %>"><%= i %></a></li>
+                            <% } %>
+                        <% } %>
+
+                        <!-- Next Page -->
+                        <% if (currentPage < totalPages) { %>
+                            <li><a href="?page=<%= currentPage + 1 %>"><span class="icon icon-1 unicon-chevron-right"></span></a></li>
+                        <% } else { %>
+                            <li class="uc-disabled"><span class="icon icon-1 unicon-chevron-right"></span></li>
+                        <% } %>
                     </ul>
                 </div>
+                <% } else { %> <p class="custom_font text-dark">No articles posted yet in this category.</p> <% } %>
             </div>
+
         </div>
     </div>
 </div>
-
-<!-- Section end -->

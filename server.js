@@ -32,6 +32,7 @@ app.set('views' , __dirname + '/views', 'admin');
 
 const multer = require('multer');
 const path = require('path');
+const { title } = require('process');
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
@@ -86,24 +87,48 @@ app.get('/categories', (req, res) => {
 
 // Category Detail Route
 
+// Category Detail Route with Pagination
 app.get('/category/:id', (req, res) => {
     const categoryId = req.params.id;
+    const perPage = 9; // Number of articles per page
+    const page = req.query.page ? parseInt(req.query.page) : 1;
 
-    db.all('SELECT * FROM articles WHERE category_id = ? ORDER BY published_at DESC', [categoryId], (err, articles) => {
+    // Fetch the total number of articles for pagination
+    db.get('SELECT COUNT(*) as count FROM articles WHERE category_id = ?', [categoryId], (err, countResult) => {
         if (err) {
             return res.status(500).send('Database error');
         }
 
-        // Fetch the category name as well (assuming you have a categories table)
-        db.get('SELECT name FROM categories WHERE id = ?', [categoryId], (err, category) => {
-            if (err || !category) {
-                return res.status(404).send('Category not found');
+        const totalArticles = countResult.count;
+        const totalPages = Math.ceil(totalArticles / perPage);
+
+        // Fetch articles for the selected category with pagination
+        const offset = (page - 1) * perPage;
+        db.all('SELECT * FROM articles WHERE category_id = ? ORDER BY published_at DESC LIMIT ? OFFSET ?', [categoryId, perPage, offset], (err, articles) => {
+            if (err) {
+                return res.status(500).send('Database error');
             }
 
-            res.render('category', { articles, category });
+            // Fetch the category name as well
+            db.get('SELECT name FROM categories WHERE id = ?', [categoryId], (err, category) => {
+                if (err || !category) {
+                    return res.status(404).send('Category not found');
+                }
+
+                // Render the view and pass the category, articles, pagination details
+                res.render('category_articles', {
+                    articles,
+                    category,
+                    currentPage: page,
+                    totalPages: totalPages,
+                    title: "Category-Article | LibNewsCentral"
+                });
+            });
         });
     });
 });
+
+
 
 // Add Categories
 // Handle Add Category Form Submission with file upload
