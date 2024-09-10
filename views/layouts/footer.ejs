@@ -34,12 +34,10 @@
                                 </div>
                                 <div class="widgt-content">
                                     <ul class="nav-y gap-2 fs-6 fw-medium text-dark dark:text-white">
-                                        <li><a href="#">Social</a></li>
-                                        <li><a href="#">Politics</a></li>
-                                        <li><a href="#">Economy</a></li>
-                                        <li><a href="#">World</a></li>
-                                        <li><a href="#">Sports</a></li>
-                                        <li><a href="#">Arts</a></li>
+                                        <% topCategories.forEach(category => { %>
+                                            <li><a href="/category/<%= category.id %>"><%= category.name %></a></li>
+                                        <% }) %>
+                                        
                                     </ul>
                                 </div>
                             </div>

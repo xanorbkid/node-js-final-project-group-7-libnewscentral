@@ -178,20 +178,42 @@
                            
                         </div>
                         <div class="nav-pagination pt-3 mt-6 lg:mt-9 border-top border-gray-100 dark:border-gray-800">
-                            <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary" data-uc-margin="">
-                                <li>
-                                    <a href="#"><span class="icon icon-1 unicon-chevron-left"></span></a>
-                                </li>
-                                <li><a href="#">1</a></li>
-                                <li><a href="#" class="uc-active">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li class="uc-disabled"><span>…</span></li>
-                                
-                                <li>
-                                    <a href="#"><span class="icon icon-1 unicon-chevron-right"></span></a>
-                                </li>
+                            <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary">
+                                <!-- Previous Page Link -->
+                                <% if (currentPage > 1) { %>
+                                    <li>
+                                        <a href="/categories?page=<%= currentPage - 1 %>">
+                                            <span class="icon icon-1 unicon-chevron-left"></span>
+                                        </a>
+                                    </li>
+                                <% } else { %>
+                                    <li class="uc-disabled">
+                                        <span><span class="icon icon-1 unicon-chevron-left"></span></span>
+                                    </li>
+                                <% } %>
+                        
+                                <!-- Page Numbers -->
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <li>
+                                        <a href="/categories?page=<%= i %>" class="<%= i === currentPage ? 'uc-active' : '' %>"><%= i %></a>
+                                    </li>
+                                <% } %>
+                        
+                                <!-- Next Page Link -->
+                                <% if (currentPage < totalPages) { %>
+                                    <li>
+                                        <a href="/categories?page=<%= currentPage + 1 %>">
+                                            <span class="icon icon-1 unicon-chevron-right"></span>
+                                        </a>
+                                    </li>
+                                <% } else { %>
+                                    <li class="uc-disabled">
+                                        <span><span class="icon icon-1 unicon-chevron-right"></span></span>
+                                    </li>
+                                <% } %>
                             </ul>
                         </div>
+                        
                     </div>
                 </div>
             </div>
