@@ -29,7 +29,18 @@
                                 <article class="post type-post panel vstack gap-2">
                                     <div class="post-image panel overflow-hidden">
                                         <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg" alt="Balancing Work and Wellness: Tech Solutions for Healthy" data-uc-img="loading: lazy">
+                                            <% if (category.image_url) { %>
+                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                     src="<%= category.image_url %>" 
+                                                     alt="<%= category.name %>"
+                                                     data-uc-img="loading: lazy">
+                                            <% } else { %>
+                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                     src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg"
+                                                     alt="No image available"
+                                                     data-uc-img="loading: lazy">>
+                                            <% } %>
+                                            <!-- <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg" alt="Balancing Work and Wellness: Tech Solutions for Healthy" data-uc-img="loading: lazy"> -->
                                             <a href="blog-details.html" class="position-cover" data-caption="Balancing Work and Wellness: Tech Solutions for Healthy"></a>
                                         </figure>
                                         <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">

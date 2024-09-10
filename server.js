@@ -22,9 +22,28 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 // Specify the default layout
 app.set('layout', 'layouts/base'); // Points to views/layouts/base.ejs
-// Set the directory where views will be stored
-app.set('views', __dirname + '/views');
 
+// Set the directory where views will be stored
+app.set('views' , __dirname + '/views', 'admin');
+
+// ###############################################
+// Handle File Upload
+// ################################################
+
+const multer = require('multer');
+const path = require('path');
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads'); // Directory to store uploaded images
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    }
+});
+
+const upload = multer({ storage: storage });
 
 // ################################################
 // END Middleware
@@ -86,6 +105,28 @@ app.get('/category/:id', (req, res) => {
     });
 });
 
+// Add Categories
+// Handle Add Category Form Submission with file upload
+app.post('/add_category', upload.single('image_url'), (req, res) => {
+    const { name } = req.body;
+    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+    if (!name || !image_url) {
+        return res.status(400).send('All fields are required');
+    }
+
+    db.run('INSERT INTO categories (name, image_url) VALUES (?, ?)', [name, image_url], function(err) {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        // Redirect to categories list after successful addition
+        res.redirect('/categories');
+    });
+});
+
+
+// Edit Categories
 
 // Article List Route
 app.get('/articles', (req, res) => {
