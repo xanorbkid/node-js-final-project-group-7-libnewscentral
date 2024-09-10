@@ -53,8 +53,19 @@ app.get('/', (req, res) => {
     });
 });
 
+// Categories List Route
+app.get('/categories', (req, res) => {
+    db.all('SELECT * FROM categories', (err, categories) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
 
-// Category Route
+        res.render('categories', { categories, title: 'Categories | LibNewsCentral' });
+    });
+});
+
+
+// Category Detail Route
 
 app.get('/category/:id', (req, res) => {
     const categoryId = req.params.id;
@@ -75,6 +86,17 @@ app.get('/category/:id', (req, res) => {
     });
 });
 
+
+// Article List Route
+app.get('/articles', (req, res) => {
+    db.all('SELECT * FROM articles', (err, articles) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        res.render('articles', { articles, title: 'Articles | LibNewsCentral' });
+    });
+});
 
 
 
