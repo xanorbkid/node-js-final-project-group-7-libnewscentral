@@ -1,0 +1,200 @@
+<div class="breadcrumbs panel z-1 py-2 bg-gray-25 dark:bg-gray-100 dark:bg-opacity-5 dark:text-white">
+    <div class="container max-w-xl">
+        <ul class="breadcrumb nav-x justify-center gap-1 fs-7 sm:fs-6 m-0">
+            <li><a href="/">Home</a></li>
+            <li><i class="unicon-chevron-right opacity-50"></i></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><i class="unicon-chevron-right opacity-50"></i></li>
+            <li><span class="opacity-50">Category</span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="section py-3 sm:py-6 lg:py-9">
+    <div class="container max-w-xl">
+        <div class="panel vstack gap-3 sm:gap-6 lg:gap-9">
+            <header class="page-header panel vstack text-center">
+                <h1 class="h3 lg:h1">News Categories</h1>
+                <span class="m-0 opacity-60"
+                    >Top categories to find all the latest happening <br class="d-block lg:d-none">
+                    in Liberia and around the world</span>
+            </header>
+            <div class="row g-4 xl:g-8">
+                <div class="col">
+                    <div class="panel text-center">
+                        <div class="row child-cols-12 sm:child-cols-6 lg:child-cols-4 col-match gy-4 xl:gy-6 gx-2 sm:gx-4">
+                           
+                            <% categories.forEach(category => { %>
+                            <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <div class="post-image panel overflow-hidden">
+                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                            <% if (category.image_url) { %>
+                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                     src="<%= category.image_url %>" 
+                                                     alt="<%= category.name %>"
+                                                     data-uc-img="loading: lazy">
+                                            <% } else { %>
+                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                     src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg"
+                                                     alt="No image available"
+                                                     data-uc-img="loading: lazy">>
+                                            <% } %>
+                                            <!-- <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg" alt="Balancing Work and Wellness: Tech Solutions for Healthy" data-uc-img="loading: lazy"> -->
+                                            <a href="blog-details.html" class="position-cover" data-caption="Balancing Work and Wellness: Tech Solutions for Healthy"></a>
+                                        </figure>
+                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                            <a class="text-none" href="blog-category.html">Politics</a>
+                                        </div>
+                                        <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
+                                        <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
+                                            <i class="icon-narrow unicon-play-filled-alt"></i>
+                                        </span>
+                                    </div>
+                                    <div class="post-header panel vstack gap-1 lg:gap-2">
+                                        <h3 class="post-title h6 sm:h5 xl:h4 m-0 text-truncate-2 m-0">
+                                            <a class="text-none" href="blog-details.html"><%= category.name %></a>
+                                        </h3>
+                                    </div>
+                                </article>
+                                
+                            </div>
+                            <% }); %>
+                            
+                            
+                            <!-- <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <div class="post-image panel overflow-hidden">
+                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/web photo2.jpg" data-src="../assets/images/common/web photo2.jpg" alt="Tech Innovations Reshaping the Retail Landscape: AI Payments" data-uc-img="loading: lazy">
+                                            <a href="blog-details.html" class="position-cover" data-caption="Tech Innovations Reshaping the Retail Landscape: AI Payments"></a>
+                                        </figure>
+                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                            <a class="text-none" href="blog-category.html">Technology</a>
+                                        </div>
+                                        <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
+                                        <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
+                                            <i class="icon-narrow unicon-play-filled-alt"></i>
+                                        </span>
+                                    </div>
+                                    <div class="post-header panel vstack gap-1 lg:gap-2">
+                                        <h3 class="post-title h6 sm:h5 xl:h4 m-0 text-truncate-2 m-0">
+                                            <a class="text-none" href="blog-details.html">Technology</a>
+                                        </h3>
+                                        
+                                    </div>
+                                </article>
+                            </div>
+                            <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <div class="post-image panel overflow-hidden">
+                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/lib economy.jpg" data-src="../assets/images/common/lib economy.jpg" alt="The Importance of Sleep: Tips for Better Rest and Recovery" data-uc-img="loading: lazy">
+                                            <a href="blog-details.html" class="position-cover" data-caption="The Importance of Sleep: Tips for Better Rest and Recovery"></a>
+                                        </figure>
+                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                            <a class="text-none" href="blog-category.html">Economy</a>
+                                        </div>
+                                        <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
+                                        <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
+                                            <i class="icon-narrow unicon-play-filled-alt"></i>
+                                        </span>
+                                    </div>
+                                    <div class="post-header panel vstack gap-1 lg:gap-2">
+                                        <h3 class="post-title h6 sm:h5 xl:h4 m-0 text-truncate-2 m-0">
+                                            <a class="text-none" href="blog-details.html">Economy</a>
+                                        </h3>
+                                       
+                                    </div>
+                                </article>
+                            </div>
+                            <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <div class="post-image panel overflow-hidden">
+                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/sports.jpg" data-src="../assets/images/common/sports.jpg" alt="The Future of Sustainable Living: Driving Eco-Friendly Lifestyles" data-uc-img="loading: lazy">
+                                            <a href="blog-details.html" class="position-cover" data-caption="The Future of Sustainable Living: Driving Eco-Friendly Lifestyles"></a>
+                                        </figure>
+                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                            <a class="text-none" href="blog-category.html">Sports</a>
+                                        </div>
+                                    </div>
+                                    <div class="post-header panel vstack gap-1 lg:gap-2">
+                                        <h3 class="post-title h6 sm:h5 xl:h4 m-0 text-truncate-2 m-0">
+                                            <a class="text-none" href="blog-details.html">Sports</a>
+                                        </h3>
+                                        
+                                    </div>
+                                </article>
+                            </div>
+                            <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <div class="post-image panel overflow-hidden">
+                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/social.jpg" data-src="../assets/images/common/social.jpg" alt="Business Agility the Digital Age: Leveraging AI and Automation" data-uc-img="loading: lazy">
+                                            <a href="blog-details.html" class="position-cover" data-caption="Business Agility the Digital Age: Leveraging AI and Automation"></a>
+                                        </figure>
+                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                            <a class="text-none" href="blog-category.html">Social</a>
+                                        </div>
+                                        <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
+                                        <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
+                                            <i class="icon-narrow unicon-play-filled-alt"></i>
+                                        </span>
+                                    </div>
+                                    <div class="post-header panel vstack gap-1 lg:gap-2">
+                                        <h3 class="post-title h6 sm:h5 xl:h4 m-0 text-truncate-2 m-0">
+                                            <a class="text-none" href="blog-details.html">Social</a>
+                                        </h3>
+                                        
+                                    </div>
+                                </article>
+                            </div>
+                            <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <div class="post-image panel overflow-hidden">
+                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/international.jpg" data-src="../assets/images/common/international.jpg" alt="The Art of Baking: From Classic Bread to Artisan Pastries" data-uc-img="loading: lazy">
+                                            <a href="blog-details.html" class="position-cover" data-caption="The Art of Baking: From Classic Bread to Artisan Pastries"></a>
+                                        </figure>
+                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                            <a class="text-none" href="blog-category.html">International</a>
+                                        </div>
+                                        <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
+                                        <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
+                                            <i class="icon-narrow unicon-play-filled-alt"></i>
+                                        </span>
+                                    </div>
+                                    <div class="post-header panel vstack gap-1 lg:gap-2">
+                                        <h3 class="post-title h6 sm:h5 xl:h4 m-0 text-truncate-2 m-0">
+                                            <a class="text-none" href="blog-details.html">International</a>
+                                        </h3>
+                                        
+                                    </div>
+                                </article>
+                            </div> -->
+                            
+                          
+                           
+                        </div>
+                        <div class="nav-pagination pt-3 mt-6 lg:mt-9 border-top border-gray-100 dark:border-gray-800">
+                            <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary" data-uc-margin="">
+                                <li>
+                                    <a href="#"><span class="icon icon-1 unicon-chevron-left"></span></a>
+                                </li>
+                                <li><a href="#">1</a></li>
+                                <li><a href="#" class="uc-active">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li class="uc-disabled"><span>…</span></li>
+                                
+                                <li>
+                                    <a href="#"><span class="icon icon-1 unicon-chevron-right"></span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
