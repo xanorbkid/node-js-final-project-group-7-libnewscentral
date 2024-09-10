@@ -1,0 +1,52 @@
+<div id="uc-menu-panel" data-uc-offcanvas="overlay: true;">
+    <div class="uc-offcanvas-bar custom_font bg-white text-dark dark:bg-gray-900 dark:text-white">
+        <header class="uc-offcanvas-header hstack justify-between items-center pb-4 bg-white dark:bg-gray-900">
+            <div class="uc-logo">
+                <a href="index.html">
+                    <img class="w-100px lg:w-119px text-dark dark:text-white hover:text-primary transition-color duration-150 d-none dark:d-block" src="../assets/images/demo-two/common/libnews-light.svg" alt="Sign in">
+                    <img class="w-100px lg:w-119px text-dark dark:text-white hover:text-primary transition-color duration-150 d-block dark:d-none" src="../assets/images/demo-two/common/libnews-dark.svg" alt="Sign in">
+                </a>
+            </div>
+            <button class="uc-offcanvas-close p-0 icon-3 btn border-0 dark:text-white dark:text-opacity-50 hover:text-primary hover:rotate-90 duration-150 transition-all" type="button">
+                <i class="unicon-close"></i>
+            </button>
+        </header>
+
+        <div class="panel">
+            <form id="search-panel" class="form-icon-group vstack gap-1 mb-3" data-uc-sticky="" >
+                <input type="email" class="form-control form-control-md fs-6" placeholder="Search.." />
+                <span class="form-icon text-gray">
+                    <i class="unicon-search icon-1"></i>
+                </span>
+            </form>
+            <ul class="nav-y custom_font gap-narrow fw-bold fs-5" data-uc-nav>
+                <li><a href="/">Latest</a></li>
+                <li><a href="/">Trending</a></li>
+                <li><a href="/categories">Categories</a></li>
+                <li><a href="/articles">News Articles</a></li>
+                <li class="hr opacity-10 my-1"></li>
+                <li><a href="#uc-account-modal" data-uc-toggle>Sign in</a></li>
+                <li><a href="sign-up.html">Create an account</a></li>
+            </ul>
+            <ul class="social-icons nav-x mt-4">
+                <li>
+                    <a href="#"><i class="unicon-logo-medium icon-2"></i></a>
+                    <a href="#"><i class="unicon-logo-x-filled icon-2"></i></a>
+                    <a href="#"><i class="unicon-logo-instagram icon-2"></i></a>
+                    <a href="#"><i class="unicon-logo-pinterest icon-2"></i></a>
+                </li>
+            </ul>
+            <div class="py-2 hstack gap-2 mt-4 bg-white dark:bg-gray-900" data-uc-sticky="position: bottom" >
+                <div class="vstack gap-1">
+                    <span class="fs-7 opacity-60">Select theme:</span>
+                    <div class="darkmode-trigger" data-darkmode-switch="">
+                        <label class="switch">
+                            <input type="checkbox" />
+                            <span class="slider fs-5"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

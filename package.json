@@ -4,16 +4,22 @@
   "description": "A comprehensive news platform to access diverse content efficiently, with clear and balance attribution to the sources.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
-    "nodemon": "^3.1.4",
+    "express": "^4.20.0",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.0",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }
