@@ -54,13 +54,15 @@
                     <div class="uc-navbar-center gap-2 lg:gap-3">
                         <div class="uc-navbar-item" style="--uc-nav-height: 48px">
                             <ul class="nav-x fw-semibold custom_font flex-nowrap overflow-x-auto hide-scrollbar uc-horizontal-scroll w-screen md:w-auto md:mask-end-0 mx-n2 px-2 text-white">
-                                <li class="uc-active"><a href="#">Home</a></li>
-                                <li><a href="#">Social</a></li>
-                                <li><a href="#">Politics</a></li>
+                                <li class=""><a href="/">Home</a></li>
+                                <% topCategories.forEach(category => { %>
+                                    <li><a href="/category/<%= category.id %>"><%= category.name %></a></li>
+                                <% }) %>
+                                <!-- <li><a href="#">Politics</a></li>
                                 <li><a href="#">Economy</a></li>
                                 <li><a href="#">Sports</a></li>
                                 <li><a href="#">Technology</a></li>
-                                <li><a href="#">International</a></li>
+                                <li><a href="#">International</a></li> -->
                                 <li class="nav-divider vr"></li>
                                 <li>
                                     <a href="#"><i class="icon icon-1 unicon-microphone"></i> Podcasts</a>

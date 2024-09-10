@@ -26,9 +26,9 @@ app.set('layout', 'layouts/base'); // Points to views/layouts/base.ejs
 // Set the directory where views will be stored
 app.set('views' , __dirname + '/views', 'admin');
 
-// ###############################################
+// 
 // Handle File Upload
-// ################################################
+// 
 
 const multer = require('multer');
 const path = require('path');
@@ -45,6 +45,26 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
+// 
+// Middleware to fetch categories and make them available in all templates
+app.use((req, res, next) => {
+    db.all('SELECT * FROM categories', (err, categories) => {
+        if (err) {
+            return next(err); // Pass the error to the error handler
+        }
+
+        // Limit the categories to the first 5
+        const topCategories = categories.slice(0, 6);
+
+        // Make categories available in all views via res.locals
+        res.locals.topCategories = topCategories;
+        res.locals.categories = categories;
+        next();
+    });
+});
+
 
 // ################################################
 // END Middleware
