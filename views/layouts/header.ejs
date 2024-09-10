@@ -1,0 +1,91 @@
+<!--path === views/partials -->
+
+<header class="uc-header header-two uc-navbar-sticky-wrap z-999" data-uc-sticky="sel-target: .uc-navbar-container; cls-active: uc-navbar-sticky; cls-inactive: uc-navbar-transparent; end: !*;">
+    <nav class="uc-navbar-container shadow-xs bg-white dark:bg-gray-900 fs-6 z-1">
+        <div class="uc-center-navbar panel z-2">
+            <div class="container custom_font max-w-xl">
+                <div class="uc-navbar min-h-72px lg:min-h-100px text-gray-900 dark:text-white" data-uc-navbar=" animation: uc-animation-slide-top-small; duration: 150;">
+                    <div class="uc-navbar-left">
+                        <div>
+                            <a class="uc-menu-trigger" href="#uc-menu-panel" data-uc-toggle></a>
+                        </div>
+                    </div>
+                    <div class="uc-navbar-center">
+                        <div class="uc-logo text-black dark:text-white">
+                            <a href="/">
+                                <img class="w-100px lg:w-128px text-dark dark:text-white hover:text-primary transition-color duration-150 d-none dark:d-block" src="../assets/images/demo-two/common/libnews-light.svg" alt="Sign in">
+                                <img class="w-100px lg:w-128px text-dark dark:text-white hover:text-primary transition-color duration-150 d-block dark:d-none" src="../assets/images/demo-two/common/libnews-dark.svg" alt="Sign in">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="uc-navbar-right gap-2 lg:gap-3">
+                        <div class="uc-navbar-item d-inline-flex lg:d-none">
+                            <a class="btn btn-xs gap-narrow ps-1 border rounded-pill fw-bold dark:text-white hover:bg-gray-25 dark:hover:bg-gray-900" href="#live_now" data-uc-scroll="offset: 128">
+                                <i class="icon icon-narrow unicon-dot-mark text-red" data-uc-animate="flash"></i>
+                                <span>Live</span>
+                            </a>
+                        </div>
+                       
+                        <div class="uc-navbar-item d-none lg:d-inline-flex">
+                            <a class="uc-account-trigger position-relative btn btn-sm border-0 p-0 gap-narrow duration-0 dark:text-white" href="#uc-account-modal" data-uc-toggle>
+                                <i class="icon icon-2 fw-medium unicon-user-avatar"></i>
+                            </a>
+                        </div>
+                        <div class="uc-navbar-item d-none lg:d-inline-flex">
+                            <a class="uc-search-trigger cstack text-none text-dark dark:text-white" href="#uc-search-modal" data-uc-toggle>
+                                <i class="icon icon-2 fw-medium unicon-search"></i>
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="uc-bottom-navbar panel hstack z-1 min-h-48px lg:min-h-56px bg-gray-800 border-top border-bottom" data-uc-navbar=" animation: uc-animation-slide-top-small; duration: 150;">
+            <div class="container max-w-xl">
+                <div class="hstack">
+                    <div class="uc-navbar-left gap-2 lg:gap-3 d-none lg:d-flex">
+                        <div class="uc-navbar-item">
+                            <a class="uc-search-trigger mb-narrow" href="#uc-search-modal" data-uc-toggle>
+                                <img class="text-white" src="../assets/images/common/icons/search.svg" alt="Search" data-uc-svg style="width: 20px">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="uc-navbar-center gap-2 lg:gap-3">
+                        <div class="uc-navbar-item" style="--uc-nav-height: 48px">
+                            <ul class="nav-x fw-semibold custom_font flex-nowrap overflow-x-auto hide-scrollbar uc-horizontal-scroll w-screen md:w-auto md:mask-end-0 mx-n2 px-2 text-white">
+                                <li class="uc-active"><a href="#">Home</a></li>
+                                <li><a href="#">Social</a></li>
+                                <li><a href="#">Politics</a></li>
+                                <li><a href="#">Economy</a></li>
+                                <li><a href="#">Sports</a></li>
+                                <li><a href="#">Technology</a></li>
+                                <li><a href="#">International</a></li>
+                                <li class="nav-divider vr"></li>
+                                <li>
+                                    <a href="#"><i class="icon icon-1 unicon-microphone"></i> Podcasts</a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="icon icon-1 unicon-play"></i> News TV</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="uc-navbar-right gap-2 lg:gap-3 d-none lg:d-flex">
+                        <div class="uc-navbar-item">
+                            <div class="uc-modes-trigger icon-1 text-white" data-darkmode-toggle="">
+                                <label class="switch">
+                                    <i class="icon icon-2 fw-medium unicon-light"></i>
+                                    <span class="sr-only">Dark toggle</span>
+                                    <input type="checkbox">
+                                    <!-- <span class="slider"></span> -->
+                                </label>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
