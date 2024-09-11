@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+  <!-- [Head] start -->
+  <!-- Mirrored from ableproadmin.com/pages/login-v1.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 10 Sep 2024 14:15:49 GMT -->
   <head>
-    <title><%= title %></title>
+    <title>Login | Able Pro Dashboard Template</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
     <meta
@@ -20,37 +21,31 @@
     />
     <meta name="author" content="Phoenixcoded" />
     <!-- [Favicon] icon -->
-    <link rel="icon" href="../assets/images/demo-two/common/libnews-light.svg" type="image/x-icon" />
-    <!-- [Page specific CSS] start -->
-    <link
-      rel="stylesheet"
-      href="../assets_admin/css/plugins/datepicker-bs5.min.css"
-    />
-    <!-- [Page specific CSS] end -->
+    <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
     <!-- [Font] Family -->
     <link
       rel="stylesheet"
-      href="../assets_admin/fonts/inter/inter.css"
+      href="../assets/fonts/inter/inter.css"
       id="main-font-link"
     />
     <!-- [phosphor Icons] https://phosphoricons.com/ -->
-    <link rel="stylesheet" href="../assets_admin/fonts/phosphor/duotone/style.css" />
+    <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
     <!-- [Tabler Icons] https://tablericons.com -->
-    <link rel="stylesheet" href="../assets_admin/fonts/tabler-icons.min.css" />
+    <link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" />
     <!-- [Feather Icons] https://feathericons.com -->
-    <link rel="stylesheet" href="../assets_admin/fonts/feather.css" />
+    <link rel="stylesheet" href="../assets/fonts/feather.css" />
     <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-    <link rel="stylesheet" href="../assets_admin/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="../assets/fonts/fontawesome.css" />
     <!-- [Material Icons] https://fonts.google.com/icons -->
-    <link rel="stylesheet" href="../assets_admin/fonts/material.css" />
+    <link rel="stylesheet" href="../assets/fonts/material.css" />
     <!-- [Template CSS Files] -->
     <link
       rel="stylesheet"
-      href="../assets_admin/css/style.css"
+      href="../assets/css/style.css"
       id="main-style-link"
     />
-    <script src="../assets_admin/js/tech-stack.js"></script>
-    <link rel="stylesheet" href="../assets_admin/css/style-preset.css" /></head
+    <script src="../assets/js/tech-stack.js"></script>
+    <link rel="stylesheet" href="../assets/css/style-preset.css" /></head
   ><!-- [Head] end --><!-- [Body] Start -->
   <body
     data-pc-preset="preset-1"
@@ -65,139 +60,132 @@
       <div class="loader-track"><div class="loader-fill"></div></div>
     </div>
     <!-- [ Pre-loader ] End -->
-     
-    
-    <!-- [ Sidebar Menu ] start -->
-    <%- include('sidebar') %> 
-    <!-- [ Sidebar Menu ] end --><!-- 
-     
-    [ Header Topbar ] start -->
-    <%- include('adminheader') %> 
-
-    <div
-      class="offcanvas pc-announcement-offcanvas offcanvas-end"
-      tabindex="-1"
-      id="announcement"
-      aria-labelledby="announcementLabel"
-    >
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="announcementLabel">
-          What's new announcement?
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="offcanvas-body">
-        <p class="text-span">Today</p>
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="align-items-center d-flex flex-wrap gap-2 mb-3">
-              <div class="badge bg-light-success f-12">Big News</div>
-              <p class="mb-0 text-muted">2 min ago</p>
-              <span class="badge dot bg-warning"></span>
-            </div>
-            <h5 class="mb-3">Able Pro is Redesigned</h5>
-            <p class="text-muted">
-              Able Pro is completely renowed with high aesthetics User
-              Interface.
-            </p>
-            <img
-              src="../assets_admin/images/layout/img-announcement-1.png"
-              alt="img"
-              class="img-fluid mb-3"
-            />
-            <div class="row">
-              <div class="col-12">
-                <div class="d-grid">
-                  <a
-                    class="btn btn-outline-secondary"
-                    href="https://1.envato.market/zNkqj6"
-                    target="_blank"
-                    >Check Now</a
+    <div class="auth-main">
+      <div class="auth-wrapper v1">
+        <div class="auth-form">
+          <div class="card my-5">
+            <div class="card-body">
+              <div class="text-center">
+                <a href="#"
+                  ><img src="../assets/images/logo-dark.svg" alt="img"
+                /></a>
+                <div class="d-grid my-3">
+                  <button
+                    type="button"
+                    class="btn mt-2 btn-light-primary bg-light text-muted"
+                  >
+                    <img
+                      src="../assets/images/authentication/facebook.svg"
+                      alt="img"
+                    />
+                    <span>Sign In with Facebook</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn mt-2 btn-light-primary bg-light text-muted"
+                  >
+                    <img
+                      src="../assets/images/authentication/twitter.svg"
+                      alt="img"
+                    />
+                    <span>Sign In with Twitter</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn mt-2 btn-light-primary bg-light text-muted"
+                  >
+                    <img
+                      src="../assets/images/authentication/google.svg"
+                      alt="img"
+                    />
+                    <span>Sign In with Google</span>
+                  </button>
+                </div>
+              </div>
+              <div class="saprator my-3"><span>OR</span></div>
+              <h4 class="text-center f-w-500 mb-3">Login with your email</h4>
+              <div class="mb-3">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="floatingInput"
+                  placeholder="Email Address"
+                />
+              </div>
+              <div class="mb-3">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="floatingInput1"
+                  placeholder="Password"
+                />
+              </div>
+              <div
+                class="d-flex mt-1 justify-content-between align-items-center"
+              >
+                <div class="form-check">
+                  <input
+                    class="form-check-input input-primary"
+                    type="checkbox"
+                    id="customCheckc1"
+                    checked=""
+                  />
+                  <label class="form-check-label text-muted" for="customCheckc1"
+                    >Remember me?</label
                   >
                 </div>
+                <h6 class="text-secondary f-w-400 mb-0">
+                  <a href="forgot-password-v1.html">Forgot Password?</a>
+                </h6>
+              </div>
+              <div class="d-grid mt-4">
+                <button type="button" class="btn btn-primary">Login</button>
+              </div>
+              <div class="d-flex justify-content-between align-items-end mt-4">
+                <h6 class="f-w-500 mb-0">Don't have an Account?</h6>
+                <a href="register-v1.html" class="link-primary"
+                  >Create Account</a
+                >
               </div>
             </div>
           </div>
         </div>
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="align-items-center d-flex flex-wrap gap-2 mb-3">
-              <div class="badge bg-light-warning f-12">Offer</div>
-              <p class="mb-0 text-muted">2 hour ago</p>
-              <span class="badge dot bg-warning"></span>
-            </div>
-            <h5 class="mb-3">Able Pro is in best offer price</h5>
-            <p class="text-muted">
-              Download Able Pro exclusive on themeforest with best price.
-            </p>
-            <a href="https://1.envato.market/zNkqj6" target="_blank"
-              ><img
-                src="../assets_admin/images/layout/img-announcement-2.png"
-                alt="img"
-                class="img-fluid"
-            /></a>
-          </div>
-        </div>
-        <p class="text-span mt-4">Yesterday</p>
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="align-items-center d-flex flex-wrap gap-2 mb-3">
-              <div class="badge bg-light-primary f-12">Blog</div>
-              <p class="mb-0 text-muted">12 hour ago</p>
-              <span class="badge dot bg-warning"></span>
-            </div>
-            <h5 class="mb-3">Featured Dashboard Template</h5>
-            <p class="text-muted">
-              Do you know Able Pro is one of the featured dashboard template
-              selected by Themeforest team.?
-            </p>
-            <img
-              src="../assets_admin/images/layout/img-announcement-3.png"
-              alt="img"
-              class="img-fluid"
-            />
-          </div>
-        </div>
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="align-items-center d-flex flex-wrap gap-2 mb-3">
-              <div class="badge bg-light-primary f-12">Announcement</div>
-              <p class="mb-0 text-muted">12 hour ago</p>
-              <span class="badge dot bg-warning"></span>
-            </div>
-            <h5 class="mb-3">Buy Once - Get Free Updated lifetime</h5>
-            <p class="text-muted">
-              Get the lifetime free updates once you purchase the Able Pro.
-            </p>
-            <img
-              src="../assets_admin/images/layout/img-announcement-4.png"
-              alt="img"
-              class="img-fluid"
-            />
-          </div>
-        </div>
       </div>
     </div>
-
-    <!-- [ Header ] end --><!-- 
-     
-    [ Main Content ] start -->
-    <div class="pc-container">
-        <%- body %>
-      <!-- Main start here -->
+    <!-- [ Main Content ] end --><!-- Required Js -->
+    <script src="../assets/js/plugins/popper.min.js"></script>
+    <script src="../assets/js/plugins/simplebar.min.js"></script>
+    <script src="../assets/js/plugins/bootstrap.min.js"></script>
+    <script src="../assets/js/fonts/custom-font.js"></script>
+    <script src="../assets/js/pcoded.js"></script>
+    <script src="../assets/js/plugins/feather.min.js"></script>
+    <div class="floting-button">
+      <a
+        href="https://1.envato.market/zNkqj6"
+        class="btn btn btn-danger buynowlinks d-inline-flex align-items-center gap-2"
+        data-bs-toggle="tooltip"
+        title="Buy Now"
+        ><i class="ph-duotone ph-shopping-cart"></i> <span>Buy Now</span></a
+      >
     </div>
-    <!-- [ Main Content ] end -->
-
-
-    <%- include ('adminfooter') %>
-    <!-- Required Js -->
-    <%- include('script') %>
-
+    <script>
+      layout_change("light");
+    </script>
+    <script>
+      change_box_container("false");
+    </script>
+    <script>
+      layout_caption_change("true");
+    </script>
+    <script>
+      layout_rtl_change("false");
+    </script>
+    <script>
+      preset_change("preset-1");
+    </script>
+    <script>
+      main_layout_change("vertical");
+    </script>
     <div class="pct-c-btn">
       <a
         href="#"
@@ -405,7 +393,7 @@
                   class="active"
                   data-value="vertical"
                   ><img
-                    src="../assets_admin/images/customizer/caption-on.svg"
+                    src="../assets/images/customizer/caption-on.svg"
                     alt="img"
                     class="img-fluid"
                   /> </a
@@ -415,7 +403,7 @@
                   title="Horizontal"
                   data-value="horizontal"
                   ><img
-                    src="../assets_admin/images/customizer/horizontal.svg"
+                    src="../assets/images/customizer/horizontal.svg"
                     alt="img"
                     class="img-fluid"
                   /> </a
@@ -425,7 +413,7 @@
                   title="Color Header"
                   data-value="color-header"
                   ><img
-                    src="../assets_admin/images/customizer/color-header.svg"
+                    src="../assets/images/customizer/color-header.svg"
                     alt="img"
                     class="img-fluid"
                   /> </a
@@ -435,7 +423,7 @@
                   title="Compact"
                   data-value="compact"
                   ><img
-                    src="../assets_admin/images/customizer/compact.svg"
+                    src="../assets/images/customizer/compact.svg"
                     alt="img"
                     class="img-fluid"
                   /> </a
@@ -445,7 +433,7 @@
                   title="Tab"
                   data-value="tab"
                   ><img
-                    src="../assets_admin/images/customizer/tab.svg"
+                    src="../assets/images/customizer/tab.svg"
                     alt="img"
                     class="img-fluid"
                 /></a>
@@ -465,7 +453,7 @@
                       title="Caption Show"
                     >
                       <img
-                        src="../assets_admin/images/customizer/caption-on.svg"
+                        src="../assets/images/customizer/caption-on.svg"
                         alt="img"
                         class="img-fluid"
                       />
@@ -482,7 +470,7 @@
                       title="Caption Hide"
                     >
                       <img
-                        src="../assets_admin/images/customizer/caption-off.svg"
+                        src="../assets/images/customizer/caption-off.svg"
                         alt="img"
                         class="img-fluid"
                       />
@@ -506,7 +494,7 @@
                         title="LTR"
                       >
                         <img
-                          src="../assets_admin/images/customizer/ltr.svg"
+                          src="../assets/images/customizer/ltr.svg"
                           alt="img"
                           class="img-fluid"
                         />
@@ -523,7 +511,7 @@
                         title="RTL"
                       >
                         <img
-                          src="../assets_admin/images/customizer/rtl.svg"
+                          src="../assets/images/customizer/rtl.svg"
                           alt="img"
                           class="img-fluid"
                         />
@@ -550,7 +538,7 @@
                         title="Full Width"
                       >
                         <img
-                          src="../assets_admin/images/customizer/full.svg"
+                          src="../assets/images/customizer/full.svg"
                           alt="img"
                           class="img-fluid"
                         />
@@ -567,7 +555,7 @@
                         title="Fixed Width"
                       >
                         <img
-                          src="../assets_admin/images/customizer/fixed.svg"
+                          src="../assets/images/customizer/fixed.svg"
                           alt="img"
                           class="img-fluid"
                         />
@@ -588,7 +576,7 @@
         </div>
       </div>
     </div>
-
   </body>
-  
+  <!-- [Body] end -->
+  <!-- Mirrored from ableproadmin.com/pages/login-v1.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 10 Sep 2024 14:15:50 GMT -->
 </html>

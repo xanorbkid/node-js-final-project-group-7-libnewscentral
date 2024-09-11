@@ -185,7 +185,7 @@ app.post('/add_category', upload.single('image_url'), (req, res) => {
         }
 
         // Redirect to categories list after successful addition
-        res.redirect('/categories');
+        res.redirect('/admin/category_list');
     });
 });
 
@@ -217,6 +217,18 @@ app.get('/articles', (req, res) => {
 app.get('/admin/dashboard', (req, res) => {
     res.render('admin/dashboard', { title: 'Dashboard', layout: 'admin/base'  });
 });
+
+app.get('/admin/category_list', (req, res) => {
+    res.render('admin/category_list', { title: 'Category', layout: 'admin/base'  });
+});
+
+app.get('/admin/users', (req, res) => {
+    res.render('admin/users', { title: 'Membership', layout: 'admin/base'  });
+});
+
+
+
+
 
 
 
