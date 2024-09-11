@@ -258,7 +258,7 @@ app.post('/edit_category/:id', upload.single('image_url'), (req, res) => {
         if (err) {
             return res.status(500).send('Database error');
         }
-
+        
         // Redirect to the category list page after successful update
         res.redirect('/admin/category_list');
     });
@@ -269,9 +269,17 @@ app.post('/edit_category/:id', upload.single('image_url'), (req, res) => {
 app.get('/admin/users', (req, res) => {
     res.render('admin/users', { title: 'Membership', layout: 'admin/base'  });
 });
-app.get('/admin/articles_list', (req, res) => {
-    res.render('admin/articles_list', { title: 'Article List', layout: 'admin/base'  });
+
+app.get('/admin/publishers', (req, res) => {
+    res.render('admin/publishers', { title: 'Publisher', layout: 'admin/base'  });
 });
+
+app.get('/admin/articleslist', (req, res) => {
+    res.render('admin/articleslist', { title: 'Publisher', layout: 'admin/base'  });
+});
+
+
+
 
 
 
