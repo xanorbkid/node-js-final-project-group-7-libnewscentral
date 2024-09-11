@@ -12,18 +12,19 @@
           
         </div>
         <div class="card-body">
-            <div class="d-flex flex-wrap gap-2"><a class="btn btn-primary" role="button" href="#"><i class="fa-plus"></i> Add </a> </div>
-            
+            <!-- <div class="d-flex flex-wrap gap-2"><a class="btn btn-primary" role="button" href="#"><i class="fa-plus"></i> Add </a> </div> -->
+            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#exampleModalLive">Add Users</button>
             <div class="table-responsive">
-                <table class="table table-hover" id="pc-dt-simple">
+                <table class="table table-hover" id="base-style">
                 <thead>
                     <tr>
-                    <th>Name</th>
-                    <th>Mobile</th>
-                    <th>Join Date</th>
-                    <th>Status</th>
-                    <th>Email</th>
-                    <th>Action</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                        <th>Preferences</th>
+                        <th>Created at</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,6 +52,9 @@
                     </td>
                     <td class="text-success">
                         <i class="fas fa-circle f-10 m-r-10"></i> Active
+                    </td>
+                    <td>
+                        <span class="badge text-bg-success">Casual</span>
                     </td>
                     <td>
                         <span class="badge text-bg-success">Casual</span>
