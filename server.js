@@ -93,19 +93,40 @@ app.get('/', (req, res) => {
     });
 });
 
-// Categories List Route
+
+
+// Categories List Route with Pagination
 app.get('/categories', (req, res) => {
-    db.all('SELECT * FROM categories', (err, categories) => {
+    const perPage = 6; // Number of categories per page
+    const page = req.query.page ? parseInt(req.query.page) : 1; // Current page number, default to 1
+
+    // Fetch the total count of categories to calculate the total number of pages
+    db.get('SELECT COUNT(*) AS count FROM categories', (err, result) => {
         if (err) {
             return res.status(500).send('Database error');
         }
 
-        res.render('categories', { categories, title: 'Categories | LibNewsCentral' });
+        const totalCategories = result.count;
+        const totalPages = Math.ceil(totalCategories / perPage);
+        const offset = (page - 1) * perPage;
+
+        // Fetch categories for the current page with LIMIT and OFFSET
+        db.all('SELECT * FROM categories LIMIT ? OFFSET ?', [perPage, offset], (err, categories) => {
+            if (err) {
+                return res.status(500).send('Database error');
+            }
+
+            // Render the categories page with pagination data
+            res.render('categories', {
+                categories,
+                currentPage: page,
+                totalPages: totalPages,
+                title: 'Categories | LibNewsCentral'
+            });
+        });
     });
 });
 
-
-// Category Detail Route
 
 // Category Detail Route with Pagination
 app.get('/category/:id', (req, res) => {
@@ -148,8 +169,6 @@ app.get('/category/:id', (req, res) => {
     });
 });
 
-
-
 // Add Categories
 // Handle Add Category Form Submission with file upload
 app.post('/add_category', upload.single('image_url'), (req, res) => {
@@ -166,12 +185,17 @@ app.post('/add_category', upload.single('image_url'), (req, res) => {
         }
 
         // Redirect to categories list after successful addition
-        res.redirect('/categories');
+        res.redirect('/admin/category_list');
     });
 });
 
 
 // Edit Categories
+
+
+
+
+
 
 // Article List Route
 app.get('/articles', (req, res) => {
@@ -183,6 +207,34 @@ app.get('/articles', (req, res) => {
         res.render('articles', { articles, title: 'Articles | LibNewsCentral' });
     });
 });
+
+
+
+
+// #############################################
+// ADMIN VIEWS
+// #############################################
+app.get('/admin/dashboard', (req, res) => {
+    res.render('admin/dashboard', { title: 'Dashboard', layout: 'admin/base'  });
+});
+
+app.get('/admin/category_list', (req, res) => {
+    res.render('admin/category_list', { title: 'Category', layout: 'admin/base'  });
+});
+
+app.get('/admin/users', (req, res) => {
+    res.render('admin/users', { title: 'Membership', layout: 'admin/base'  });
+});
+
+
+
+
+
+
+
+
+
+
 
 
 
