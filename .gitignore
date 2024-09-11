@@ -26,8 +26,8 @@ coverage/
 .env
 
 # SQLite database files
-*.db
-*.sqlite
+# *.db
+# *.sqlite
 
 # Multer uploads
 public/uploads/
