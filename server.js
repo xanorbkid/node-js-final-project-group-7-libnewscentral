@@ -225,6 +225,9 @@ app.get('/admin/category_list', (req, res) => {
 app.get('/admin/users', (req, res) => {
     res.render('admin/users', { title: 'Membership', layout: 'admin/base'  });
 });
+app.get('/admin/articles_list', (req, res) => {
+    res.render('admin/articles_list', { title: 'Article List', layout: 'admin/base'  });
+});
 
 
 
