@@ -169,29 +169,6 @@ app.get('/category/:id', (req, res) => {
     });
 });
 
-// Add Categories
-// Handle Add Category Form Submission with file upload
-app.post('/add_category', upload.single('image_url'), (req, res) => {
-    const { name } = req.body;
-    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
-
-    if (!name || !image_url) {
-        return res.status(400).send('All fields are required');
-    }
-
-    db.run('INSERT INTO categories (name, image_url) VALUES (?, ?)', [name, image_url], function(err) {
-        if (err) {
-            return res.status(500).send('Database error');
-        }
-
-        // Redirect to categories list after successful addition
-        res.redirect('/admin/category_list');
-    });
-});
-
-
-// Edit Categories
-
 
 
 
@@ -218,9 +195,76 @@ app.get('/admin/dashboard', (req, res) => {
     res.render('admin/dashboard', { title: 'Dashboard', layout: 'admin/base'  });
 });
 
+
+// LIST
 app.get('/admin/category_list', (req, res) => {
-    res.render('admin/category_list', { title: 'Category', layout: 'admin/base'  });
+    // Fetch all categories from the database
+    db.all('SELECT * FROM categories', (err, categories) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        // Render the category_list template and pass the categories data
+        res.render('admin/category_list', { 
+            title: 'Category', 
+            categories: categories,  // Pass the categories to the view
+            layout: 'admin/base' 
+        });
+    });
 });
+
+
+// Add Categories
+// Handle Add Category Form Submission with file upload
+app.post('/add_category', upload.single('image_url'), (req, res) => {
+    const { name } = req.body;
+    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+    if (!name || !image_url) {
+        return res.status(400).send('All fields are required');
+    }
+
+    db.run('INSERT INTO categories (name, image_url) VALUES (?, ?)', [name, image_url], function(err) {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        // Redirect to categories list after successful addition
+        res.redirect('/admin/category_list');
+    });
+});
+
+
+// Edit Categories
+// Handle Edit Category Form Submission with file upload
+app.post('/edit_category/:id', upload.single('image_url'), (req, res) => {
+    const categoryId = req.params.id;
+    const { name } = req.body;
+    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // If a new image is uploaded, update the image_url field
+    let query = 'UPDATE categories SET name = ?';
+    let params = [name];
+
+    if (image_url) {
+        query += ', image_url = ?';
+        params.push(image_url);
+    }
+
+    query += ' WHERE id = ?';
+    params.push(categoryId);
+
+    db.run(query, params, function(err) {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        // Redirect to the category list page after successful update
+        res.redirect('/admin/category_list');
+    });
+});
+
+
 
 app.get('/admin/users', (req, res) => {
     res.render('admin/users', { title: 'Membership', layout: 'admin/base'  });
