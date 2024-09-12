@@ -14,63 +14,75 @@
         <div class="container max-w-xl">
             <div class="section-inner panel vstack gap-3 sm:gap-6 lg:gap-9" data-anime="targets: >*; translateY: [48, 0]; opacity: [0, 1]; easing: spring(1, 80, 10, 0); duration: 450; delay: anime.stagger(100);">
                 <header class="page-header vstack justify-center items-center gap-2 md:gap-4 text-center max-w-650px mx-auto">
-                    <h1 class="h4m-0">Latest News & Blog</h1>
+                    <h1 class="h4m-0">Latest News & Articles</h1>
                 </header>
                 <div class="row child-cols-12 sm:child-cols-4 col-match gy-4 sm:gy-6 xl:gy-8 gx-2 xl:gx-4">
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/joseph boakai.webp" data-src="../assets/images/common/joseph boakai.webp" alt=" Liberian President. Joseph boakai speaks on the Future of Sustainable Living: Driving Eco-Friendly Lifestyles and improving the digital age of his country" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption=" Liberian Newly elected President: Joseph Nuymah Boakai speaks on The Future of Sustainable Living: Driving Eco-Friendly Lifestyles and improving the digital age in his country."></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">AI Powered</a>
+                    <% articles.forEach(article => { %>
+                        <div>
+                            <article class="post type-post panel vstack gap-2">
+                                <div class="post-image panel overflow-hidden">
+                                    <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                        <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                             src="<%= article.image_url %>" 
+                                             data-src="<%= article.image_url %>" 
+                                             alt="<%= article.title %>" 
+                                             data-uc-img="loading: lazy">
+                                        <a href="/articles/<%= article.id %>" class="position-cover" data-caption="<%= article.title %>"></a>
+                                    </figure>
+                                    
+                                    <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                        <a class="text-none" href="/category/<%= article.category_id %>"><%= article.category_name %></a>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Liberian Newly elected President: Joseph Nuymah Boakai speaks on The Future of Sustainable Living: Driving Eco-Friendly
-                                    Lifestyles and improving the digital age in his country.</a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Anna Luis"><img src="../assets/images/common/bbc roperter in liberia.jpg" alt="Anna Luis" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">sir moses</a>
+                                <div class="post-header panel vstack gap-1 lg:gap-2">
+                                    <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
+                                        <!-- Title -->
+                                        <a class="text-none" href="/articles/<%= article.id %>"><%= article.title %></a>
+                                    </h3>
+                                    <div>
+                                        <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
+                                            <div class="meta">
+                                                <div class="hstack gap-2">
+                                                    <div>
+                                                        <!-- author or publisher -->
+                                                        <div class="post-author hstack gap-1">
+                                                            <a href="#"><img src="<%= article.image_url %>" alt="<%= article.author %>" class="w-24px h-24px rounded-circle"></a>
+                                                            <a href="#" class="text-black dark:text-white text-none fw-bold"><%= article.source || 'Anonymous' %></a>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Mar 7, 2024</span>
+                                                    <div>
+                                                        <div class="post-date hstack gap-narrow">
+                                                            <!-- published_at -->
+                                                            <span><%= new Date(article.published_at).toLocaleDateString() %></span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>1</span>
-                                                    </a>
+                                                    <div>
+                                                        <!-- Count comments -->
+                                                        <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
+                                                            <i class="icon-narrow unicon-chat"></i>
+                                                            <span><%= article.comment_count || 0 %></span>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
+                                            <div class="actions">
+                                                <div class="hstack gap-1"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </article>
-                    </div>
+                            </article>
+                        </div>
+                        
+                    <% }) %>
                     
-                    <div>
+                    
+                    <!-- <div>
                         <article class="post type-post panel vstack gap-2">
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/faming.jpg" data-src="../assets/images/common/faming.jpg" alt="Business Agility the Digital Age: Leveraging AI and Automation" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Business Agility the Digital Age: Leveraging AI and Automation"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="Business Agility the Digital Age: Leveraging AI and Automation"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">Tech</a>
@@ -82,7 +94,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Liberian are improving in various Agricultural sectors.</a>
+                                    <a class="text-none" href="/articles_details">Liberian are improving in various Agricultural sectors.</a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -120,7 +132,7 @@
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/youth president of liberia.jpg" data-src="../assets/images/common/youth president of liberia.jpg" alt="The Art of Baking: From Classic Bread to Artisan Pastries" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="The Art of Baking: From Classic Bread to Artisan Pastries"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="The Art of Baking: From Classic Bread to Artisan Pastries"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">Network</a>
@@ -132,7 +144,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">The Art of Baking: And impowering the youthful community in liberia is on high sincce:President: Banica s Elliot took office  </a>
+                                    <a class="text-none" href="/articles_details">The Art of Baking: And impowering the youthful community in liberia is on high sincce:President: Banica s Elliot took office  </a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -170,7 +182,7 @@
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/faming.jpg" data-src="../assets/images/common/faming.jpg" alt="AI and Marketing: Unlocking Customer Insights" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="AI and Marketing: Unlocking Customer Insights"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="AI and Marketing: Unlocking Customer Insights"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">Virtual Reality</a>
@@ -178,7 +190,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html"> Unlocking Customer Insights and hard work </a>
+                                    <a class="text-none" href="/articles_details"> Unlocking Customer Insights and hard work </a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -216,7 +228,7 @@
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/front page.jpg" data-src="../assets/images/common/front page.jpg" alt="Hidden Gems: Underrated Travel Destinations Around the World" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Hidden Gems: Underrated Travel Destinations Around the World"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="Hidden Gems: Underrated Travel Destinations Around the World"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">AI Powered</a>
@@ -224,7 +236,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Ivory Coast Threaten To Cut Liberia Electricity Line</a>
+                                    <a class="text-none" href="/articles_details">Ivory Coast Threaten To Cut Liberia Electricity Line</a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -262,7 +274,7 @@
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/images kpawee.jpg" data-src="../assets/images/common/images kpawee.jpg" alt="Eco-Tourism: Traveling Responsibly and Sustainably" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Eco-Tourism: Traveling Responsibly and Sustainably"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="Eco-Tourism: Traveling Responsibly and Sustainably"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">Trips</a>
@@ -270,7 +282,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Eco-Tourism: Traveling Responsibly and Sustainably</a>
+                                    <a class="text-none" href="/articles_details">Eco-Tourism: Traveling Responsibly and Sustainably</a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -308,7 +320,7 @@
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/george weah.jpg" data-src="../assets/images/common/george weah.jpg" alt="Solo Travel: Some Tips and Destinations for the Adventurous Explorer" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Solo Travel: Some Tips and Destinations for the Adventurous Explorer"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="Solo Travel: Some Tips and Destinations for the Adventurous Explorer"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">Travel</a>
@@ -316,7 +328,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Liberia former President Weah states:</a>
+                                    <a class="text-none" href="/articles_details">Liberia former President Weah states:</a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -354,7 +366,7 @@
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/firstone workwers.webp" data-src="../assets/images/common/firstone workwers.webp" alt="AI-Powered Financial Planning: How Algorithms Revolutionizing" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="AI-Powered Financial Planning: How Algorithms Revolutionizing"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="AI-Powered Financial Planning: How Algorithms Revolutionizing"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">Tech</a>
@@ -366,7 +378,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Firestone workers recieved Financial Planning: Revolutionizing</a>
+                                    <a class="text-none" href="/articles_details">Firestone workers recieved Financial Planning: Revolutionizing</a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -404,7 +416,7 @@
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/liberian youth president.jpg" data-src="../assets/images/common/liberian youth president.jpg" alt="Tech Tools for your Time Management: Enhancing Productivity" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Tech Tools for your Time Management: Enhancing Productivity"></a>
+                                    <a href="/articles_details" class="position-cover" data-caption="Tech Tools for your Time Management: Enhancing Productivity"></a>
                                 </figure>
                                 <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
                                     <a class="text-none" href="blog-category.html">Startups</a>
@@ -416,7 +428,7 @@
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html"> Federation of liberian youth president speaks:Tech Tools for your Time Management: Enhancing Productivity</a>
+                                    <a class="text-none" href="/articles_details"> Federation of liberian youth president speaks:Tech Tools for your Time Management: Enhancing Productivity</a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -448,24 +460,30 @@
                                 </div>
                             </div>
                         </article>
-                    </div>
+                    </div> -->
                 </div>
+             
+                <!-- Pagination -->
                 <div class="nav-pagination fw-medium">
-                    <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary" data-uc-margin="">
-                        <li>
-                            <a href="#"><span class="icon icon-1 unicon-chevron-left"></span></a>
-                        </li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#" class="uc-active">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li class="uc-disabled"><span>…</span></li>
-                        <li><a href="#">8</a></li>
-                        <li><a href="#">9</a></li>
-                        <li>
-                            <a href="#"><span class="icon icon-1 unicon-chevron-right"></span></a>
-                        </li>
+                    <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary">
+                        <% if (currentPage > 1) { %>
+                            <li><a href="?page=<%= currentPage - 1 %>"><span class="icon icon-1 unicon-chevron-left"></span></a></li>
+                        <% } else { %>
+                            <li class="uc-disabled"><span class="icon icon-1 unicon-chevron-left"></span></li>
+                        <% } %>
+                
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li><a href="?page=<%= i %>" class="<%= i === currentPage ? 'uc-active' : '' %>"><%= i %></a></li>
+                        <% } %>
+                
+                        <% if (currentPage < totalPages) { %>
+                            <li><a href="?page=<%= currentPage + 1 %>"><span class="icon icon-1 unicon-chevron-right"></span></a></li>
+                        <% } else { %>
+                            <li class="uc-disabled"><span class="icon icon-1 unicon-chevron-right"></span></li>
+                        <% } %>
                     </ul>
                 </div>
+                
             </div>
         </div>
     </div>

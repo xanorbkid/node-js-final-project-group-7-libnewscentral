@@ -9,6 +9,25 @@ const bodyParser = require('body-parser');
 const app = express();
 const db = new sqlite3.Database('./newscentral.db');
 
+
+// SCRIPT NEWS FUNCTION
+const scraper = require('./scraper');
+
+// Scrape data when the server starts
+scraper.scrapeFrontPageAfrica();
+
+// Manual scraping route (optional)
+// app.get('/admin/scrape', (req, res) => {
+//     scraper.scrapeFrontPageAfrica();
+//     res.send('Scraping started');
+// });
+
+
+
+
+
+
+
 // ################################################
 // Middleware
 // ###############################################
@@ -50,7 +69,7 @@ const upload = multer({ storage: storage });
 // 
 // Middleware to fetch categories and make them available in all templates
 app.use((req, res, next) => {
-    db.all('SELECT * FROM categories', (err, categories) => {
+    db.all('SELECT * FROM categories WHERE deleted_at IS NULL', (err, categories) => {
         if (err) {
             return next(err); // Pass the error to the error handler
         }
@@ -173,17 +192,82 @@ app.get('/category/:id', (req, res) => {
 
 
 
-
-// Article List Route
+// Article list view with pagination
 app.get('/articles', (req, res) => {
-    db.all('SELECT * FROM articles', (err, articles) => {
+    const itemsPerPage = 12; // Set how many articles per page
+    const currentPage = parseInt(req.query.page) || 1; // Get current page from query, default to 1
+    const offset = (currentPage - 1) * itemsPerPage;
+
+    // Get total count of articles for pagination
+    const countQuery = 'SELECT COUNT(*) AS count FROM articles';
+
+    db.get(countQuery, (err, countResult) => {
         if (err) {
             return res.status(500).send('Database error');
         }
 
-        res.render('articles', { articles, title: 'Articles | LibNewsCentral' });
+        const totalItems = countResult.count;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        // Get articles with pagination
+        const query = `
+            SELECT articles.*, categories.name AS category_name, COUNT(comments.id) AS comment_count
+            FROM articles
+            LEFT JOIN categories ON articles.category_id = categories.id
+            LEFT JOIN comments ON articles.id = comments.article_id
+            GROUP BY articles.id
+            ORDER BY articles.published_at DESC
+            LIMIT ? OFFSET ?
+        `;
+
+        db.all(query, [itemsPerPage, offset], (err, articles) => {
+            if (err) {
+                return res.status(500).send('Database error');
+            }
+
+            // Pass data to the template
+            res.render('articles', {
+                title: 'Articles',
+                articles: articles, // Pass the articles with category and comment count
+                currentPage: currentPage,
+                totalPages: totalPages,
+                layout: 'layouts/base'
+            });
+        });
     });
 });
+
+
+// Article Detail Route
+app.get('/articles_details/:id', (req, res) => {
+    const articleId = req.params.id;
+
+    const query = `
+        SELECT articles.*, categories.name AS category_name, COUNT(comments.id) AS comment_count
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        LEFT JOIN comments ON articles.id = comments.article_id
+        WHERE articles.id = ?
+        GROUP BY articles.id
+    `;
+
+    db.get(query, [articleId], (err, article) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        if (!article) {
+            return res.status(404).send('Article not found');
+        }
+
+        // Render the articles_detail template and pass the article data
+        res.render('articles_detail', {
+            article: article,
+            title: 'News Details | LibNewsCentral'
+        });
+    });
+});
+
 
 
 
@@ -199,7 +283,7 @@ app.get('/admin/dashboard', (req, res) => {
 // LIST
 app.get('/admin/category_list', (req, res) => {
     // Fetch all categories from the database
-    db.all('SELECT * FROM categories', (err, categories) => {
+    db.all('SELECT * FROM categories WHERE deleted_at IS NULL', (err, categories) => {
         if (err) {
             return res.status(500).send('Database error');
         }
@@ -266,16 +350,43 @@ app.post('/edit_category/:id', upload.single('image_url'), (req, res) => {
 
 
 
+// After successful soft delete, pass a success message flag to the category list view
+app.get('/delete_category/:id', (req, res) => {
+    const categoryId = req.params.id;
+
+    db.get('SELECT COUNT(*) AS count FROM articles WHERE category_id = ?', [categoryId], (err, row) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        if (row.count > 0) {
+            return res.status(400).send('Cannot delete category with associated articles');
+        }
+
+        db.run('UPDATE categories SET deleted_at = ? WHERE id = ?', [new Date(), categoryId], function(err) {
+            if (err) {
+                return res.status(500).send('Database error');
+            }
+
+            // After successful delete, redirect and pass success flag
+            res.redirect('/admin/category_list?deleteSuccess=true');
+        });
+    });
+});
+
+
+
+
 app.get('/admin/users', (req, res) => {
-    res.render('admin/users', { title: 'Membership', layout: 'admin/base'  });
+    res.render('admin/users', { title: 'Membership | LibNews Central', layout: 'admin/base'  });
 });
 
 app.get('/admin/publishers', (req, res) => {
-    res.render('admin/publishers', { title: 'Publisher', layout: 'admin/base'  });
+    res.render('admin/publishers', { title: 'Publisher | LibNews Central', layout: 'admin/base'  });
 });
 
 app.get('/admin/articleslist', (req, res) => {
-    res.render('admin/articleslist', { title: 'Publisher', layout: 'admin/base'  });
+    res.render('admin/articleslist', { title: 'Articles | LibNews Central', layout: 'admin/base'  });
 });
 
 
