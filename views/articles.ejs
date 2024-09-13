@@ -24,7 +24,7 @@
                                     <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                         <% if (article.image_url) { %>
                                         <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
-                                             src="<%= article.image_url %>" 
+                                             src="<%- article.image_url %>" 
                                              data-src="<%= article.image_url %>" 
                                              alt="<%= article.title %>" 
                                              data-uc-img="loading: lazy">

@@ -106,6 +106,7 @@ async function saveScrapedArticles(scrapedArticles) {
                     }
 
                     if (existingArticle) {
+                        console.log(`image exist: ${image_url}`)
                         console.log(`Duplicate article found: ${title}. Skipping insertion.`);
                     } else {
                         insertArticle(categoryId);
@@ -133,7 +134,7 @@ async function saveScrapedArticles(scrapedArticles) {
                     if (err) {
                         console.error('Failed to insert article:', err);
                     } else {
-                        console.log('Article saved:', title);
+                        console.log('Article saved:', title, image_url);
                     }
                 });
             }
@@ -146,6 +147,7 @@ async function saveScrapedArticles(scrapedArticles) {
 scrapeFrontPageAfrica()
     .then(() => {
         console.log('Scraping and database insertion complete!');
+        
     })
     .catch(err => {
         console.error('Error during scraping or DB insertion:', err);
