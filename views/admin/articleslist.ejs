@@ -15,23 +15,24 @@
               <thead>
                 <tr class="mt-4">
                   <th>Title</th>
-                  <th>Articles</th>
-                  <th>publisher</th>
-                  <th>source</th>
-                  <th>Featch_at</th>
+                  <th>Category</th>
+                  <th>Source</th>
                   <th>Published_at</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                
+                <% articles.forEach(article => { %>
                 <tr>
-                  <td>Football is a beautiful game</td>
-                  <td>sport</td>
-                  <td>front page Africa</td>
-                  <td>Front page Africa</td>
-                  <td>2:00 Am </td>
-                  <td>Sept 13 2024</td>
+                  <td class=""><%= truncateText(article.title, 50) %></td>
+                  <td><%= article.category_name %></td>
+                  <td><%= article.source %></td>
+                  <td>
+                    <%= moment(article.published_at).format('MMMM D, YYYY') %>
+                    <br>
+                    <%= moment(article.published_at).format('h:mm A') %>
+                  </td>
+                
                   
                   <td>
                     <!-- <a href="#" class="avtar avtar-xs btn-link-secondary">
@@ -43,7 +44,7 @@
                     </a>
                     </td>
                 </tr>
-         
+                <% }); %>
               </tbody>
               
             </table>

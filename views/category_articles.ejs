@@ -25,17 +25,25 @@
                         <article class="post type-post panel vstack gap-2">
                             <div class="post-image panel overflow-hidden">
                                 <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/joseph boakai.webp" data-src="../assets/images/common/joseph boakai.webp" alt=" Liberian President. Joseph boakai speaks on the Future of Sustainable Living: Driving Eco-Friendly Lifestyles and improving the digital age of his country" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption=" Liberian Newly elected President: Joseph Nuymah Boakai speaks on The Future of Sustainable Living: Driving Eco-Friendly Lifestyles and improving the digital age in his country."></a>
+                                    <% if (article.image_url) { %>
+                                        <img class="media-cover image custom_font uc-transition-scale-up uc-transition-opaque" 
+                                             src="<%= article.image_url %>" 
+                                             data-src="<%= article.image_url %>" 
+                                             alt="<%= article.title %>" 
+                                             data-uc-img="loading: lazy">
+                                        <% } else { %>
+                                            <img class="media-cover custom_font image uc-transition-scale-up uc-transition-opaque" 
+                                            src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg"
+                                            alt="No image available"
+                                            data-uc-img="loading: lazy">
+                                        <% } %>
+                                    <a href="/articles_details/<%= article.id %>" class="position-cover" data-caption=" Liberian Newly elected President: Joseph Nuymah Boakai speaks on The Future of Sustainable Living: Driving Eco-Friendly Lifestyles and improving the digital age in his country."></a>
                                 </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">AI Powered</a>
-                                </div>
+                                
                             </div>
                             <div class="post-header panel vstack gap-1 lg:gap-2">
                                 <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Liberian Newly elected President: Joseph Nuymah Boakai speaks on The Future of Sustainable Living: Driving Eco-Friendly
-                                    Lifestyles and improving the digital age in his country.</a>
+                                    <a class="text-none" href="/articles_details/<%= article.id %>"><%= article.title %>.</a>
                                 </h3>
                                 <div>
                                     <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
@@ -43,19 +51,19 @@
                                             <div class="hstack gap-2">
                                                 <div>
                                                     <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Anna Luis"><img src="../assets/images/common/bbc roperter in liberia.jpg" alt="Anna Luis" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">sir moses</a>
+                                                        <a href="#" data-uc-tooltip="Anna Luis"><img src="../assets/images/common/bbc roperter in liberia.jpg" alt="Anna Luis" class="w-24px h-24px rounded-circle"></a>
+                                                        <a href="#" class="text-black custom_font dark:text-white text-none fw-bold"><%= article.source %></a>
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Mar 7, 2024</span>
+                                                    <div class="post-date hstack custom_font gap-narrow">
+                                                        <span><%= new Date(article.published_at).toLocaleDateString() %></span>
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
+                                                    <a href="#post_comment" class="post-comments custom_font text-none hstack gap-narrow">
                                                         <i class="icon-narrow unicon-chat"></i>
-                                                        <span>1</span>
+                                                        <span><%= article.comment_count || 0 %></span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -70,391 +78,6 @@
                     </div>
                     <% }); %>
 
-                    
-                    <!-- <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/faming.jpg" data-src="../assets/images/common/faming.jpg" alt="Business Agility the Digital Age: Leveraging AI and Automation" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Business Agility the Digital Age: Leveraging AI and Automation"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">Tech</a>
-                                </div>
-                                <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
-                                <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
-                                    <i class="icon-narrow unicon-play-filled-alt"></i>
-                                </span>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Liberian are improving in various Agricultural sectors.</a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Nisi Nyung"><img src="../assets/images/common/bbc roperter in liberia.jpg" alt="BBC News" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">BBC Corresporent</a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Mar 1, 2024</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>23</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/youth president of liberia.jpg" data-src="../assets/images/common/youth president of liberia.jpg" alt="The Art of Baking: From Classic Bread to Artisan Pastries" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="The Art of Baking: From Classic Bread to Artisan Pastries"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">Network</a>
-                                </div>
-                                <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
-                                <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
-                                    <i class="icon-narrow unicon-play-filled-alt"></i>
-                                </span>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">The Art of Baking: And impowering the youthful community in liberia is on high sincce:President: Banica s Elliot took office  </a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Nisi Nyung"><img src="../assets/images/common/front page liberia.jpg" alt="Nisi Nyung" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">front page liberia </a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Feb 28, 2024</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>112</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/faming.jpg" data-src="../assets/images/common/faming.jpg" alt="AI and Marketing: Unlocking Customer Insights" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="AI and Marketing: Unlocking Customer Insights"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">Virtual Reality</a>
-                                </div>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html"> Unlocking Customer Insights and hard work </a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Rico Santos"><img src="../assets/images/common/front page liberia.jpg" alt="Rico Santos" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">Front page liberia</a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Feb 22, 2024</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>2</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/front page.jpg" data-src="../assets/images/common/front page.jpg" alt="Hidden Gems: Underrated Travel Destinations Around the World" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Hidden Gems: Underrated Travel Destinations Around the World"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">AI Powered</a>
-                                </div>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Ivory Coast Threaten To Cut Liberia Electricity Line</a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="David Peterson"><img src="../assets/images/common/front page.jpg" alt="David Peterson" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">Front page Africa</a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Feb 14, 2024</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>15</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/images kpawee.jpg" data-src="../assets/images/common/images kpawee.jpg" alt="Eco-Tourism: Traveling Responsibly and Sustainably" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Eco-Tourism: Traveling Responsibly and Sustainably"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">Trips</a>
-                                </div>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Eco-Tourism: Traveling Responsibly and Sustainably</a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="David Peterson"><img src="../assets/images/common/bbc roperter in liberia.jpg" alt="David Peterson" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">sir moses</a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Feb 8, 2024</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>20</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/george weah.jpg" data-src="../assets/images/common/george weah.jpg" alt="Solo Travel: Some Tips and Destinations for the Adventurous Explorer" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Solo Travel: Some Tips and Destinations for the Adventurous Explorer"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">Travel</a>
-                                </div>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Liberia former President Weah states:</a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Peter Sawyer"><img src="../assets/images/common/front page liberia.jpg" alt="Peter Sawyer" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">Peter Sawyer</a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Jan 8, 2024</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>5</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/firstone workwers.webp" data-src="../assets/images/common/firstone workwers.webp" alt="AI-Powered Financial Planning: How Algorithms Revolutionizing" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="AI-Powered Financial Planning: How Algorithms Revolutionizing"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">Tech</a>
-                                </div>
-                                <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
-                                <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
-                                    <i class="icon-narrow unicon-play-filled-alt"></i>
-                                </span>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html">Firestone workers recieved Financial Planning: Revolutionizing</a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Sarah Eddrissi"><img src="../assets/images/common/front page.jpg" alt="Sarah Eddrissi" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">Sarah Eddrissi</a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Jan 8, 2024</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>2</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="post type-post panel vstack gap-2">
-                            <div class="post-image panel overflow-hidden">
-                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/liberian youth president.jpg" data-src="../assets/images/common/liberian youth president.jpg" alt="Tech Tools for your Time Management: Enhancing Productivity" data-uc-img="loading: lazy">
-                                    <a href="blog-details.html" class="position-cover" data-caption="Tech Tools for your Time Management: Enhancing Productivity"></a>
-                                </figure>
-                                <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                    <a class="text-none" href="blog-category.html">Startups</a>
-                                </div>
-                                <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
-                                <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
-                                    <i class="icon-narrow unicon-play-filled-alt"></i>
-                                </span>
-                            </div>
-                            <div class="post-header panel vstack gap-1 lg:gap-2">
-                                <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
-                                    <a class="text-none" href="blog-details.html"> Federation of liberian youth president speaks:Tech Tools for your Time Management: Enhancing Productivity</a>
-                                </h3>
-                                <div>
-                                    <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                        <div class="meta">
-                                            <div class="hstack gap-2">
-                                                <div>
-                                                    <div class="post-author hstack gap-1">
-                                                        <a href="page-author.html" data-uc-tooltip="Anna Luis"><img src="../assets/images/common/bbc roperter in liberia.jpg" alt="Anna Luis" class="w-24px h-24px rounded-circle"></a>
-                                                        <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">sir moses</a>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="post-date hstack gap-narrow">
-                                                        <span>Dec 8, 2023</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                        <i class="icon-narrow unicon-chat"></i>
-                                                        <span>19</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <div class="hstack gap-1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div> -->
                 </div>
                 
                  <!-- Pagination -->
@@ -484,7 +107,7 @@
                         <% } %>
                     </ul>
                 </div>
-                <% } else { %> <p class="custom_font text-dark">No articles posted yet in this category.</p> <% } %>
+                <% } else { %> <p class="custom_font h4m-0 text-dark">No articles posted yet in this category.</p> <% } %>
             </div>
 
         </div>

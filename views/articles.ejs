@@ -22,12 +22,21 @@
                             <article class="post type-post panel vstack gap-2">
                                 <div class="post-image panel overflow-hidden">
                                     <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                        <% if (article.image_url) { %>
                                         <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
                                              src="<%= article.image_url %>" 
                                              data-src="<%= article.image_url %>" 
                                              alt="<%= article.title %>" 
                                              data-uc-img="loading: lazy">
-                                        <a href="/articles/<%= article.id %>" class="position-cover" data-caption="<%= article.title %>"></a>
+                                        <% } else { %>
+                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                            src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg"
+                                            alt="No image available"
+                                            data-uc-img="loading: lazy">
+                                        <% } %>
+
+
+                                        <a href="/articles_details/<%= article.id %>" class="position-cover" data-caption="<%= article.title %>"></a>
                                     </figure>
                                     
                                     <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
@@ -37,7 +46,7 @@
                                 <div class="post-header panel vstack gap-1 lg:gap-2">
                                     <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
                                         <!-- Title -->
-                                        <a class="text-none" href="/articles/<%= article.id %>"><%= article.title %></a>
+                                        <a class="text-none" href="/articles_details/<%= article.id %>"><%= article.title %></a>
                                     </h3>
                                     <div>
                                         <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">

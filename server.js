@@ -4,10 +4,14 @@ const expressLayouts = require('express-ejs-layouts');
 const sqlite3 = require('sqlite3').verbose();
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+const cors = require('cors');
+const axios = require('axios');
 const bodyParser = require('body-parser');
 
 const app = express();
 const db = new sqlite3.Database('./newscentral.db');
+const truncateText = require('./truncate');
+const moment = require('moment');
 
 
 // SCRIPT NEWS FUNCTION
@@ -16,11 +20,28 @@ const scraper = require('./scraper');
 // Scrape data when the server starts
 scraper.scrapeFrontPageAfrica();
 
-// Manual scraping route (optional)
-// app.get('/admin/scrape', (req, res) => {
-//     scraper.scrapeFrontPageAfrica();
-//     res.send('Scraping started');
-// });
+
+
+app.use(cors());
+
+app.get('/proxy', async (req, res) => {
+    const { url } = req.query;
+
+    if (!url) {
+        return res.status(400).send('URL parameter is required');
+    }
+
+    try {
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+        });
+
+        res.set('Content-Type', response.headers['content-type']);
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send('Error fetching the image');
+    }
+});
 
 
 
@@ -84,6 +105,40 @@ app.use((req, res, next) => {
     });
 });
 
+app.use((req, res, next) => {
+    // Fetch articles with category names
+    const query = `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+    `;
+
+    db.all(query, (err, articles) => {
+        if (err) {
+            return next(err); // Pass the error to the error handler
+        }
+
+        // Limit the articles to the first 6
+        const toparticles = articles.slice(0, 6);
+
+        // Make articles and toparticles available in all views via res.locals
+        res.locals.toparticles = toparticles;
+        res.locals.articles = articles;
+        next();
+    });
+});
+
+// Make moment for Time Zone available in all views
+app.use((req, res, next) => {
+    res.locals.moment = moment;
+    next();
+});
+
+// Make truncateText function available in all views
+app.use((req, res, next) => {
+    res.locals.truncateText = truncateText;
+    next();
+});
 
 // ################################################
 // END Middleware
@@ -116,7 +171,7 @@ app.get('/', (req, res) => {
 
 // Categories List Route with Pagination
 app.get('/categories', (req, res) => {
-    const perPage = 6; // Number of categories per page
+    const perPage = 9; // Number of categories per page
     const page = req.query.page ? parseInt(req.query.page) : 1; // Current page number, default to 1
 
     // Fetch the total count of categories to calculate the total number of pages
@@ -147,10 +202,10 @@ app.get('/categories', (req, res) => {
 });
 
 
-// Category Detail Route with Pagination
+// List of articles in Category Detail Route with Pagination
 app.get('/category/:id', (req, res) => {
     const categoryId = req.params.id;
-    const perPage = 9; // Number of articles per page
+    const perPage = 12; // Number of articles per page
     const page = req.query.page ? parseInt(req.query.page) : 1;
 
     // Fetch the total number of articles for pagination

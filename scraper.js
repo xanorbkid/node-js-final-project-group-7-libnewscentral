@@ -71,7 +71,7 @@ async function saveScrapedArticles(scrapedArticles) {
             if (category) {
                 // Category exists, use its ID
                 categoryId = category.id;
-                insertArticle(categoryId);
+                checkForDuplicatesAndInsert(categoryId);
             } else {
                 // Category does not exist, create it using INSERT OR IGNORE to avoid duplicate errors
                 const insertCategoryQuery = 'INSERT OR IGNORE INTO categories (name) VALUES (?)';
@@ -88,8 +88,28 @@ async function saveScrapedArticles(scrapedArticles) {
                             return;
                         }
                         categoryId = newCategory.id;
-                        insertArticle(categoryId);
+                        checkForDuplicatesAndInsert(categoryId);
                     });
+                });
+            }
+
+            // Function to check for duplicates and insert the article if not a duplicate
+            function checkForDuplicatesAndInsert(categoryId) {
+                const duplicateCheckQuery = `
+                    SELECT id FROM articles 
+                    WHERE title = ? AND source = ? AND image_url = ?
+                `;
+                db.get(duplicateCheckQuery, [title, source, image_url], (err, existingArticle) => {
+                    if (err) {
+                        console.error('Error checking for duplicates:', err);
+                        return;
+                    }
+
+                    if (existingArticle) {
+                        console.log(`Duplicate article found: ${title}. Skipping insertion.`);
+                    } else {
+                        insertArticle(categoryId);
+                    }
                 });
             }
 
@@ -120,6 +140,7 @@ async function saveScrapedArticles(scrapedArticles) {
         });
     }
 }
+
 
 // Run the scraper and save to DB
 scrapeFrontPageAfrica()

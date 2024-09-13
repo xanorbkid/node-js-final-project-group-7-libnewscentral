@@ -1,13 +1,13 @@
 <div class="breadcrumbs panel z-1 py-2 bg-gray-25 dark:bg-gray-100 dark:bg-opacity-5 dark:text-white">
     <div class="container max-w-xl">
         <ul class="breadcrumb nav-x justify-center gap-1 fs-7 sm:fs-6 m-0">
-            <li><a href="index.html">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><i class="unicon-chevron-right opacity-50"></i></li>
-            <li><a href="blog.html">News</a></li>
+            <li><a href="/articles">News</a></li>
             <li><i class="unicon-chevron-right opacity-50"></i></li>
-            <li><a href="blog-category.html">Details</a></li>
+            <li><a href="#">Details</a></li>
             <li><i class="unicon-chevron-right opacity-50"></i></li>
-            <li><span class="opacity-50">The Rise of Gourmet Street Food: Trends and Top Picks</span></li>
+            <li><span class="opacity-50"><%= article.title %></span></li>
         </ul>
     </div>
 </div>
@@ -17,7 +17,7 @@
         <div class="post-header">
             <div class="panel vstack gap-4 md:gap-6 xl:gap-8 text-center">
                 <div class="panel vstack items-center max-w-400px sm:max-w-500px xl:max-w-md mx-auto gap-2 md:gap-3">
-                    <h1 class="h4 sm:h2 lg:h1 xl:display-6">The Rise of Gourmet Street Food: Trends and Top Picks</h1>
+                    <h4 class="h4 sm:h2 lg:h1 xl:display-6"><%= article.title %></h4>
                     <ul class="post-share-icons nav-x gap-1 dark:text-white">
                         <li>
                             <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-facebook icon-1"></i></a>
@@ -28,12 +28,7 @@
                         <li>
                             <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-linkedin icon-1"></i></a>
                         </li>
-                        <li>
-                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-pinterest icon-1"></i></a>
-                        </li>
-                        <li>
-                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-email icon-1"></i></a>
-                        </li>
+                    
                         <li>
                             <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-link icon-1"></i></a>
                         </li>
@@ -50,8 +45,8 @@
     <div class="panel mt-4 lg:mt-6 xl:mt-9">
         <div class="container max-w-lg">
             <div class="post-content panel fs-6 md:fs-5" data-uc-lightbox="animation: scale">
-                <p>She started her blog exactly six months before I launched Camels & Chocolate, and she really set the bar high for my own blog birthday, Y’all this summer! I’ve already been brainstorming party ideas … who wants to come? It’s no coincidence that Buster Keaton and Charlot’s movies of the and award-winning chefs about what exactly makes their hometowns In fact, not being able to rely on spoken word made them better storytellers. They fully understood and used the power of showing without words. A range of amenities provides many things to do in Bellevue. About 40 percent of the city’s population are minorities, which contributes to an overall diverse range of lifestyles and ideas.</p>
-                <p class="mt-3">I talked to climbers, Olympic mountain bikers, musicians, and award-winning chefs about what exactly makes their hometowns so special and fun.</p>
+                <p><%= article.content %></p>
+                <!-- <p class="mt-3">I talked to climbers, Olympic mountain bikers, musicians, and award-winning chefs about what exactly makes their hometowns so special and fun.</p> -->
                 <div class="panel mt-3">
                     <figure class="float-end ms-3 mb-1">
                         <figure class="featured-image m-0 ratio ratio-1x1 sm:w-300px rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
