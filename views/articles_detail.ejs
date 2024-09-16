@@ -1,0 +1,151 @@
+<div class="breadcrumbs panel z-1 py-2 bg-gray-25 dark:bg-gray-100 dark:bg-opacity-5 dark:text-white">
+    <div class="container max-w-xl">
+        <ul class="breadcrumb nav-x justify-center gap-1 fs-7 sm:fs-6 m-0">
+            <li><a href="/">Home</a></li>
+            <li><i class="unicon-chevron-right opacity-50"></i></li>
+            <li><a href="/articles">News</a></li>
+            <li><i class="unicon-chevron-right opacity-50"></i></li>
+            <li><i class="unicon-chevron-right opacity-50"></i></li>
+            <li><span class="opacity-50"><%= article.title %></span></li>
+        </ul>
+    </div>
+</div>
+
+<article class="post type-post single-post py-4 lg:py-6 xl:py-9">
+    <div class="container max-w-xl">
+        <div class="post-header">
+            <div class="panel vstack gap-4 md:gap-6 xl:gap-8 text-center">
+                <div class="panel vstack items-center max-w-400px sm:max-w-500px xl:max-w-md mx-auto gap-2 md:gap-3">
+                    <h4 class="h4 sm:h2 lg:h1 xl:display-6"><%= article.title %></h4>
+                    <ul class="post-share-icons nav-x gap-1 dark:text-white">
+                        <li>
+                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-facebook icon-1"></i></a>
+                        </li>
+                        <li>
+                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-x-filled icon-1"></i></a>
+                        </li>
+                        <li>
+                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-linkedin icon-1"></i></a>
+                        </li>
+                    
+                        <li>
+                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-link icon-1"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <figure class="featured-image m-0">
+                    <figure class="featured-image m-0 ratio ratio-2x1 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                        <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/img-fallback.png" data-src="../assets/images/demo-two/posts/post-full.jpg" alt="<%= article.title %>" data-uc-img="loading: lazy">
+                    </figure>
+                </figure>
+            </div>
+        </div>
+    </div>
+    <div class="panel mt-4 lg:mt-6 xl:mt-9">
+        <div class="container max-w-lg">
+            <div class="post-content panel fs-6 md:fs-5" data-uc-lightbox="animation: scale">
+                <!-- <p class="mt-3">I talked to climbers, Olympic mountain bikers, musicians, and award-winning chefs about what exactly makes their hometowns so special and fun.</p> -->
+                <div class="post-footer panel vstack sm:hstack gap-0 justify-between justifybetween  ">
+                    
+                    <ul class="post-share-icons nav-x gap-narrow">
+                        <!-- <li class="me-1"><span class="text-black dark:text-white">Share:</span></li> -->
+                        <li>
+                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary mr-2 hover:border-primary hover:text-white rounded-circle" href="#"><i class="fas fa-calendar-alt icon-1"></i>
+                            </a>
+                            <%= moment(article.published_at).format('MMMM D, YYYY') %>
+                        </li>
+                        <li>
+                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="fas fa-tags icon-1"></i> <!-- Tags Icon -->
+                            </a>
+                            <%= article.category_name %>
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="panel mt-3">
+                    <a href="#">
+
+                        <figure class="float-end ms-3 mb-1">
+                            <figure class="featured-image m-0 ratio ratio-1x1 sm:w-300px rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= article.image_url %>" data-src="<%= article.image_url %>" alt="<%= article.source %>" data-uc-img="loading: lazy">
+                                <a href="<%= article.url %>" target="_blank" class="position-cover" data-caption="Source: <%= article.source %>"></a>
+                            </figure>
+                            
+                            
+                            <p class="fs-7 mt-1 text-center fw-bold text-dark-400 dark:text-gray-200"><a href="<%= article.url %>" target="_blank">Source By: <%- article.source %></a></p>
+                        </figure>
+                    </a>
+                    
+                    <p class="post-content fs-6 md:fs-5 text-justify"><%= article.content %></p>
+
+                    
+                </div>
+               
+            </div>
+            <div class="post-footer panel vstack sm:hstack gap-3 justify-between justifybetween border-top py-4 mt-4 xl:py-9 xl:mt-9">
+                <ul class="nav-x gap-narrow text-primary">
+                    <li><span class="text-black dark:text-white me-narrow">Tags:</span></li>
+                    <li>
+                        <a href="#" class="uc-link gap-0 dark:text-white">Food <span class="text-black dark:text-white">,</span></a>
+                    </li>
+                    <li>
+                        <a href="#" class="uc-link gap-0 dark:text-white">Life Style <span class="text-black dark:text-white">,</span></a>
+                    </li>
+                    <li>
+                        <a href="#" class="uc-link gap-0 dark:text-white">Tech <span class="text-black dark:text-white">,</span></a>
+                    </li>
+                    <li><a href="#" class="uc-link gap-0 dark:text-white">Travel</a></li>
+                </ul>
+                <ul class="post-share-icons nav-x gap-narrow">
+                    <li class="me-1"><span class="text-black dark:text-white">Share:</span></li>
+                    <li>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-facebook icon-1"></i></a>
+                    </li>
+                    <li>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-x-filled icon-1"></i></a>
+                    </li>
+                    <li>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-email icon-1"></i></a>
+                    </li>
+                    <li>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-link icon-1"></i></a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Related News Article -->
+            <div class="post-related panel border-top pt-2 mt-8 xl:mt-9">
+                <h4 class="h5 xl:h4 mb-5 xl:mb-6">Related to this topic:</h4>
+                <div class="row child-cols-6 md:child-cols-3 gx-2 gy-4 sm:gx-3 sm:gy-6">
+                    <% if (relatedArticles && relatedArticles.length > 0) { %>
+                        <% relatedArticles.forEach(function(relatedArticle) { %>
+                            <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <figure class="featured-image m-0 ratio ratio-4x3 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                        <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= relatedArticle.image_url %>" alt="<%= relatedArticle.title %>">
+                                        <a href="/articles_details/<%= relatedArticle.id %>" class="position-cover"></a>
+                                    </figure>
+                                    <div class="post-header panel vstack gap-1">
+                                        <h5 class="h6 md:h5 m-0">
+                                            <a class="text-none" href="/articles_details/<%= relatedArticle.id %>"><%= relatedArticle.title %></a>
+                                        </h5>
+                                        <div class="post-date hstack gap-narrow fs-7 opacity-60">
+                                            <span><%= moment(relatedArticle.published_at).format('MMMM D, YYYY') %></span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p>No Related Post</p>
+                    <% } %>
+                    
+                </div>
+            </div>
+
+            <a href="#commont" class="btn h-56px w-100 mt-8 xl:mt-9 text-black dark:text-white bg-gray-25 dark:bg-opacity-10 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <span>Be the first to write a comment.</span>
+            </a>
+        </div>
+    </div>
+</article>
