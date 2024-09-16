@@ -24,7 +24,9 @@
               <tbody>
                 <% articles.forEach(article => { %>
                 <tr>
-                  <td class=""><%= truncateText(article.title, 50) %></td>
+                  <a href="" title="<%= article.title %>">
+                    <td class=""><%= truncateText(article.title, 50) %></td>
+                  </a>
                   <td><%= article.category_name %></td>
                   <td><%= article.source %></td>
                   <td>
@@ -35,8 +37,9 @@
                 
                   
                   <td>
-                    <!-- <a href="#" class="avtar avtar-xs btn-link-secondary">
-                        <i class="ti ti-eye f-20"></i> </a> -->
+                    <a href="#" class="avtar avtar-xs btn-link-secondary">
+                        <i class="ti ti-eye f-20"></i> 
+                    </a>
                     <a href="#" class="avtar avtar-xs btn-link-secondary ">
                         <i class="ti ti-edit f-20"></i> </a>
                     <a href="#" class="avtar avtar-xs btn-link-secondary text-danger">

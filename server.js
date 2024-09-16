@@ -15,10 +15,16 @@ const moment = require('moment');
 
 
 // SCRIPT NEWS FUNCTION
-const scraper = require('./scraper');
+const { scrapeFrontPageAfrica, scrapeNewRepublicLiberia } = require('./scraper');
 
-// Scrape data when the server starts
-scraper.scrapeFrontPageAfrica();
+// Now you can call the scraping functions like this:
+scrapeFrontPageAfrica().then(articles => {
+    console.log('Scraped articles from FrontPageAfrica:', articles);
+});
+
+// scrapeNewRepublicLiberia().then(articles => {
+//     console.log('Scraped articles from New Republic Liberia:', articles);
+// });
 
 
 
@@ -171,7 +177,7 @@ app.get('/', (req, res) => {
 
 // Categories List Route with Pagination
 app.get('/categories', (req, res) => {
-    const perPage = 9; // Number of categories per page
+    const perPage = 12; // Number of categories per page
     const page = req.query.page ? parseInt(req.query.page) : 1; // Current page number, default to 1
 
     // Fetch the total count of categories to calculate the total number of pages
@@ -293,11 +299,11 @@ app.get('/articles', (req, res) => {
 });
 
 
-// Article Detail Route
 app.get('/articles_details/:id', (req, res) => {
     const articleId = req.params.id;
 
-    const query = `
+    // Query to get the article details
+    const articleQuery = `
         SELECT articles.*, categories.name AS category_name, COUNT(comments.id) AS comment_count
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
@@ -306,7 +312,17 @@ app.get('/articles_details/:id', (req, res) => {
         GROUP BY articles.id
     `;
 
-    db.get(query, [articleId], (err, article) => {
+    // Query to get related articles in the same category
+    const relatedArticlesQuery = `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        WHERE articles.category_id = ? AND articles.id != ?
+        ORDER BY articles.published_at DESC
+        LIMIT 5
+    `;
+
+    db.get(articleQuery, [articleId], (err, article) => {
         if (err) {
             return res.status(500).send('Database error');
         }
@@ -315,10 +331,18 @@ app.get('/articles_details/:id', (req, res) => {
             return res.status(404).send('Article not found');
         }
 
-        // Render the articles_detail template and pass the article data
-        res.render('articles_detail', {
-            article: article,
-            title: 'News Details | LibNewsCentral'
+        // Fetch related articles based on the category of the current article
+        db.all(relatedArticlesQuery, [article.category_id, articleId], (err, relatedArticles) => {
+            if (err) {
+                return res.status(500).send('Database error');
+            }
+
+            // Render the articles_detail template and pass the article and related articles data
+            res.render('articles_detail', {
+                article: article,
+                relatedArticles: relatedArticles, // Pass related articles to the template
+                title: 'News Details | LibNewsCentral'
+            });
         });
     });
 });
