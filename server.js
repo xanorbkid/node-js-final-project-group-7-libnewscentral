@@ -273,6 +273,10 @@ app.get('/admin/articles_list', (req, res) => {
     res.render('admin/articles_list', { title: 'Article List', layout: 'admin/base'  });
 });
 
+app.get('/admin/publishers_list', (req, res) => {
+    res.render('admin/publishers_list', { title: 'Publisher list', layout: 'admin/base'  });
+});
+
 
 
 
