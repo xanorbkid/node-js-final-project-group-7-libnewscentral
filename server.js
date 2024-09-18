@@ -171,6 +171,11 @@ app.get('/', (req, res) => {
         // Pass the 'title' variable along with the articles data
         res.render('index', { articles, title: 'Home | LibNewsCentral' });
     });
+// route for pupular facebook blog 
+    app.get('/popular-blog', (req, res) => {
+        res.send('This is the Popular-blog page!');
+    })
+
 });
 
 
