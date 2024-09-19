@@ -118,6 +118,14 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+
+
+
+// routes for the popular-blog 
+router.get('/popular-blog', (req, res) => {
+    res.send('Hello');
+});
+
 // Import routes
 const urlRoutes = require('./urlroute');
 app.use('/', urlRoutes); // Apply the routes from urlroute.js
