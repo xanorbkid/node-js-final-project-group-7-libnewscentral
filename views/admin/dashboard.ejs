@@ -34,10 +34,8 @@
               </div>
               <div class="flex-grow-1 ms-3">
                 <p class="mb-1">New Users</p>
-                <div
-                  class="d-flex align-items-center justify-content-between"
-                >
-                  <h4 class="mb-0">0</h4>
+                <div class="d-flex align-items-center justify-content-between">
+                  <h4 class="mb-0"><%= totalUsers %></h4>
                   <span class="text-success fw-medium"></span>
                 </div>
               </div>
@@ -46,26 +44,28 @@
         </div>
       </div>
       <div class="col-lg-3 col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0">
-                <div class="avtar bg-light-warning">
-                  <i class="ti ti-notebook f-24"></i>
+        <a href="/admin/category_list">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                  <div class="avtar bg-light-warning">
+                    <i class="ti ti-notebook f-24"></i>
+                  </div>
                 </div>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <p class="mb-1">Total Categories</p>
-                <div
-                  class="d-flex align-items-center justify-content-between"
-                >
-                  <h4 class="mb-0">0</h4>
-                  <span class="text-warning fw-medium"></span>
+                <div class="flex-grow-1 ms-3">
+                  <p class="mb-1">Total Categories</p>
+                  <div
+                    class="d-flex align-items-center justify-content-between"
+                  >
+                    <h4 class="mb-0"><%= totalCategories %></h4>
+                    <span class="text-warning fw-medium"></span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
       <div class="col-lg-3 col-md-6">
         <div class="card">
@@ -90,26 +90,28 @@
         </div>
       </div>
       <div class="col-lg-3 col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0">
-                <div class="avtar bg-light-danger">
-                  <i class="ti ti-credit-card f-24"></i>
+        <a href="/admin/articleslist">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                  <div class="avtar bg-light-danger">
+                    <i class="ti ti-credit-card f-24"></i>
+                  </div>
                 </div>
-              </div>
-              <div class="flex-grow-1 ms-3">
-                <p class="mb-1">Total articles</p>
-                <div
-                  class="d-flex align-items-center justify-content-between"
-                >
-                  <h4 class="mb-0">0</h4>
-                  <span class="text-danger fw-medium"></span>
+                <div class="flex-grow-1 ms-3">
+                  <p class="mb-1">Total articles</p>
+                  <div
+                    class="d-flex align-items-center justify-content-between"
+                  >
+                    <h4 class="mb-0"><%= totalArticles %></h4>
+                    <span class="text-danger fw-medium"></span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
       <div class="col-lg-7 col-md-12">
         <div class="card">

@@ -66,6 +66,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+
+
 // Middleware to fetch categories and make them available in all templates
 app.use((req, res, next) => {
     db.all('SELECT * FROM categories WHERE deleted_at IS NULL', (err, categories) => {
@@ -119,7 +121,7 @@ app.use(session({
 }));
 
 // Import routes
-const urlRoutes = require('./urlroute');
+const urlRoutes = require('./routes/route');
 app.use('/', urlRoutes); // Apply the routes from urlroute.js
 
 // Start server

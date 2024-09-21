@@ -2,7 +2,20 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const router = express.Router();
+const multer = require('multer');
 const db = new sqlite3.Database('./newscentral.db');
+
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads'); // Directory to store uploaded images
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    }
+});
+const upload = multer({ storage: storage });
 
 
 // Home Route
@@ -169,11 +182,46 @@ router.get('/articles_details/:id', (req, res) => {
 // #############################################
 // ADMIN VIEWS & Route
 // #############################################
-
 // Admin Dashboard
 router.get('/admin/dashboard', (req, res) => {
-    res.render('admin/dashboard', { title: 'Dashboard', layout: 'admin/base' });
+    const countQueryUsers = 'SELECT COUNT(*) AS count FROM users';
+    const countQueryCategories = 'SELECT COUNT(*) AS count FROM categories WHERE deleted_at IS NULL';
+    const countQueryArticles = 'SELECT COUNT(*) AS count FROM articles';
+
+    // Execute all queries in parallel
+    db.all(countQueryUsers, (err, usersResult) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        db.all(countQueryCategories, (err, categoriesResult) => {
+            if (err) {
+                return res.status(500).send('Database error');
+            }
+
+            db.all(countQueryArticles, (err, articlesResult) => {
+                if (err) {
+                    return res.status(500).send('Database error');
+                }
+
+                // Extract counts from query results
+                const totalUsers = usersResult[0].count;
+                const totalCategories = categoriesResult[0].count;
+                const totalArticles = articlesResult[0].count;
+
+                // Render the admin dashboard view
+                res.render('admin/dashboard', {
+                    title: 'Dashboard | LibNewsCentral',
+                    layout: 'admin/base',
+                    totalUsers,
+                    totalCategories,
+                    totalArticles,
+                });
+            });
+        });
+    });
 });
+
 
 // Categories List for Admin
 router.get('/admin/category_list', (req, res) => {
@@ -275,3 +323,4 @@ router.get('/admin/articleslist', (req, res) => {
 
 // Export the router
 module.exports = router;
+
