@@ -254,7 +254,16 @@ router.get('/delete_category/:id', (req, res) => {
             res.redirect('/admin/category_list?deleteSuccess=true');
         });
     });
+
+   
 });
+
+
+// // popular-blog route
+router.get('/popular-blog', (req, res) => {
+    res.send('popular-blog');
+});
+
 
 // Admin Views (Users, Publishers, Articles List)
 router.get('/admin/users', (req, res) => {
