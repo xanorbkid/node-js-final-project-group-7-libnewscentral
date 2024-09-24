@@ -1,41 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
 const puppeteer = require('puppeteer');
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-const multer = require('multer');
-
-// Set up multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/uploads'); // Directory to store uploaded images
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-    }
-});
-const upload = multer({ storage: storage });
 
 // Connect to the SQLite database
 const db = new sqlite3.Database('./newscentral.db');
-
-
-// Helper function to download and save image locally
-async function downloadImage(imageUrl, savePath) {
-    const writer = fs.createWriteStream(savePath);
-    const response = await axios({
-        url: imageUrl,
-        method: 'GET',
-        responseType: 'stream',
-    });
-
-    response.data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-    });
-}
 
 // Scrape articles from FrontPageAfrica
 async function scrapeFrontPageAfrica() {
@@ -67,6 +34,7 @@ async function scrapeFrontPageAfrica() {
                 const imageElement = article.querySelector('span.img');
                 const image_url = imageElement ? imageElement.getAttribute('data-bgsrc') : null;
 
+                // For the author, we would need to navigate into the individual article pages
                 const authorElement = article.querySelector('p strong em');
                 const author_id = authorElement ? authorElement.innerText.replace('By ', '') : 'Unknown';
 
@@ -87,30 +55,22 @@ async function scrapeFrontPageAfrica() {
 
         // For each article, we need to fetch the detailed content and author info from individual article pages
         for (let article of articles) {
-            await page.goto(article.url, { waitUntil: 'networkidle2' });
+            await page.goto(article.url);
             await page.waitForSelector('div.post-content.cf.entry-content.content-spacious');
 
+            // Extract content from the article's body section
             article.content = await page.evaluate(() => {
                 const contentElement = document.querySelector('div.post-content.cf.entry-content.content-spacious');
                 return contentElement ? contentElement.innerText : null;
             });
 
+            // Extract the author's name if available
             article.author_name = await page.evaluate(() => {
                 const authorElement = document.querySelector('p strong em');
                 return authorElement ? authorElement.innerText.replace('By ', '') : 'Unknown';
             });
 
-            // Download the image and save it to the local server
-            if (article.image_url) {
-                const imageName = `${Date.now()}${path.extname(article.image_url)}`;
-                const savePath = path.join(__dirname, 'public/uploads', imageName); // Full path to save the image
-                await downloadImage(article.image_url, savePath);
-
-                // Update the article's image_url with the relative path (without '/public')
-                article.image_url = `/uploads/${imageName}`;
-            }
-
-            // Save the scraped article into the database
+            // Save the scraped articles into the database
             await saveScrapedArticles([article]);
         }
 
@@ -122,11 +82,16 @@ async function scrapeFrontPageAfrica() {
     }
 }
 
-// Save scraped articles into the database
+// END FRONTPAGE AFRICA SRCAPE
+
+
+
+// Save scraped articles into the database, ensuring no duplicates
 async function saveScrapedArticles(scrapedArticles) {
     for (let article of scrapedArticles) {
         const { title, content, url, image_url, published_at, category_name, source, author_id } = article;
 
+        // Check if the category exists
         const categoryQuery = 'SELECT id FROM categories WHERE name = ?';
         db.get(categoryQuery, [category_name], (err, category) => {
             if (err) {
@@ -135,10 +100,13 @@ async function saveScrapedArticles(scrapedArticles) {
             }
 
             let categoryId;
+
             if (category) {
+                // Category already exists, use its id
                 categoryId = category.id;
                 checkForDuplicatesAndInsert(categoryId);
             } else {
+                // Category does not exist, insert it
                 const insertCategoryQuery = 'INSERT OR IGNORE INTO categories (name) VALUES (?)';
                 db.run(insertCategoryQuery, [category_name], function (err) {
                     if (err) {
@@ -146,6 +114,7 @@ async function saveScrapedArticles(scrapedArticles) {
                         return;
                     }
 
+                    // Retrieve the category id (whether newly created or already existing)
                     db.get(categoryQuery, [category_name], (err, newCategory) => {
                         if (err || !newCategory) {
                             console.error('Failed to retrieve category after insertion:', err);
@@ -157,6 +126,7 @@ async function saveScrapedArticles(scrapedArticles) {
                 });
             }
 
+            // Function to check for duplicates and insert the article if not a duplicate
             function checkForDuplicatesAndInsert(categoryId) {
                 const duplicateCheckQuery = `
                     SELECT id FROM articles 
@@ -176,6 +146,7 @@ async function saveScrapedArticles(scrapedArticles) {
                 });
             }
 
+            // Insert article function
             function insertArticle(categoryId) {
                 const insertArticleQuery = `
                     INSERT INTO articles (title, content, url, image_url, published_at, category_id, source, author_id, is_scraped)
@@ -186,7 +157,7 @@ async function saveScrapedArticles(scrapedArticles) {
                     title,
                     content,
                     url,
-                    image_url,  // Use the relative path (/uploads/filename.jpg)
+                    image_url,
                     published_at,
                     categoryId,
                     source,
@@ -203,6 +174,19 @@ async function saveScrapedArticles(scrapedArticles) {
         });
     }
 }
+
+
+
+// Run the scraper and save to DB
+// scrapeFrontPageAfrica()
+//     .then(() => {
+//         console.log('Scraping and database insertion complete!');
+//     })
+//     .catch(err => {
+//         console.error('Error during scraping or DB insertion:', err);
+//     });
+
+
 
 // Export the scraping functions
 module.exports = {

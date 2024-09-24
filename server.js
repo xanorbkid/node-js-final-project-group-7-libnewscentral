@@ -11,7 +11,7 @@ const multer = require('multer');
 const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
-const { scrapeFrontPageAfrica, scrapeNewRepublicLiberia } = require('./scraper');
+const { scrapeFrontPageAfrica } = require('./scraper');
 
 const app = express();
 const db = new sqlite3.Database('./newscentral.db');

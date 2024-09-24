@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
         if (err) {
             return res.status(500).send('Database error');
         }
-        res.render('index', { articles, title: 'Home | LibNewsCentral' });
+        res.render('index2', { articles, title: 'Home | LibNewsCentral' });
     });
 });
 
@@ -152,7 +152,7 @@ router.get('/articles_details/:id', (req, res) => {
         LEFT JOIN categories ON articles.category_id = categories.id
         WHERE articles.category_id = ? AND articles.id != ?
         ORDER BY articles.published_at DESC
-        LIMIT 5
+        LIMIT 4
     `;
 
     db.get(articleQuery, [articleId], (err, article) => {
@@ -188,7 +188,7 @@ router.get('/admin/dashboard', (req, res) => {
     const countQueryCategories = 'SELECT COUNT(*) AS count FROM categories WHERE deleted_at IS NULL';
     const countQueryArticles = 'SELECT COUNT(*) AS count FROM articles';
 
-    // Execute all queries in parallel
+        // Execute all queries in parallel
     db.all(countQueryUsers, (err, usersResult) => {
         if (err) {
             return res.status(500).send('Database error');
@@ -316,6 +316,8 @@ router.get('/admin/publishers', (req, res) => {
 router.get('/admin/articleslist', (req, res) => {
     res.render('admin/articleslist', { title: 'Articles | LibNews Central', layout: 'admin/base' });
 });
+
+
 
 // #######################################
 // URL ROUTE ENDS
