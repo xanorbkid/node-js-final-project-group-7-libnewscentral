@@ -11,18 +11,18 @@ const multer = require('multer');
 const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
-const { scrapeFrontPageAfrica } = require('./scraper');
+const { scrapeFrontPageAfrica, scrapeNewDawnLiberia } = require('./scraper');
 
 const app = express();
 const db = new sqlite3.Database('./newscentral.db');
 
-// Now you can call the scraping functions like this:
+// Now you can call the scraping functions like this to return the articles:
 scrapeFrontPageAfrica().then(articles => {
     console.log('Scraped articles from FrontPageAfrica:', articles);
 });
-// scrapeNewRepublicLiberia().then(articles => {
-//     console.log('Scraped articles from New Republic Liberia:', articles);
-// });
+scrapeNewDawnLiberia().then(articles => {
+    console.log('Scraped articles from New Dawn Liberia:', articles);
+});
 
 app.use(cors());
 

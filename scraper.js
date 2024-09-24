@@ -41,7 +41,6 @@ async function downloadImage(imageUrl, savePath) {
 async function scrapeFrontPageAfrica() {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-
     try {
         await page.goto('https://frontpageafricaonline.com/');
         await page.waitForSelector('article.l-post.grid-post.grid-base-post');
@@ -85,11 +84,11 @@ async function scrapeFrontPageAfrica() {
             return scrapedArticles;
         });
 
-        // For each article, we need to fetch the detailed content and author info from individual article pages
+        // For each article, scrape additional details and save it
         for (let article of articles) {
             await page.goto(article.url, { waitUntil: 'networkidle2' });
             await page.waitForSelector('div.post-content.cf.entry-content.content-spacious');
-
+            
             article.content = await page.evaluate(() => {
                 const contentElement = document.querySelector('div.post-content.cf.entry-content.content-spacious');
                 return contentElement ? contentElement.innerText : null;
@@ -100,17 +99,103 @@ async function scrapeFrontPageAfrica() {
                 return authorElement ? authorElement.innerText.replace('By ', '') : 'Unknown';
             });
 
-            // Download the image and save it to the local server
+            // Process image saving if applicable
             if (article.image_url) {
                 const imageName = `${Date.now()}${path.extname(article.image_url)}`;
-                const savePath = path.join(__dirname, 'public/uploads', imageName); // Full path to save the image
+                const savePath = path.join(__dirname, 'public/uploads', imageName);
+                await downloadImage(article.image_url, savePath);
+                article.image_url = `/uploads/${imageName}`;
+            }
+
+            // Save the article to the database
+            await saveScrapedArticles([article]);
+        }
+
+        await browser.close();
+        return articles; // Ensure articles are returned here
+    } catch (error) {
+        console.error('Error during scraping:', error);
+        await browser.close();
+        return []; // Return an empty array if an error occurs
+    }
+}
+
+
+
+// Scrape articles from NewDawn Liberia
+async function scrapeNewDawnLiberia() {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    try {
+        await page.goto('https://thenewdawnliberia.com/');
+        await page.waitForSelector('article');
+
+        const articles = await page.evaluate(() => {
+            const articleElements = document.querySelectorAll('article');
+            const scrapedArticles = [];
+
+            articleElements.forEach(article => {
+                const titleElement = article.querySelector('h2.entry-title a');
+                const title = titleElement ? titleElement.innerText : null;
+                const url = titleElement ? titleElement.href : null;
+
+                const categoryElement = article.querySelector('span.cat-links a');
+                const category_name = categoryElement ? categoryElement.innerText : 'Uncategorized';
+
+                const publishedAtElement = article.querySelector('time.entry-date');
+                const published_at = publishedAtElement ? publishedAtElement.getAttribute('datetime') : null;
+
+                const excerptElement = article.querySelector('div.entry-summary p');
+                const excerpt = excerptElement ? excerptElement.innerText : null;
+
+                const imageElement = article.querySelector('img.wp-post-image');
+                const image_url = imageElement ? imageElement.src : null;
+
+                const authorElement = article.querySelector('.author.vcard a');
+                const author_id = authorElement ? authorElement.innerText : 'Unknown';
+
+                scrapedArticles.push({
+                    title,
+                    url,
+                    image_url,
+                    published_at,
+                    excerpt,
+                    category_name,
+                    author_id,
+                    source: 'NewDawnLiberia'
+                });
+            });
+
+            return scrapedArticles;
+        });
+
+        // For each article, fetch detailed content
+        for (let article of articles) {
+            await page.goto(article.url, { waitUntil: 'networkidle2' });
+            await page.waitForSelector('div.entry-content');
+
+            article.content = await page.evaluate(() => {
+                const contentElement = document.querySelector('div.entry-content');
+                return contentElement ? contentElement.innerText : null;
+            });
+
+            article.author_name = await page.evaluate(() => {
+                const authorElement = document.querySelector('.author.vcard a');
+                return authorElement ? authorElement.innerText : 'Unknown';
+            });
+
+            // Download the image and save it locally
+            if (article.image_url) {
+                const imageName = `${Date.now()}${path.extname(article.image_url)}`;
+                const savePath = path.join(__dirname, 'public/uploads', imageName);
                 await downloadImage(article.image_url, savePath);
 
                 // Update the article's image_url with the relative path (without '/public')
                 article.image_url = `/uploads/${imageName}`;
             }
 
-            // Save the scraped article into the database
+            // Save the scraped article to the database
             await saveScrapedArticles([article]);
         }
 
@@ -122,11 +207,13 @@ async function scrapeFrontPageAfrica() {
     }
 }
 
-// Save scraped articles into the database
+
+// Save scraped articles into the database, ensuring no duplicates
 async function saveScrapedArticles(scrapedArticles) {
     for (let article of scrapedArticles) {
         const { title, content, url, image_url, published_at, category_name, source, author_id } = article;
 
+        // Check if the category exists
         const categoryQuery = 'SELECT id FROM categories WHERE name = ?';
         db.get(categoryQuery, [category_name], (err, category) => {
             if (err) {
@@ -135,10 +222,13 @@ async function saveScrapedArticles(scrapedArticles) {
             }
 
             let categoryId;
+
             if (category) {
+                // Category already exists, use its id
                 categoryId = category.id;
                 checkForDuplicatesAndInsert(categoryId);
             } else {
+                // Category does not exist, insert it
                 const insertCategoryQuery = 'INSERT OR IGNORE INTO categories (name) VALUES (?)';
                 db.run(insertCategoryQuery, [category_name], function (err) {
                     if (err) {
@@ -146,6 +236,7 @@ async function saveScrapedArticles(scrapedArticles) {
                         return;
                     }
 
+                    // Retrieve the category id (whether newly created or already existing)
                     db.get(categoryQuery, [category_name], (err, newCategory) => {
                         if (err || !newCategory) {
                             console.error('Failed to retrieve category after insertion:', err);
@@ -157,12 +248,13 @@ async function saveScrapedArticles(scrapedArticles) {
                 });
             }
 
+            // Function to check for duplicates and insert the article if not a duplicate
             function checkForDuplicatesAndInsert(categoryId) {
                 const duplicateCheckQuery = `
                     SELECT id FROM articles 
-                    WHERE title = ? AND source = ? AND image_url = ?
+                    WHERE title = ? AND source = ? AND url = ?
                 `;
-                db.get(duplicateCheckQuery, [title, source, image_url], (err, existingArticle) => {
+                db.get(duplicateCheckQuery, [title, source,  url], (err, existingArticle) => {
                     if (err) {
                         console.error('Error checking for duplicates:', err);
                         return;
@@ -176,6 +268,7 @@ async function saveScrapedArticles(scrapedArticles) {
                 });
             }
 
+            // Insert article function
             function insertArticle(categoryId) {
                 const insertArticleQuery = `
                     INSERT INTO articles (title, content, url, image_url, published_at, category_id, source, author_id, is_scraped)
@@ -186,7 +279,7 @@ async function saveScrapedArticles(scrapedArticles) {
                     title,
                     content,
                     url,
-                    image_url,  // Use the relative path (/uploads/filename.jpg)
+                    image_url,
                     published_at,
                     categoryId,
                     source,
@@ -204,8 +297,9 @@ async function saveScrapedArticles(scrapedArticles) {
     }
 }
 
+
 // Export the scraping functions
 module.exports = {
     scrapeFrontPageAfrica,
-    // scrapeNewRepublicLiberia
+    scrapeNewDawnLiberia
 };
