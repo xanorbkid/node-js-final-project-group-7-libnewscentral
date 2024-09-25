@@ -19,14 +19,130 @@ const upload = multer({ storage: storage });
 
 
 // Home Route
-router.get('/', (req, res) => {
-    db.all('SELECT * FROM articles ORDER BY published_at DESC', (err, articles) => {
-        if (err) {
-            return res.status(500).send('Database error');
-        }
-        res.render('index2', { articles, title: 'Home | LibNewsCentral' });
+router.get('/', async (req, res) => {
+    try {
+        // const today = new Date().toISOString().slice(0, 10); // Get today's date in 'YYYY-MM-DD' format
+
+        // Query for latest articles of the day
+        const latestNewsQuery = `
+            SELECT articles.*, categories.name AS category_name
+            FROM articles
+            LEFT JOIN categories ON articles.category_id = categories.id
+            ORDER BY articles.published_at DESC
+        `;
+
+        // Query for Top News (category_id = 13)
+        const topNewsQuery = `
+            SELECT articles.*, categories.name AS category_name
+            FROM articles
+            LEFT JOIN categories ON articles.category_id = categories.id
+            WHERE articles.category_id = 13
+            ORDER BY articles.published_at DESC
+        `;
+
+        // Query for Health News (category_id = 18)
+        const healthNewsQuery = `
+            SELECT articles.*, categories.name AS category_name
+            FROM articles
+            LEFT JOIN categories ON articles.category_id = categories.id
+            WHERE articles.category_id = 18
+            ORDER BY articles.published_at DESC
+        `;
+
+        // Query for Sports News (category_id = 18)
+        const SportNewsQuery = `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        WHERE articles.category_id = 14
+        ORDER BY articles.published_at DESC
+        `;
+
+        // Query for Economy News (category_id = 18)
+        const EcoNewsQuery = `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        WHERE articles.category_id = 19
+        ORDER BY articles.published_at DESC
+        `;
+
+        // Query for Economy News (category_id = 18)
+        const FrontNewsQuery = `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        WHERE articles.category_id = 12
+        ORDER BY articles.published_at DESC
+        `;
+
+        // Use db.all with Promises for async/await support
+        const latestNews = await new Promise((resolve, reject) => {
+            db.all(latestNewsQuery, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+
+        const topNews = await new Promise((resolve, reject) => {
+            db.all(topNewsQuery, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+
+        const healthNews = await new Promise((resolve, reject) => {
+            db.all(healthNewsQuery, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+
+        const sportNews = await new Promise((resolve, reject) => {
+            db.all(SportNewsQuery, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+
+        const ecoNews = await new Promise((resolve, reject) => {
+            db.all(EcoNewsQuery, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+
+        const frontNews = await new Promise((resolve, reject) => {
+            db.all(FrontNewsQuery, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+
+
+        // Render the homepage with the latest and top news articles
+        res.render('index2', {
+            latestNews, 
+            topNews,healthNews, sportNews,
+            ecoNews, frontNews,
+            title: 'Home | LibNewsCentral'
+        });
+
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send('An error occurred while retrieving the news.');
+    }
+});
+
+
+// Coming Soon
+router.get('/coming_soon', (req, res) => {
+    
+    res.render('coming_soon', {
+        title: 'Coming Soon | LibNewsCentral'
     });
 });
+
 
 // Categories List Route with Pagination
 router.get('/categories', (req, res) => {

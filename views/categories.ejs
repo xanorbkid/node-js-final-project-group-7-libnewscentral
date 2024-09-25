@@ -3,7 +3,7 @@
         <ul class="breadcrumb nav-x justify-center gap-1 fs-7 sm:fs-6 m-0">
             <li><a href="/">Home</a></li>
             <li><i class="unicon-chevron-right opacity-50"></i></li>
-            <li><a href="blog.html">Blog</a></li>
+            <li><a href="/categories">Blog</a></li>
             <li><i class="unicon-chevron-right opacity-50"></i></li>
             <li><span class="opacity-50">Category</span></li>
         </ul>
@@ -27,30 +27,36 @@
                             <% categories.forEach(category => { %>
                             <div>
                                 <article class="post type-post panel vstack gap-2">
-                                    <div class="post-image panel overflow-hidden">
-                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                            <% if (category.image_url) { %>
-                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
-                                                     src="<%= category.image_url %>" 
-                                                     alt="<%= category.name %>"
-                                                     data-uc-img="loading: lazy">
-                                            <% } else { %>
-                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
-                                                     src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg"
-                                                     alt="No image available"
-                                                     data-uc-img="loading: lazy">
-                                            <% } %>
-                                            <!-- <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg" alt="Balancing Work and Wellness: Tech Solutions for Healthy" data-uc-img="loading: lazy"> -->
-                                            <a href="/category/<%= category.id %>" class="position-cover" data-caption="Balancing Work and Wellness: Tech Solutions for Healthy"></a>
-                                        </figure>
-                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                            <a class="text-none" href="/category/<%= category.id %>"><%= category.name %></a>
+                                    <a href="">
+
+                                        <div class="post-image panel overflow-hidden">
+                                            
+    
+                                                <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                                    <% if (category.image_url) { %>
+                                                        <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                             src="<%= category.image_url %>" 
+                                                             alt="<%= category.name %>"
+                                                             data-uc-img="loading: lazy">
+                                                    <% } else { %>
+                                                        <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                             src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg"
+                                                             alt="No image available"
+                                                             data-uc-img="loading: lazy">
+                                                    <% } %>
+                                                    <!-- <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/politic photo.jpg" data-src="../assets/images/common/politic photo.jpg" alt="Balancing Work and Wellness: Tech Solutions for Healthy" data-uc-img="loading: lazy"> -->
+                                                    <a href="/category/<%= category.id %>" class="position-cover" data-caption="Balancing Work and Wellness: Tech Solutions for Healthy"></a>
+                                                </figure>
+                                           
+                                            <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                                <a class="text-none" href="/category/<%= category.id %>"><%= category.name %></a>
+                                            </div>
+                                            <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
+                                            <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
+                                                <i class="icon-narrow unicon-play-filled-alt"></i>
+                                            </span>
                                         </div>
-                                        <div class="position-absolute top-0 end-0 w-150px h-150px rounded-top-end bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
-                                        <span class="cstack position-absolute top-0 end-0 fs-6 w-40px h-40px text-white">
-                                            <i class="icon-narrow unicon-play-filled-alt"></i>
-                                        </span>
-                                    </div>
+                                    </a>
                                     <div class="post-header panel vstack gap-1 lg:gap-2">
                                         <h3 class="post-title h6 sm:h5 xl:h4 m-0 text-truncate-2 m-0">
                                             <a class="text-none" href="/category/<%= category.id %>"><%= category.name %></a>
