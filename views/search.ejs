@@ -1,0 +1,114 @@
+<div class="breadcrumbs panel z-1 py-2 bg-gray-25 dark:bg-gray-100 dark:bg-opacity-5 dark:text-white"></div>
+    <div class="container max-w-xl">
+        <ul class="breadcrumb nav-x justify-center gap-1 fs-7 sm:fs-6 m-0">
+            <li><a href="/">Home</a></li>
+            <li><i class="unicon-chevron-right opacity-50"></i></li>
+            <li><span class="opacity-50">Latest News & Articles</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Section start -->
+<div class="section panel overflow-hidden">
+    <div class="section-outer panel py-6 lg:py-9">
+        <div class="container max-w-xl">
+            <div class="section-inner panel vstack gap-3 sm:gap-6 lg:gap-9" data-anime="targets: >*; translateY: [48, 0]; opacity: [0, 1]; easing: spring(1, 80, 10, 0); duration: 450; delay: anime.stagger(100);">
+                <header class="page-header vstack justify-center items-center gap-2 md:gap-4 text-center max-w-650px mx-auto">
+                    <h1 class="h4 m-0">Showing Results for <span class="text-secondary"> "<%= searchQuery %>"</span> </h1>
+                </header>
+                <div class="row child-cols-12 sm:child-cols-6 lg:child-cols-4 xl:child-cols-3 col-match gy-4 xl:gy-6 gx-2 sm:gx-4">
+                    <% if (articles.length > 0) { %>
+                        <% articles.forEach(article => { %>
+                            <div>
+                                <article class="post type-post panel vstack gap-2">
+                                    <div class="post-image panel overflow-hidden">
+                                        <figure class="featured-image m-0 ratio ratio-16x9 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                                            <% if (article.image_url) { %>
+                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                 src="<%- article.image_url %>" 
+                                                 data-src="<%= article.image_url %>" 
+                                                 alt="<%= article.title %>" 
+                                                 data-uc-img="loading: lazy">
+                                            <% } else { %>
+                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                                     src="../assets/images/common/politic photo.jpg" 
+                                                     data-src="../assets/images/common/politic photo.jpg"
+                                                     alt="No image available"
+                                                     data-uc-img="loading: lazy">
+                                            <% } %>
+                                            <a href="/articles_details/<%= article.id %>" class="position-cover" data-caption="<%= article.title %>"></a>
+                                        </figure>
+                                        <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
+                                            <a class="text-none" href="/category/<%= article.category_id %>"><%= article.category_name %></a>
+                                        </div>
+                                    </div>
+                                    <div class="post-header panel vstack gap-1 lg:gap-2">
+                                        <h3 class="post-title h5 xl:h4 m-0 text-center text-truncate-2 m-0">
+                                            <a class="text-none" href="/articles_details/<%= article.id %>"><%= article.title %></a>
+                                        </h3>
+                                        <div>
+                                            <div class="post-meta panel hstack justify-center fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
+                                                <div class="meta">
+                                                    <div class="hstack gap-2">
+                                                        <div>
+                                                            <div class="post-author hstack gap-1">
+                                                                <a href="#"><img src="<%= article.image_url %>" alt="<%= article.author %>" class="w-24px h-24px rounded-circle"></a>
+                                                                <a href="#" class="text-black dark:text-white custom_font text-none fw-bold"><%= article.source || 'Anonymous' %></a>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <div class="post-date hstack gap-narrow">
+                                                                <span class="custom_font"><%= new Date(article.published_at).toLocaleDateString() %></span>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <a href="#post_comment" class="post-comments custom_font text-none hstack gap-narrow">
+                                                                <i class="icon-narrow unicon-chat"></i>
+                                                                <span><%= article.comment_count || 0 %></span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="actions">
+                                                    <div class="hstack gap-1"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        <% }) %>
+                    </div>
+                    <% } else { %>
+                        <div class="no-results text-center">
+                            <h4>No results found for "<%= searchQuery %>". Please try again with different keywords.</h4>
+                        </div>
+                    <% } %>
+            
+                <!-- Pagination -->
+                <div class="nav-pagination fw-medium">
+                    <ul class="nav-x uc-pagination hstack gap-1 justify-center ft-secondary">
+                        <% if (currentPage > 1) { %>
+                            <li><a href="?page=<%= currentPage - 1 %>"><span class="icon icon-1 unicon-chevron-left"></span></a></li>
+                        <% } else { %>
+                            <li class="uc-disabled"><span class="icon icon-1 unicon-chevron-left"></span></li>
+                        <% } %>
+            
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li><a href="?page=<%= i %>" class="<%= i === currentPage ? 'uc-active' : '' %>"><%= i %></a></li>
+                        <% } %>
+            
+                        <% if (currentPage < totalPages) { %>
+                            <li><a href="?page=<%= currentPage + 1 %>"><span class="icon icon-1 unicon-chevron-right"></span></a></li>
+                        <% } else { %>
+                            <li class="uc-disabled"><span class="icon icon-1 unicon-chevron-right"></span></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Section end -->

@@ -294,6 +294,61 @@ router.get('/articles_details/:id', (req, res) => {
     });
 });
 
+// Global Search
+router.get('/search', (req, res) => {
+    const itemsPerPage = 12;
+    const currentPage = parseInt(req.query.page) || 1;
+    const offset = (currentPage - 1) * itemsPerPage;
+
+    const searchQuery = req.query.q || ''; // Retrieve the search query from the URL
+    const searchTerms = `%${searchQuery}%`; // Prepare search terms for SQL LIKE operator
+
+    // Prepare the base query with search filters
+    const baseQuery = `
+        SELECT articles.*, categories.name AS category_name, COUNT(comments.id) AS comment_count
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        LEFT JOIN comments ON articles.id = comments.article_id
+        WHERE articles.title LIKE ? OR articles.url LIKE ? OR categories.name LIKE ?
+        GROUP BY articles.id
+        ORDER BY articles.published_at DESC
+        LIMIT ? OFFSET ?
+    `;
+
+    const countQuery = `
+        SELECT COUNT(*) AS count
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        WHERE articles.title LIKE ? OR articles.url LIKE ? OR categories.name LIKE ?
+    `;
+
+    // Count total items that match the search query
+    db.get(countQuery, [searchTerms, searchTerms, searchTerms], (err, countResult) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        const totalItems = countResult.count;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        // Fetch matching articles
+        db.all(baseQuery, [searchTerms, searchTerms, searchTerms, itemsPerPage, offset], (err, articles) => {
+            if (err) {
+                return res.status(500).send('Database error');
+            }
+
+            // Render the search results page
+            res.render('search', {
+                title: 'Search Results',
+                articles: articles,
+                currentPage: currentPage,
+                totalPages: totalPages,
+                layout: 'layouts/base',
+                searchQuery: searchQuery // Pass search query for use in the template
+            });
+        });
+    });
+});
 
 // #############################################
 // ADMIN VIEWS & Route
@@ -353,6 +408,7 @@ router.get('/admin/category_list', (req, res) => {
         });
     });
 });
+
 
 // Add Category Route
 router.post('/add_category', upload.single('image_url'), (req, res) => {
@@ -432,6 +488,68 @@ router.get('/admin/publishers', (req, res) => {
 router.get('/admin/articleslist', (req, res) => {
     res.render('admin/articleslist', { title: 'Articles | LibNews Central', layout: 'admin/base' });
 });
+
+// Edit article:
+// Edit article Route
+router.post('/edit_article/:id', upload.single('image_url'), (req, res) => {
+    const articleId = req.params.id;
+    const { title, content, category_id, source } = req.body;
+    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Base update query
+    let query = 'UPDATE articles SET title = ?, content = ?, category_id = ?, source = ?';
+    let params = [title, content, category_id, source];
+
+    // If a new image is uploaded, include image URL in the update
+    if (image_url) {
+        query += ', image_url = ?';
+        params.push(image_url);
+    }
+
+    // Complete the query by adding the WHERE clause
+    query += ' WHERE id = ?';
+    params.push(articleId);
+
+    // Run the query to update the article
+    db.run(query, params, function (err) {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).send('An error occurred while updating the article.');
+        }
+        res.redirect('/admin/articleslist');
+    });
+});
+
+// Hard Delete Article
+// In routes/articles.js or the appropriate router file
+
+// Hard Delete Article by ID
+router.get('/delete_article/:id', (req, res) => {
+    const articleId = req.params.id;
+
+    // Check if the article exists
+    db.get('SELECT id FROM articles WHERE id = ?', [articleId], (err, article) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        if (!article) {
+            return res.status(404).send('Article not found');
+        }
+
+        // Hard delete the article from the database
+        db.run('DELETE FROM articles WHERE id = ?', [articleId], function (err) {
+            if (err) {
+                return res.status(500).send('Database error');
+            }
+
+            // Redirect to article list after deletion
+            res.redirect('/admin/articleslist?deleteSuccess=true');
+        });
+    });
+});
+
+
 
 
 

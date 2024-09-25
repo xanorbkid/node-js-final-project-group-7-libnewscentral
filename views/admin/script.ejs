@@ -54,3 +54,19 @@
     <script>
       const Swal = require('sweetalert2');
     </script>
+
+    <script>
+  var quill = new Quill('#editor-container', {
+    theme: 'snow', // or 'bubble' theme
+    modules: {
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ['bold', 'italic', 'underline'],
+        ['link', 'blockquote', 'code-block'],
+        [{ list: 'ordered' }, { list: 'bullet' }]
+        [{ align: [] }],
+        [{ color: [] }, { background: [] }]
+      ]
+    }
+  });
+</script>

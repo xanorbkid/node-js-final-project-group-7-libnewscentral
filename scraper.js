@@ -38,6 +38,7 @@ async function downloadImage(imageUrl, savePath) {
 }
 
 // Scrape articles from FrontPageAfrica
+// Scrape articles from FrontPageAfrica
 async function scrapeFrontPageAfrica() {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -69,16 +70,19 @@ async function scrapeFrontPageAfrica() {
                 const authorElement = article.querySelector('p strong em');
                 const author_id = authorElement ? authorElement.innerText.replace('By ', '') : 'Unknown';
 
-                scrapedArticles.push({
-                    title,
-                    url,
-                    image_url,
-                    published_at,
-                    excerpt,
-                    category_name,
-                    author_id,
-                    source: 'FrontPageAfrica'
-                });
+                // Only add the article if it has a valid title
+                if (title) {
+                    scrapedArticles.push({
+                        title,
+                        url,
+                        image_url,
+                        published_at,
+                        excerpt,
+                        category_name,
+                        author_id,
+                        source: 'FrontPageAfrica'
+                    });
+                }
             });
 
             return scrapedArticles;

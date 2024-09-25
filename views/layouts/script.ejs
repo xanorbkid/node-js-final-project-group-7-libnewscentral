@@ -16,3 +16,13 @@
 
 		<!-- include app script -->
 		<script defer src="../assets/js/app.js"></script>
+
+		<script>
+			function copyToClipboard(text) {
+				navigator.clipboard.writeText(text).then(() => {
+					alert('Link copied to clipboard');
+				}).catch(err => {
+					console.error('Failed to copy: ', err);
+				});
+			}
+		</script>

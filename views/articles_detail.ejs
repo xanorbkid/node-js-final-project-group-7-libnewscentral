@@ -19,17 +19,16 @@
                     <h4 class="h4 sm:h2 lg:h1 xl:display-6"><%= article.title %></h4>
                     <ul class="post-share-icons nav-x gap-1 dark:text-white">
                         <li>
-                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-facebook icon-1"></i></a>
+                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(article.url) %>" target="_blank"><i class="unicon-logo-facebook icon-1"></i></a>
                         </li>
                         <li>
-                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-x-filled icon-1"></i></a>
+                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(article.url) %>&text=<%= encodeURIComponent(article.title) %>" target="_blank"><i class="unicon-logo-x-filled icon-1"></i></a>
                         </li>
                         <li>
-                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-linkedin icon-1"></i></a>
+                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="mailto:?subject=<%= encodeURIComponent(article.title) %>&body=Check out this article: <%= encodeURIComponent(article.url) %>" target="_blank"><i class="unicon-email icon-1"></i></a>
                         </li>
-                    
                         <li>
-                            <a class="btn btn-md p-0 border-gray-900 border-opacity-15 w-32px lg:w-48px h-32px lg:h-48px text-dark dark:text-white dark:border-white hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-link icon-1"></i></a>
+                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#" onclick="copyToClipboard('<%= article.url %>')"><i class="unicon-link icon-1"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -52,7 +51,7 @@
                         <li>
                             <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary mr-2 hover:border-primary hover:text-white rounded-circle" href="#"><i class="fas fa-calendar-alt icon-1"></i>
                             </a>
-                            <%= moment(article.published_at).format('MMMM D, YYYY') %>
+                            <%= moment(article.published_at).format('MMMM D, YYYY') %> | Posted: <%= moment(article.published_at).fromNow() %>
                         </li>
                         <li>
                             <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="fas fa-tags icon-1"></i> <!-- Tags Icon -->
@@ -76,7 +75,7 @@
                         </figure>
                     </a>
                     
-                    <p class="post-content fs-6 md:fs-5 text-justify"><%= article.content %></p>
+                    <p class="post-content fs-6 md:fs-5 "><%- article.content %></p>
 
                     
                 </div>
@@ -86,30 +85,25 @@
                 <ul class="nav-x gap-narrow text-primary">
                     <li><span class="text-black dark:text-white me-narrow">Tags:</span></li>
                     <li>
-                        <a href="#" class="uc-link gap-0 dark:text-white">Food <span class="text-black dark:text-white">,</span></a>
+                        <a href="/category/<%= article.category_id %>" class="uc-link gap-0 dark:text-white"><%= article.category_name %> <span class="text-black dark:text-white">,</span></a>
                     </li>
-                    <li>
-                        <a href="#" class="uc-link gap-0 dark:text-white">Life Style <span class="text-black dark:text-white">,</span></a>
-                    </li>
-                    <li>
-                        <a href="#" class="uc-link gap-0 dark:text-white">Tech <span class="text-black dark:text-white">,</span></a>
-                    </li>
-                    <li><a href="#" class="uc-link gap-0 dark:text-white">Travel</a></li>
+                    
                 </ul>
                 <ul class="post-share-icons nav-x gap-narrow">
                     <li class="me-1"><span class="text-black dark:text-white">Share:</span></li>
                     <li>
-                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-facebook icon-1"></i></a>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(article.url) %>" target="_blank"><i class="unicon-logo-facebook icon-1"></i></a>
                     </li>
                     <li>
-                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-logo-x-filled icon-1"></i></a>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(article.url) %>&text=<%= encodeURIComponent(article.title) %>" target="_blank"><i class="unicon-logo-x-filled icon-1"></i></a>
                     </li>
                     <li>
-                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-email icon-1"></i></a>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="mailto:?subject=<%= encodeURIComponent(article.title) %>&body=Check out this article: <%= encodeURIComponent(article.url) %>" target="_blank"><i class="unicon-email icon-1"></i></a>
                     </li>
                     <li>
-                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="unicon-link icon-1"></i></a>
+                        <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#" onclick="copyToClipboard('<%= article.url %>')"><i class="unicon-link icon-1"></i></a>
                     </li>
+                    
                 </ul>
             </div>
             
