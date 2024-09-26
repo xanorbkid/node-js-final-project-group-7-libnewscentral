@@ -80,19 +80,42 @@ module.exports = db;
 // Helper function to download and save image locally
 async function downloadImage(imageUrl, savePath) {
     const writer = fs.createWriteStream(savePath);
-    const response = await axios({
-        url: imageUrl,
-        method: 'GET',
-        responseType: 'stream',
-    });
+    
+    try {
+        const response = await axios({
+            url: imageUrl,
+            method: 'GET',
+            responseType: 'stream',
+        });
 
-    response.data.pipe(writer);
+        response.data.pipe(writer);
 
-    return new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-    });
+        return new Promise((resolve, reject) => {
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+        });
+    } catch (error) {
+        console.error('Failed to download image:', imageUrl, error.message);
+    }
 }
+
+
+
+// async function downloadImage(imageUrl, savePath) {
+//     const writer = fs.createWriteStream(savePath);
+//     const response = await axios({
+//         url: imageUrl,
+//         method: 'GET',
+//         responseType: 'stream',
+//     });
+
+//     response.data.pipe(writer);
+
+//     return new Promise((resolve, reject) => {
+//         writer.on('finish', resolve);
+//         writer.on('error', reject);
+//     });
+// }
 
 // Scrape articles from FrontPageAfrica
 // Scrape articles from FrontPageAfrica
@@ -125,7 +148,9 @@ async function scrapeFrontPageAfrica() {
                 const excerpt = excerptElement ? excerptElement.innerText : null;
 
                 const imageElement = article.querySelector('span.img');
-                const image_url = imageElement ? imageElement.getAttribute('data-bgsrc') : null;
+                // const image_url = imageElement ? imageElement.getAttribute('data-bgsrc') : null;
+                const image_url = imageElement ? imageElement.getAttribute('data-bgsrc').replace(';', '') : null;
+
 
                 const authorElement = article.querySelector('p strong em');
                 const author_id = authorElement ? authorElement.innerText.replace('By ', '') : 'Unknown';
@@ -164,12 +189,22 @@ async function scrapeFrontPageAfrica() {
             });
 
             // Process image saving if applicable
-            if (article.image_url) {
+            if (article.image_url && article.image_url.startsWith('http')) {
                 const imageName = `${Date.now()}${path.extname(article.image_url)}`;
                 const savePath = path.join(__dirname, 'public/uploads', imageName);
                 await downloadImage(article.image_url, savePath);
                 article.image_url = `/uploads/${imageName}`;
+            } else {
+                console.log('Invalid image URL:', article.image_url);
             }
+            
+
+            // if (article.image_url) {
+            //     const imageName = `${Date.now()}${path.extname(article.image_url)}`;
+            //     const savePath = path.join(__dirname, 'public/uploads', imageName);
+            //     await downloadImage(article.image_url, savePath);
+            //     article.image_url = `/uploads/${imageName}`;
+            // }
 
             // Save the article to the database
             await saveScrapedArticles([article]);
