@@ -5,7 +5,7 @@
   "description": "A comprehensive news platform to access diverse content efficiently, with clear and balanced attribution to the sources.",
   "main": "server.js",
   "scripts": {
-    "start": "npm install --omit=dev && node server.js",
+    "start": "node server.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],
