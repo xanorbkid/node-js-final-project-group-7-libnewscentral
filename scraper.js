@@ -1,4 +1,7 @@
+require('dotenv').config();
+
 const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');  // PostgreSQL client
 const puppeteer = require('puppeteer');
 const axios = require('axios');
 const fs = require('fs');
@@ -16,8 +19,42 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Connect to the SQLite database
-const db = new sqlite3.Database('./newscentral.db');
+let db;
+
+// Check if we are in a production or development environment
+if (process.env.DB_TYPE === 'postgres') {
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    });
+
+    db = {
+        // Mock SQLite's db.all function
+        all: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => callback(null, res.rows))
+                .catch(err => callback(err, null));
+        },
+        // Mock SQLite's db.get function
+        get: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => callback(null, res.rows[0]))
+                .catch(err => callback(err, null));
+        },
+        // Mock SQLite's db.run function
+        run: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => {
+                    callback(null, { lastID: res.insertId, changes: res.rowCount });
+                })
+                .catch(err => callback(err));
+        }
+    };
+    console.log('Connected to PostgreSQL database');
+} else {
+    db = new sqlite3.Database(process.env.DATABASE_PATH);
+    console.log('Connected to SQLite database');
+}
 
 
 // Helper function to download and save image locally
@@ -125,100 +162,13 @@ async function scrapeFrontPageAfrica() {
 }
 
 
-
-// Scrape articles from NewDawn Liberia
-async function scrapeNewDawnLiberia() {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    try {
-        await page.goto('https://thenewdawnliberia.com/');
-        await page.waitForSelector('article');
-
-        const articles = await page.evaluate(() => {
-            const articleElements = document.querySelectorAll('article');
-            const scrapedArticles = [];
-
-            articleElements.forEach(article => {
-                const titleElement = article.querySelector('h2.entry-title a');
-                const title = titleElement ? titleElement.innerText : null;
-                const url = titleElement ? titleElement.href : null;
-
-                const categoryElement = article.querySelector('span.cat-links a');
-                const category_name = categoryElement ? categoryElement.innerText : 'Uncategorized';
-
-                const publishedAtElement = article.querySelector('time.entry-date');
-                const published_at = publishedAtElement ? publishedAtElement.getAttribute('datetime') : null;
-
-                const excerptElement = article.querySelector('div.entry-summary p');
-                const excerpt = excerptElement ? excerptElement.innerText : null;
-
-                const imageElement = article.querySelector('img.wp-post-image');
-                const image_url = imageElement ? imageElement.src : null;
-
-                const authorElement = article.querySelector('.author.vcard a');
-                const author_id = authorElement ? authorElement.innerText : 'Unknown';
-
-                scrapedArticles.push({
-                    title,
-                    url,
-                    image_url,
-                    published_at,
-                    excerpt,
-                    category_name,
-                    author_id,
-                    source: 'NewDawnLiberia'
-                });
-            });
-
-            return scrapedArticles;
-        });
-
-        // For each article, fetch detailed content
-        for (let article of articles) {
-            await page.goto(article.url, { waitUntil: 'networkidle2' });
-            await page.waitForSelector('div.entry-content');
-
-            article.content = await page.evaluate(() => {
-                const contentElement = document.querySelector('div.entry-content');
-                return contentElement ? contentElement.innerText : null;
-            });
-
-            article.author_name = await page.evaluate(() => {
-                const authorElement = document.querySelector('.author.vcard a');
-                return authorElement ? authorElement.innerText : 'Unknown';
-            });
-
-            // Download the image and save it locally
-            if (article.image_url) {
-                const imageName = `${Date.now()}${path.extname(article.image_url)}`;
-                const savePath = path.join(__dirname, 'public/uploads', imageName);
-                await downloadImage(article.image_url, savePath);
-
-                // Update the article's image_url with the relative path (without '/public')
-                article.image_url = `/uploads/${imageName}`;
-            }
-
-            // Save the scraped article to the database
-            await saveScrapedArticles([article]);
-        }
-
-        await browser.close();
-        return articles;
-    } catch (error) {
-        console.error('Error during scraping:', error);
-        await browser.close();
-    }
-}
-
-
 // Save scraped articles into the database, ensuring no duplicates
 async function saveScrapedArticles(scrapedArticles) {
     for (let article of scrapedArticles) {
         const { title, content, url, image_url, published_at, category_name, source, author_id } = article;
 
         // Check if the category exists
-        const categoryQuery = 'SELECT id FROM categories WHERE name = ?';
+        const categoryQuery = 'SELECT id FROM categories WHERE name = $1';
         db.get(categoryQuery, [category_name], (err, category) => {
             if (err) {
                 console.error('Database error:', err);
@@ -228,37 +178,26 @@ async function saveScrapedArticles(scrapedArticles) {
             let categoryId;
 
             if (category) {
-                // Category already exists, use its id
                 categoryId = category.id;
                 checkForDuplicatesAndInsert(categoryId);
             } else {
-                // Category does not exist, insert it
-                const insertCategoryQuery = 'INSERT OR IGNORE INTO categories (name) VALUES (?)';
-                db.run(insertCategoryQuery, [category_name], function (err) {
+                const insertCategoryQuery = 'INSERT INTO categories (name) VALUES ($1) RETURNING id';
+                db.run(insertCategoryQuery, [category_name], (err, result) => {
                     if (err) {
                         console.error('Failed to insert category:', err);
                         return;
                     }
-
-                    // Retrieve the category id (whether newly created or already existing)
-                    db.get(categoryQuery, [category_name], (err, newCategory) => {
-                        if (err || !newCategory) {
-                            console.error('Failed to retrieve category after insertion:', err);
-                            return;
-                        }
-                        categoryId = newCategory.id;
-                        checkForDuplicatesAndInsert(categoryId);
-                    });
+                    categoryId = result.rows[0].id;
+                    checkForDuplicatesAndInsert(categoryId);
                 });
             }
 
-            // Function to check for duplicates and insert the article if not a duplicate
             function checkForDuplicatesAndInsert(categoryId) {
                 const duplicateCheckQuery = `
                     SELECT id FROM articles 
-                    WHERE title = ? AND source = ? AND url = ?
+                    WHERE title = $1 AND source = $2 AND url = $3
                 `;
-                db.get(duplicateCheckQuery, [title, source,  url], (err, existingArticle) => {
+                db.get(duplicateCheckQuery, [title, source, url], (err, existingArticle) => {
                     if (err) {
                         console.error('Error checking for duplicates:', err);
                         return;
@@ -272,13 +211,11 @@ async function saveScrapedArticles(scrapedArticles) {
                 });
             }
 
-            // Insert article function
             function insertArticle(categoryId) {
                 const insertArticleQuery = `
                     INSERT INTO articles (title, content, url, image_url, published_at, category_id, source, author_id, is_scraped)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 `;
-
                 db.run(insertArticleQuery, [
                     title,
                     content,
@@ -288,7 +225,7 @@ async function saveScrapedArticles(scrapedArticles) {
                     categoryId,
                     source,
                     author_id,
-                    1 // is_scraped is 1
+                    1  // is_scraped is 1
                 ], (err) => {
                     if (err) {
                         console.error('Failed to insert article:', err);
@@ -298,6 +235,7 @@ async function saveScrapedArticles(scrapedArticles) {
                 });
             }
         });
+
     }
 }
 
@@ -305,5 +243,4 @@ async function saveScrapedArticles(scrapedArticles) {
 // Export the scraping functions
 module.exports = {
     scrapeFrontPageAfrica,
-    scrapeNewDawnLiberia
 };

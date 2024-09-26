@@ -1,47 +1,54 @@
-// app.js
+require('dotenv').config();
+
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');  // PostgreSQL client
 const session = require('express-session');
+const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const axios = require('axios');
-const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
-const { scrapeFrontPageAfrica, scrapeNewDawnLiberia } = require('./scraper');
+
+const { scrapeFrontPageAfrica } = require('./scraper');
 
 const app = express();
-const db = new sqlite3.Database('./newscentral.db');
 
-// Now you can call the scraping functions like this to return the articles:
-scrapeFrontPageAfrica().then(articles => {
-    console.log('Scraped articles from FrontPageAfrica:', articles);
-});
-scrapeNewDawnLiberia().then(articles => {
-    console.log('Scraped articles from New Dawn Liberia:', articles);
-});
+let db;
 
-app.use(cors());
+// Check if we are in a production or development environment
+if (process.env.DB_TYPE === 'postgres') {
+    // PostgreSQL (production)
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL,  // Automatically set by Railway
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
 
-// Image proxy route
-app.get('/proxy', async (req, res) => {
-    const { url } = req.query;
-    if (!url) {
-        return res.status(400).send('URL parameter is required');
-    }
-    try {
-        const response = await axios.get(url, {
-            responseType: 'arraybuffer',
-        });
-        res.set('Content-Type', response.headers['content-type']);
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send('Error fetching the image');
-    }
-});
+    // Mimic SQLite's db.all function for PostgreSQL
+    db = {
+        all: (query, params, callback) => {
+            pool.query(query, params)
+                .then((res) => callback(null, res.rows))
+                .catch((err) => callback(err, null));
+        }
+    };
+    console.log('Connected to PostgreSQL database');
+} else {
+    // SQLite (development)
+    db = new sqlite3.Database(process.env.DATABASE_PATH, (err) => {
+        if (err) {
+            console.error(err.message);
+        } else {
+            console.log('Connected to SQLite database');
+        }
+    });
+}
 
 // ################################################
 // Middleware
@@ -55,6 +62,7 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/base'); // Points to views/layouts/base.ejs
 app.set('views', [__dirname + '/views', __dirname + '/admin']);
 
+
 // Set up multer for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -67,10 +75,31 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
+// Middleware to make moment.js available in all views
+app.use((req, res, next) => {
+    res.locals.moment = moment;
+    next();
+});
+
+// Middleware to make truncateText function available in all views
+app.use((req, res, next) => {
+    res.locals.truncateText = truncateText;
+    next();
+});
+
+
+
+
+
+
+
+
+
+
 
 // Middleware to fetch categories and make them available in all templates
 app.use((req, res, next) => {
-    db.all('SELECT * FROM categories WHERE deleted_at IS NULL', (err, categories) => {
+    db.all('SELECT * FROM categories WHERE deleted_at IS NULL', [], (err, categories) => {
         if (err) {
             return next(err);
         }
@@ -87,7 +116,7 @@ app.use((req, res, next) => {
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
     `;
-    db.all(query, (err, articles) => {
+    db.all(query, [], (err, articles) => {
         if (err) {
             return next(err);
         }
@@ -97,22 +126,6 @@ app.use((req, res, next) => {
     });
 });
 
-// Middleware to make moment.js available in all views
-app.use((req, res, next) => {
-    res.locals.moment = moment;
-    next();
-});
-
-// Middleware to make truncateText function available in all views
-app.use((req, res, next) => {
-    res.locals.truncateText = truncateText;
-    next();
-});
-
-// ################################################
-// END Middleware
-// ###############################################
-
 // Session management
 app.use(session({
     secret: 'secret-key',
@@ -120,12 +133,18 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+// Scraper functions (moved outside of app.listen to avoid multiple executions)
+scrapeFrontPageAfrica().then(articles => {
+    console.log('Scraped articles from FrontPageAfrica:', articles);
+});
+
+
+
 // Import routes
 const urlRoutes = require('./routes/route');
-app.use('/', urlRoutes); // Apply the routes from urlroute.js
+app.use('/', urlRoutes); // Apply the routes from urlRoutes.js
 
 // Start server
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
-

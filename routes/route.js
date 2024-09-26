@@ -1,9 +1,48 @@
 // urlroute.js
+require('dotenv').config();
+
+
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const router = express.Router();
 const multer = require('multer');
-const db = new sqlite3.Database('./newscentral.db');
+const { Pool } = require('pg');
+
+let db;
+
+if (process.env.DB_TYPE === 'postgres') {
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    });
+
+    db = {
+        // Mock SQLite's db.all function
+        all: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => callback(null, res.rows))
+                .catch(err => callback(err, null));
+        },
+        // Mock SQLite's db.get function
+        get: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => callback(null, res.rows[0]))
+                .catch(err => callback(err, null));
+        },
+        // Mock SQLite's db.run function
+        run: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => {
+                    callback(null, { lastID: res.insertId, changes: res.rowCount });
+                })
+                .catch(err => callback(err));
+        }
+    };
+    console.log('Connected to PostgreSQL database');
+} else {
+    db = new sqlite3.Database(process.env.DATABASE_PATH);
+    console.log('Connected to SQLite database');
+}
 
 
 // Set up multer for file uploads
@@ -21,110 +60,80 @@ const upload = multer({ storage: storage });
 // Home Route
 router.get('/', async (req, res) => {
     try {
-        // const today = new Date().toISOString().slice(0, 10); // Get today's date in 'YYYY-MM-DD' format
+        // Define queries with dynamic category IDs for better flexibility
+        const queries = {
+            latestNews: `
+                SELECT articles.*, categories.name AS category_name
+                FROM articles
+                LEFT JOIN categories ON articles.category_id = categories.id
+                ORDER BY articles.published_at DESC
+            `,
+            topNews: `
+                SELECT articles.*, categories.name AS category_name
+                FROM articles
+                LEFT JOIN categories ON articles.category_id = categories.id
+                WHERE articles.category_id = 13
+                ORDER BY articles.published_at DESC
+            `,
+            healthNews: `
+                SELECT articles.*, categories.name AS category_name
+                FROM articles
+                LEFT JOIN categories ON articles.category_id = categories.id
+                WHERE articles.category_id = 18
+                ORDER BY articles.published_at DESC
+            `,
+            sportNews: `
+                SELECT articles.*, categories.name AS category_name
+                FROM articles
+                LEFT JOIN categories ON articles.category_id = categories.id
+                WHERE articles.category_id = 14
+                ORDER BY articles.published_at DESC
+            `,
+            ecoNews: `
+                SELECT articles.*, categories.name AS category_name
+                FROM articles
+                LEFT JOIN categories ON articles.category_id = categories.id
+                WHERE articles.category_id = 19
+                ORDER BY articles.published_at DESC
+            `,
+            frontNews: `SELECT DISTINCT articles.id, articles.*, categories.name AS category_name
+                FROM articles
+                LEFT JOIN categories ON articles.category_id = categories.id
+                WHERE articles.category_id = 12
+                ORDER BY articles.published_at DESC;
+            `
+        };
 
-        // Query for latest articles of the day
-        const latestNewsQuery = `
-            SELECT articles.*, categories.name AS category_name
-            FROM articles
-            LEFT JOIN categories ON articles.category_id = categories.id
-            ORDER BY articles.published_at DESC
-        `;
-
-        // Query for Top News (category_id = 13)
-        const topNewsQuery = `
-            SELECT articles.*, categories.name AS category_name
-            FROM articles
-            LEFT JOIN categories ON articles.category_id = categories.id
-            WHERE articles.category_id = 13
-            ORDER BY articles.published_at DESC
-        `;
-
-        // Query for Health News (category_id = 18)
-        const healthNewsQuery = `
-            SELECT articles.*, categories.name AS category_name
-            FROM articles
-            LEFT JOIN categories ON articles.category_id = categories.id
-            WHERE articles.category_id = 18
-            ORDER BY articles.published_at DESC
-        `;
-
-        // Query for Sports News (category_id = 18)
-        const SportNewsQuery = `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 14
-        ORDER BY articles.published_at DESC
-        `;
-
-        // Query for Economy News (category_id = 18)
-        const EcoNewsQuery = `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 19
-        ORDER BY articles.published_at DESC
-        `;
-
-        // Query for Economy News (category_id = 18)
-        const FrontNewsQuery = `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 12
-        ORDER BY articles.published_at DESC
-        `;
-
-        // Use db.all with Promises for async/await support
-        const latestNews = await new Promise((resolve, reject) => {
-            db.all(latestNewsQuery, (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
+        // Helper function to execute a query
+        const executeQuery = (query) => {
+            return new Promise((resolve, reject) => {
+                db.all(query, (err, rows) => {
+                    if (err) return reject(err);
+                    resolve(rows);
+                });
             });
-        });
+        };
 
-        const topNews = await new Promise((resolve, reject) => {
-            db.all(topNewsQuery, (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
+        // Execute all queries concurrently using Promise.all
+        const [latestNews, topNews, healthNews, sportNews, ecoNews, frontNews] = await Promise.all([
+            executeQuery(queries.latestNews),
+            executeQuery(queries.topNews),
+            executeQuery(queries.healthNews),
+            executeQuery(queries.sportNews),
+            executeQuery(queries.ecoNews),
+            executeQuery(queries.frontNews),
+        ]);
 
-        const healthNews = await new Promise((resolve, reject) => {
-            db.all(healthNewsQuery, (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
+        
 
-        const sportNews = await new Promise((resolve, reject) => {
-            db.all(SportNewsQuery, (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
-
-        const ecoNews = await new Promise((resolve, reject) => {
-            db.all(EcoNewsQuery, (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
-
-        const frontNews = await new Promise((resolve, reject) => {
-            db.all(FrontNewsQuery, (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
-
-
-        // Render the homepage with the latest and top news articles
+        // Render the homepage with the retrieved news data
         res.render('index2', {
-            latestNews, 
-            topNews,healthNews, sportNews,
-            ecoNews, frontNews,
+            latestNews,
+            topNews,
+            healthNews,
+            sportNews,
+            ecoNews,
+            frontNews,
             title: 'Home | LibNewsCentral'
         });
 

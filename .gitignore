@@ -26,11 +26,11 @@ coverage/
 .env
 
 # SQLite database files
-# *.db
-# *.sqlite
+*.db
+*.sqlite
 
 # Multer uploads
-public/uploads/
+# public/uploads/
 
 # Ignore IDE/Editor specific files
 .idea/

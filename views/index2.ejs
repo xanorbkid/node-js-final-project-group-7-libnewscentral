@@ -695,12 +695,12 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="/category/<%= sportNews[i].category_id %>"><%= sportNews[i].category_name %></a>
+                                                                        <a class="text-none custom_font text-primary dark:text-white" href="/category/<%= sportNews[i].category_id %>"><%= sportNews[i].category_name %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
                                                                 <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
+                                                                    <div class="post-date custom_font hstack gap-narrow">
                                                                         <span> <%= moment(frontNews[i].published_at).fromNow() %></span>
                                                                     </div>
                                                                 </div>
@@ -718,7 +718,7 @@
                                 </div>
                                 <div class="block-footer cstack lg:mt-2">
                                     <a href="/category/<%= sportNews.category_id %>" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
-                                        <span>See all Sports</span>
+                                        <span class="custom_font">See all Sports</span>
                                         <i class="icon icon-1 unicon-chevron-right"></i>
                                     </a>
                                 </div>
@@ -755,12 +755,12 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="/category/<%= ecoNews[i].category_id %>"><%= ecoNews[i].category_name %></a>
+                                                                        <a class="text-none text-primary custom_font dark:text-white" href="/category/<%= ecoNews[i].category_id %>"><%= ecoNews[i].category_name %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
                                                                 <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
+                                                                    <div class="post-date custom_font hstack gap-narrow">
                                                                         <span> <%= moment(frontNews[i].published_at).fromNow() %></span>
                                                                     </div>
                                                                 </div>
@@ -778,7 +778,7 @@
                                 </div>
                                 <div class="block-footer cstack lg:mt-2">
                                     <a href="/category/<%= ecoNews.category_id %>" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
-                                        <span>See all Economy</span>
+                                        <span class="custom_font">See all Economy</span>
                                         <i class="icon icon-1 unicon-chevron-right"></i>
                                     </a>
                                 </div>
@@ -800,11 +800,11 @@
         <div class="section-outer panel py-5 lg:py-8 bg-gray-25 dark:bg-gray-800 dark:text-white">
             <div class="container max-w-xl">
                 <div class="section-inner panel vstack gap-4">
-                    <% if (sportNews.length ) { %>
+                    <% if (frontNews.length) { %>
                     <div class="section-header panel">
                         <h2 class="h4 xl:h3 -ls-1 xl:-ls-2 m-0 text-inherit hstack gap-1">
                             <span class="panel d-inline-block bg-primary w-8px h-8px translate-y-px"></span>
-                            <a class="text-none hover:text-primary duration-150" href="/category/<%= frontNews[0].category_id %>">Politics</a>
+                            <a class="text-none hover:text-primary duration-150" href="/category/<%= frontNews[0].category_id %>"> Politics</a>
                         </h2>
                     </div>
                     <div class="section-content">
@@ -819,26 +819,26 @@
                                                 
                                                 <!-- Add an overlay or video controls if you need them -->
                                                 <div class="has-video-overlay position-absolute top-0 end-0 w-150px h-150px bg-gradient-45 from-transparent via-transparent to-black opacity-50"></div>
-                                                <a href="/articles/<%= frontNews[i].id %>" class="position-cover"></a>
+                                                <a href="/articles_details/<%= frontNews[i].id %>" class="position-cover"></a>
                                             </div>
-                            
+                
                                             <!-- Post Header -->
                                             <div class="post-header panel vstack gap-1">
                                                 <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60">
                                                     <div class="post-category hstack gap-narrow fw-medium">
                                                         <!-- Display the category name -->
-                                                        <a class="text-none text-primary dark:text-white" href="/category/<%= frontNews[i].category_id %>">
+                                                        <a class="text-none custom_font text-primary dark:text-white" href="/category/<%= frontNews[i].category_id %>">
                                                             <%= frontNews[i].category_name %>
                                                         </a>
                                                     </div>
                                                     <div class="sep">❘</div>
                                                     
                                                     <!-- Display the published date as "X minutes ago" using Moment.js -->
-                                                    <div class="post-date">
+                                                    <div class="custom_font post-date">
                                                         <%= moment(frontNews[i].published_at).fromNow() %>
                                                     </div>
                                                 </div>
-                            
+                
                                                 <!-- Article Title -->
                                                 <h3 class="post-title h6 lg:h5 m-0 text-truncate-2 mb-1">
                                                     <a class="text-none hover:text-primary duration-150" href="/articles/<%= frontNews[i].id %>">
@@ -862,9 +862,10 @@
                         </div>
                     </div>
                     <% } else { %>
-                        <p>No articles found in the Politics</p>
+                        <p>No articles found in the <%= frontNewsCategory %></p>
                     <% } %>
                 </div>
+                
             </div>
         </div>
     </div>
