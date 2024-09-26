@@ -24,6 +24,7 @@ coverage/
 
 # dotenv environment variables file
 .env
+.env.production
 
 # SQLite database files
 *.db
@@ -43,3 +44,5 @@ coverage/
 
 # Miscellaneous
 *.swp
+
+redis_config.js
