@@ -1,6 +1,7 @@
 {
   "name": "js-final-project-group-7-libnewscentral",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "A comprehensive news platform to access diverse content efficiently, with clear and balanced attribution to the sources.",
   "main": "server.js",
   "scripts": {
@@ -15,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cheerio": "^1.0.0",
+    "connect-redis": "^7.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
@@ -29,6 +31,7 @@
     "pg": "^8.13.0",
     "puppeteer": "^23.3.0",
     "quill": "^2.0.2",
+    "redis": "^4.7.0",
     "sqlite3": "^5.1.7",
     "sweetalert2": "^11.6.13"
   },

@@ -133,6 +133,8 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+
+
 // Scraper functions (moved outside of app.listen to avoid multiple executions)
 scrapeFrontPageAfrica().then(articles => {
     console.log('Scraped articles from FrontPageAfrica:', articles);

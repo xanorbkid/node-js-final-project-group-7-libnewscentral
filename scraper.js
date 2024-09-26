@@ -97,7 +97,10 @@ async function downloadImage(imageUrl, savePath) {
 // Scrape articles from FrontPageAfrica
 // Scrape articles from FrontPageAfrica
 async function scrapeFrontPageAfrica() {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
     const page = await browser.newPage();
     try {
         await page.goto('https://frontpageafricaonline.com/');
