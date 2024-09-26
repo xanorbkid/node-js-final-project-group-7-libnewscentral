@@ -19,10 +19,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+
+
+// Define the db variable
 let db;
 
 // Check if we are in a production or development environment
 if (process.env.DB_TYPE === 'postgres') {
+    // Use PostgreSQL
     const pool = new Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: { rejectUnauthorized: false }
@@ -44,17 +48,33 @@ if (process.env.DB_TYPE === 'postgres') {
         // Mock SQLite's db.run function
         run: (query, params, callback) => {
             pool.query(query, params)
-                .then(res => {
-                    callback(null, { lastID: res.insertId, changes: res.rowCount });
-                })
+                .then(res => callback(null, { lastID: res.insertId, changes: res.rowCount }))
                 .catch(err => callback(err));
         }
     };
+
     console.log('Connected to PostgreSQL database');
+} else if (process.env.DB_TYPE === 'sqlite') {
+    // Use SQLite
+    const databasePath = process.env.DATABASE_PATH;
+
+    if (!databasePath || typeof databasePath !== 'string') {
+        throw new Error('DATABASE_PATH environment variable is not set or is not a valid string');
+    }
+
+    db = new sqlite3.Database(databasePath, (err) => {
+        if (err) {
+            console.error('Error opening SQLite database:', err.message);
+        } else {
+            console.log('Connected to SQLite database');
+        }
+    });
 } else {
-    db = new sqlite3.Database(process.env.DATABASE_PATH);
-    console.log('Connected to SQLite database');
+    throw new Error('DB_TYPE environment variable is not set or is not recognized');
 }
+
+// Export db for use in other modules
+module.exports = db;
 
 
 // Helper function to download and save image locally
