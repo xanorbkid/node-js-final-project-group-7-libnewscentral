@@ -97,10 +97,10 @@ router.get('/', async (req, res) => {
                 ORDER BY articles.published_at DESC
             `,
             frontNews: `SELECT DISTINCT articles.id, articles.*, categories.name AS category_name
-                FROM articles
-                LEFT JOIN categories ON articles.category_id = categories.id
-                WHERE articles.category_id = 12
-                ORDER BY articles.published_at DESC;
+            FROM articles
+            LEFT JOIN categories ON articles.category_id = categories.id
+            WHERE articles.category_id = 12
+            ORDER BY articles.published_at DESC;
             `
         };
 
