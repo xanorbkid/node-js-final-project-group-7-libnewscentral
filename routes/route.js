@@ -17,26 +17,18 @@ if (process.env.DB_TYPE === 'postgres') {
     });
 
     db = {
-        // Mock SQLite's db.all function
-        all: (query, params, callback) => {
-            pool.query(query, params)
-                .then(res => callback(null, res.rows))
-                .catch(err => callback(err, null));
+        all: (query, params = []) => {
+            return pool.query(query, params).then(res => res.rows);
         },
-        // Mock SQLite's db.get function
-        get: (query, params, callback) => {
-            pool.query(query, params)
-                .then(res => callback(null, res.rows[0]))
-                .catch(err => callback(err, null));
+        get: (query, params = []) => {
+            return pool.query(query, params).then(res => res.rows[0]);
         },
-        // Mock SQLite's db.run function
-        run: (query, params, callback) => {
-            pool.query(query, params)
-                .then(res => {
-                    callback(null, { lastID: res.insertId, changes: res.rowCount });
-                })
-                .catch(err => callback(err));
-        }
+        run: (query, params = []) => {
+            return pool.query(query, params).then(res => ({
+                lastID: res.insertId || null,
+                changes: res.rowCount,
+            }));
+        },
     };
     console.log('Connected to PostgreSQL database');
 } else {
