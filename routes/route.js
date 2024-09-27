@@ -20,24 +20,42 @@ if (process.env.DB_TYPE === 'postgres') {
         all: async (query, params) => {
             try {
                 const res = await pool.query(query, params);
-                return res.rows;
+                if (res && res.rows) {
+                    return res.rows;
+                } else {
+                    console.error("Error: 'rows' is undefined in 'all' query", res);
+                    throw new Error("Query failed or returned unexpected result.");
+                }
             } catch (err) {
+                console.error('PostgreSQL query error:', err);
                 throw err;
             }
         },
         get: async (query, params) => {
             try {
                 const res = await pool.query(query, params);
-                return res.rows[0];
+                if (res && res.rows && res.rows.length > 0) {
+                    return res.rows[0];
+                } else {
+                    console.error("Error: 'rows' is undefined or empty in 'get' query", res);
+                    return null; // Handle cases where no rows are returned
+                }
             } catch (err) {
+                console.error('PostgreSQL query error:', err);
                 throw err;
             }
         },
         run: async (query, params) => {
             try {
                 const res = await pool.query(query, params);
-                return { lastID: res.insertId, changes: res.rowCount };
+                if (res) {
+                    return { lastID: res.insertId || null, changes: res.rowCount };
+                } else {
+                    console.error("Error: No result from 'run' query", res);
+                    throw new Error("Query failed or returned unexpected result.");
+                }
             } catch (err) {
+                console.error('PostgreSQL query error:', err);
                 throw err;
             }
         }
