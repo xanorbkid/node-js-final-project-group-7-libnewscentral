@@ -11,54 +11,83 @@ const { Pool } = require('pg');
 let db;
 
 // Check if we are in a production or development environment
+// Determine the environment for database type (PostgreSQL or SQLite)
 if (process.env.DB_TYPE === 'postgres') {
-    // Use PostgreSQL
+    // PostgreSQL configuration
     const pool = new Pool({
         connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false }
+        ssl: { rejectUnauthorized: false },
+        max: 10, // Maximum number of clients in the pool
+        idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+        connectionTimeoutMillis: 2000, // Timeout after 2 seconds if a connection cannot be established
     });
 
     db = {
-        // Mock SQLite's db.all function
-        all: (query, params, callback) => {
-            pool.query(query, params)
-                .then(res => callback(null, res.rows))
-                .catch(err => callback(err, null));
+        // Mock SQLite's db.all function using PostgreSQL
+        all: async (query, params) => {
+            try {
+                const res = await pool.query(query, params);
+                console.log(`Query succeeded: ${query}`); // Logging successful query
+                return res.rows;
+            } catch (error) {
+                console.error(`PostgreSQL query error in 'all': ${error.message}`, { query, params });
+                throw error;
+            }
         },
-        // Mock SQLite's db.get function
-        get: (query, params, callback) => {
-            pool.query(query, params)
-                .then(res => callback(null, res.rows[0]))
-                .catch(err => callback(err, null));
+
+        // Mock SQLite's db.get function using PostgreSQL
+        get: async (query, params) => {
+            try {
+                const res = await pool.query(query, params);
+                console.log(`Query succeeded: ${query}`); // Logging successful query
+                return res.rows[0];
+            } catch (error) {
+                console.error(`PostgreSQL query error in 'get': ${error.message}`, { query, params });
+                throw error;
+            }
         },
-        // Mock SQLite's db.run function
-        run: (query, params, callback) => {
-            pool.query(query, params)
-                .then(res => callback(null, { lastID: res.insertId, changes: res.rowCount }))
-                .catch(err => callback(err));
+
+        // Mock SQLite's db.run function using PostgreSQL
+        run: async (query, params) => {
+            try {
+                const res = await pool.query(query, params);
+                console.log(`Query succeeded: ${query}`); // Logging successful query
+                return { lastID: res.insertId, changes: res.rowCount };
+            } catch (error) {
+                console.error(`PostgreSQL query error in 'run': ${error.message}`, { query, params });
+                throw error;
+            }
         }
     };
 
     console.log('Connected to PostgreSQL database');
+
 } else if (process.env.DB_TYPE === 'sqlite') {
-    // Use SQLite
+    // SQLite configuration
     const databasePath = process.env.DATABASE_PATH;
 
     if (!databasePath || typeof databasePath !== 'string') {
         throw new Error('DATABASE_PATH environment variable is not set or is not a valid string');
     }
 
-    db = new sqlite3.Database(databasePath, (err) => {
+    const sqliteDb = new sqlite3.Database(databasePath, (err) => {
         if (err) {
             console.error('Error opening SQLite database:', err.message);
         } else {
             console.log('Connected to SQLite database');
         }
     });
+
+    // Promisify the SQLite methods to keep the interface consistent with PostgreSQL
+    db = {
+        all: promisify(sqliteDb.all).bind(sqliteDb),
+        get: promisify(sqliteDb.get).bind(sqliteDb),
+        run: promisify(sqliteDb.run).bind(sqliteDb)
+    };
+
 } else {
     throw new Error('DB_TYPE environment variable is not set or is not recognized');
 }
-
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
