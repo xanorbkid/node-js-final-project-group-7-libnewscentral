@@ -2,75 +2,68 @@
 require('dotenv').config();
 
 
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const router = express.Router();
+const { Pool } = require('pg'); // PostgreSQL module
+const sqlite3 = require('sqlite3').verbose(); // SQLite module
 const multer = require('multer');
-const { Pool } = require('pg');
+const path = require('path');
+const express = require('express');
+const router = express.Router();
 
 let db;
 
-// Check if we are in a production or development environment
-// Determine the environment for database type (PostgreSQL or SQLite)
+// PostgreSQL connection setup
 if (process.env.DB_TYPE === 'postgres') {
-    // PostgreSQL configuration
     const pool = new Pool({
         connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
+        ssl: { rejectUnauthorized: false }, // Use SSL if required by your host
         max: 10, // Maximum number of clients in the pool
         idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-        connectionTimeoutMillis: 2000, // Timeout after 2 seconds if a connection cannot be established
+        connectionTimeoutMillis: 20000, // Wait for 20 seconds to establish a connection
     });
 
+    // Promisified Database Query Executor
     db = {
-        // Mock SQLite's db.all function using PostgreSQL
-        all: async (query, params) => {
+        all: async (query, params = []) => {
             try {
+                const start = Date.now();
                 const res = await pool.query(query, params);
-                console.log(`Query succeeded: ${query}`); // Logging successful query
+                console.log(`all() Query Time: ${Date.now() - start}ms`);
                 return res.rows;
-            } catch (error) {
-                console.error(`PostgreSQL query error in 'all': ${error.message}`, { query, params });
-                throw error;
+            } catch (err) {
+                console.error('all() Error:', err);
+                throw err;
             }
         },
-
-        // Mock SQLite's db.get function using PostgreSQL
-        get: async (query, params) => {
+        get: async (query, params = []) => {
             try {
+                const start = Date.now();
                 const res = await pool.query(query, params);
-                console.log(`Query succeeded: ${query}`); // Logging successful query
+                console.log(`get() Query Time: ${Date.now() - start}ms`);
                 return res.rows[0];
-            } catch (error) {
-                console.error(`PostgreSQL query error in 'get': ${error.message}`, { query, params });
-                throw error;
+            } catch (err) {
+                console.error('get() Error:', err);
+                throw err;
             }
         },
-
-        // Mock SQLite's db.run function using PostgreSQL
-        run: async (query, params) => {
+        run: async (query, params = []) => {
             try {
+                const start = Date.now();
                 const res = await pool.query(query, params);
-                console.log(`Query succeeded: ${query}`); // Logging successful query
+                console.log(`run() Query Time: ${Date.now() - start}ms`);
                 return { lastID: res.insertId, changes: res.rowCount };
-            } catch (error) {
-                console.error(`PostgreSQL query error in 'run': ${error.message}`, { query, params });
-                throw error;
+            } catch (err) {
+                console.error('run() Error:', err);
+                throw err;
             }
         }
     };
 
     console.log('Connected to PostgreSQL database');
-
+    
 } else if (process.env.DB_TYPE === 'sqlite') {
-    // SQLite configuration
-    const databasePath = process.env.DATABASE_PATH;
+    const databasePath = process.env.DATABASE_PATH || './database.db';
 
-    if (!databasePath || typeof databasePath !== 'string') {
-        throw new Error('DATABASE_PATH environment variable is not set or is not a valid string');
-    }
-
-    const sqliteDb = new sqlite3.Database(databasePath, (err) => {
+    db = new sqlite3.Database(databasePath, (err) => {
         if (err) {
             console.error('Error opening SQLite database:', err.message);
         } else {
@@ -78,18 +71,45 @@ if (process.env.DB_TYPE === 'postgres') {
         }
     });
 
-    // Promisify the SQLite methods to keep the interface consistent with PostgreSQL
-    db = {
-        all: promisify(sqliteDb.all).bind(sqliteDb),
-        get: promisify(sqliteDb.get).bind(sqliteDb),
-        run: promisify(sqliteDb.run).bind(sqliteDb)
+    // Promisified Database Query Executor for SQLite
+    db.allAsync = (query, params = []) => {
+        return new Promise((resolve, reject) => {
+            db.all(query, params, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
     };
 
+    db.getAsync = (query, params = []) => {
+        return new Promise((resolve, reject) => {
+            db.get(query, params, (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+    };
 } else {
-    throw new Error('DB_TYPE environment variable is not set or is not recognized');
+    throw new Error('DB_TYPE environment variable is not set or not recognized');
 }
 
-// Set up multer for file uploads
+// Updated executeQuery for handling LIMIT and OFFSET in PostgreSQL
+const executeQuery = async (query, params = [], limit, offset) => {
+    if (process.env.DB_TYPE === 'postgres' && limit !== undefined && offset !== undefined) {
+        // Directly insert LIMIT and OFFSET values into the query for PostgreSQL
+        query = query.replace('LIMIT ? OFFSET ?', `LIMIT ${limit} OFFSET ${offset}`);
+        return db.all(query, params);
+    } else {
+        // Use parameterized queries for SQLite or other cases
+        return db.allAsync ? db.allAsync(query, params) : db.all(query, params);
+    }
+};
+
+
+
+// ########################
+// Multer Configuration
+// ########################
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/uploads'); // Directory to store uploaded images
@@ -100,74 +120,22 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Helper function to execute a query (Promisified version)
-const executeQuery = async (query, params = []) => {
-    try {
-        return await db.all(query, params);
-    } catch (error) {
-        throw new Error('Database error: ' + error.message);
-    }
-};
-
+// ########################
+// ROUTES
+// ########################
 
 // Home Route
 router.get('/', async (req, res) => {
     try {
-        // Define queries with dynamic category IDs for better flexibility
         const queries = {
-            latestNews: `
-                SELECT articles.*, categories.name AS category_name
-                FROM articles
-                LEFT JOIN categories ON articles.category_id = categories.id
-                ORDER BY articles.published_at DESC
-            `,
-            topNews: `
-                SELECT articles.*, categories.name AS category_name
-                FROM articles
-                LEFT JOIN categories ON articles.category_id = categories.id
-                WHERE articles.category_id = 13
-                ORDER BY articles.published_at DESC
-            `,
-            healthNews: `
-                SELECT articles.*, categories.name AS category_name
-                FROM articles
-                LEFT JOIN categories ON articles.category_id = categories.id
-                WHERE articles.category_id = 18
-                ORDER BY articles.published_at DESC
-            `,
-            sportNews: `
-                SELECT articles.*, categories.name AS category_name
-                FROM articles
-                LEFT JOIN categories ON articles.category_id = categories.id
-                WHERE articles.category_id = 14
-                ORDER BY articles.published_at DESC
-            `,
-            ecoNews: `
-                SELECT articles.*, categories.name AS category_name
-                FROM articles
-                LEFT JOIN categories ON articles.category_id = categories.id
-                WHERE articles.category_id = 19
-                ORDER BY articles.published_at DESC
-            `,
-            frontNews: `SELECT DISTINCT articles.id, articles.*, categories.name AS category_name
-            FROM articles
-            LEFT JOIN categories ON articles.category_id = categories.id
-            WHERE articles.category_id = 12
-            ORDER BY articles.published_at DESC;
-            `
+            latestNews: `SELECT articles.*, categories.name AS category_name FROM articles LEFT JOIN categories ON articles.category_id = categories.id ORDER BY articles.published_at DESC`,
+            topNews: `SELECT articles.*, categories.name AS category_name FROM articles LEFT JOIN categories ON articles.category_id = categories.id WHERE articles.category_id = 13 ORDER BY articles.published_at DESC`,
+            healthNews: `SELECT articles.*, categories.name AS category_name FROM articles LEFT JOIN categories ON articles.category_id = categories.id WHERE articles.category_id = 18 ORDER BY articles.published_at DESC`,
+            sportNews: `SELECT articles.*, categories.name AS category_name FROM articles LEFT JOIN categories ON articles.category_id = categories.id WHERE articles.category_id = 14 ORDER BY articles.published_at DESC`,
+            ecoNews: `SELECT articles.*, categories.name AS category_name FROM articles LEFT JOIN categories ON articles.category_id = categories.id WHERE articles.category_id = 19 ORDER BY articles.published_at DESC`,
+            frontNews: `SELECT DISTINCT articles.id, articles.*, categories.name AS category_name FROM articles LEFT JOIN categories ON articles.category_id = categories.id WHERE articles.category_id = 12 ORDER BY articles.published_at DESC`
         };
 
-        // Helper function to execute a query
-        const executeQuery = (query) => {
-            return new Promise((resolve, reject) => {
-                db.all(query, (err, rows) => {
-                    if (err) return reject(err);
-                    resolve(rows);
-                });
-            });
-        };
-
-        // Execute all queries concurrently using Promise.all
         const [latestNews, topNews, healthNews, sportNews, ecoNews, frontNews] = await Promise.all([
             executeQuery(queries.latestNews),
             executeQuery(queries.topNews),
@@ -177,9 +145,6 @@ router.get('/', async (req, res) => {
             executeQuery(queries.frontNews),
         ]);
 
-        
-
-        // Render the homepage with the retrieved news data
         res.render('index2', {
             latestNews,
             topNews,
@@ -189,53 +154,42 @@ router.get('/', async (req, res) => {
             frontNews,
             title: 'Home | LibNewsCentral'
         });
-
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).send('An error occurred while retrieving the news.');
     }
 });
 
-
-// Coming Soon
-router.get('/coming_soon', (req, res) => {
-    
-    res.render('coming_soon', {
-        title: 'Coming Soon | LibNewsCentral'
-    });
-});
-
-
 // Categories List Route with Pagination
-router.get('/categories', (req, res) => {
+router.get('/categories', async (req, res) => {
     const perPage = 12; 
     const page = req.query.page ? parseInt(req.query.page) : 1;
 
-    db.get('SELECT COUNT(*) AS count FROM categories', (err, result) => {
-        if (err) {
-            return res.status(500).send('Database error');
-        }
-
-        const totalCategories = result.count;
+    try {
+        const countResult = await executeQuery('SELECT COUNT(*) AS count FROM categories');
+        const totalCategories = countResult[0].count;
         const totalPages = Math.ceil(totalCategories / perPage);
         const offset = (page - 1) * perPage;
 
-        db.all('SELECT * FROM categories LIMIT ? OFFSET ?', [perPage, offset], (err, categories) => {
-            if (err) {
-                return res.status(500).send('Database error');
-            }
-            res.render('categories', {
-                categories,
-                currentPage: page,
-                totalPages: totalPages,
-                title: 'Categories | LibNewsCentral'
-            });
+        const categories = await executeQuery(
+            'SELECT * FROM categories LIMIT ? OFFSET ?', 
+            [], perPage, offset // pass limit and offset for PostgreSQL handling
+        );
+
+        res.render('categories', {
+            categories,
+            currentPage: page,
+            totalPages: totalPages,
+            title: 'Categories | LibNewsCentral'
         });
-    });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send('Database error');
+    }
 });
 
 // List of articles in Category with Pagination
-router.get('/category/:id', (req, res) => {
+router.get('/category/:id', async (req, res) => {
     const categoryId = req.params.id;
     const perPage = 12;
     const page = req.query.page ? parseInt(req.query.page) : 1;
@@ -272,89 +226,90 @@ router.get('/category/:id', (req, res) => {
 });
 
 // Article list view with Pagination
-router.get('/articles', (req, res) => {
-    const itemsPerPage = 12;
-    const currentPage = parseInt(req.query.page) || 1;
-    const offset = (currentPage - 1) * itemsPerPage;
+router.get('/articles', async (req, res) => {
+    try {
+        const itemsPerPage = 12;
+        const currentPage = parseInt(req.query.page) || 1;
+        const offset = (currentPage - 1) * itemsPerPage;
 
-    db.get('SELECT COUNT(*) AS count FROM articles', (err, countResult) => {
-        if (err) {
-            return res.status(500).send('Database error');
-        }
-
-        const totalItems = countResult.count;
+        const countResult = await executeQuery('SELECT COUNT(*) AS count FROM articles');
+        const totalItems = countResult[0].count;
         const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        const query = `
+        const articles = await executeQuery(`
             SELECT articles.*, categories.name AS category_name, COUNT(comments.id) AS comment_count
             FROM articles
             LEFT JOIN categories ON articles.category_id = categories.id
             LEFT JOIN comments ON articles.id = comments.article_id
-            GROUP BY articles.id
+            GROUP BY articles.id, categories.name
             ORDER BY articles.published_at DESC
-            LIMIT ? OFFSET ?
-        `;
+            LIMIT ? OFFSET ?`, 
+            [], itemsPerPage, offset // pass limit and offset for PostgreSQL handling
+        );
+        
 
-        db.all(query, [itemsPerPage, offset], (err, articles) => {
-            if (err) {
-                return res.status(500).send('Database error');
-            }
-
-            res.render('articles', {
-                title: 'Articles',
-                articles: articles,
-                currentPage: currentPage,
-                totalPages: totalPages,
-                layout: 'layouts/base'
-            });
+        res.render('articles', {
+            title: 'Articles',
+            articles,
+            currentPage,
+            totalPages,
+            layout: 'layouts/base'
         });
-    });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).send('Database error');
+    }
 });
 
+
 // Article Details Route with Related Articles
-router.get('/articles_details/:id', (req, res) => {
+router.get('/articles_details/:id', async (req, res) => {
     const articleId = req.params.id;
 
-    const articleQuery = `
-        SELECT articles.*, categories.name AS category_name, COUNT(comments.id) AS comment_count
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        LEFT JOIN comments ON articles.id = comments.article_id
-        WHERE articles.id = ?
-        GROUP BY articles.id
-    `;
+    try {
+        const article = await executeQuery(`
+            SELECT 
+                articles.id, 
+                articles.title, 
+                articles.content, 
+                articles.published_at, 
+                categories.name AS category_name, 
+                COUNT(comments.id) AS comment_count
+            FROM articles
+            LEFT JOIN categories ON articles.category_id = categories.id
+            LEFT JOIN comments ON articles.id = comments.article_id
+            WHERE articles.id = ?
+            GROUP BY articles.id, categories.name
+        `, [articleId]);
 
-    const relatedArticlesQuery = `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = ? AND articles.id != ?
-        ORDER BY articles.published_at DESC
-        LIMIT 4
-    `;
-
-    db.get(articleQuery, [articleId], (err, article) => {
-        if (err) {
-            return res.status(500).send('Database error');
-        }
-
-        if (!article) {
+        if (!article.length) {
             return res.status(404).send('Article not found');
         }
 
-        db.all(relatedArticlesQuery, [article.category_id, articleId], (err, relatedArticles) => {
-            if (err) {
-                return res.status(500).send('Database error');
-            }
+        const relatedArticles = await executeQuery(`
+            SELECT articles.id, articles.title, articles.published_at, categories.name AS category_name
+            FROM articles
+            LEFT JOIN categories ON articles.category_id = categories.id
+            WHERE articles.category_id = ? AND articles.id != ?
+            ORDER BY articles.published_at DESC
+            LIMIT 4
+        `, [article[0].category_id, articleId]);
 
-            res.render('articles_detail', {
-                article: article,
-                relatedArticles: relatedArticles,
-                title: 'News Details | LibNewsCentral'
-            });
+        res.render('articles_detail', {
+            article: article[0],
+            relatedArticles: relatedArticles,
+            title: 'News Details | LibNewsCentral'
         });
-    });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send('Database error');
+    }
 });
+
+
+
+
+
 
 // Global Search
 router.get('/search', (req, res) => {
@@ -411,6 +366,9 @@ router.get('/search', (req, res) => {
         });
     });
 });
+
+
+
 
 // #############################################
 // ADMIN VIEWS & Route
