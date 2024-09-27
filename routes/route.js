@@ -17,24 +17,37 @@ if (process.env.DB_TYPE === 'postgres') {
     });
 
     db = {
-        all: (query, params = []) => {
-            return pool.query(query, params).then(res => res.rows);
+        all: async (query, params) => {
+            try {
+                const res = await pool.query(query, params);
+                return res.rows;
+            } catch (err) {
+                throw err;
+            }
         },
-        get: (query, params = []) => {
-            return pool.query(query, params).then(res => res.rows[0]);
+        get: async (query, params) => {
+            try {
+                const res = await pool.query(query, params);
+                return res.rows[0];
+            } catch (err) {
+                throw err;
+            }
         },
-        run: (query, params = []) => {
-            return pool.query(query, params).then(res => ({
-                lastID: res.insertId || null,
-                changes: res.rowCount,
-            }));
-        },
+        run: async (query, params) => {
+            try {
+                const res = await pool.query(query, params);
+                return { lastID: res.insertId, changes: res.rowCount };
+            } catch (err) {
+                throw err;
+            }
+        }
     };
     console.log('Connected to PostgreSQL database');
 } else {
     db = new sqlite3.Database(process.env.DATABASE_PATH);
     console.log('Connected to SQLite database');
 }
+
 
 
 // Set up multer for file uploads
@@ -47,6 +60,15 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
+
+// Helper function to execute a query (Promisified version)
+const executeQuery = async (query, params = []) => {
+    try {
+        return await db.all(query, params);
+    } catch (error) {
+        throw new Error('Database error: ' + error.message);
+    }
+};
 
 
 // Home Route
