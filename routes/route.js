@@ -10,62 +10,54 @@ const { Pool } = require('pg');
 
 let db;
 
+// Check if we are in a production or development environment
 if (process.env.DB_TYPE === 'postgres') {
+    // Use PostgreSQL
     const pool = new Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: { rejectUnauthorized: false }
     });
 
     db = {
-        all: async (query, params) => {
-            try {
-                const res = await pool.query(query, params);
-                if (res && res.rows) {
-                    return res.rows;
-                } else {
-                    console.error("Error: 'rows' is undefined in 'all' query", res);
-                    throw new Error("Query failed or returned unexpected result.");
-                }
-            } catch (err) {
-                console.error('PostgreSQL query error:', err);
-                throw err;
-            }
+        // Mock SQLite's db.all function
+        all: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => callback(null, res.rows))
+                .catch(err => callback(err, null));
         },
-        get: async (query, params) => {
-            try {
-                const res = await pool.query(query, params);
-                if (res && res.rows && res.rows.length > 0) {
-                    return res.rows[0];
-                } else {
-                    console.error("Error: 'rows' is undefined or empty in 'get' query", res);
-                    return null; // Handle cases where no rows are returned
-                }
-            } catch (err) {
-                console.error('PostgreSQL query error:', err);
-                throw err;
-            }
+        // Mock SQLite's db.get function
+        get: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => callback(null, res.rows[0]))
+                .catch(err => callback(err, null));
         },
-        run: async (query, params) => {
-            try {
-                const res = await pool.query(query, params);
-                if (res) {
-                    return { lastID: res.insertId || null, changes: res.rowCount };
-                } else {
-                    console.error("Error: No result from 'run' query", res);
-                    throw new Error("Query failed or returned unexpected result.");
-                }
-            } catch (err) {
-                console.error('PostgreSQL query error:', err);
-                throw err;
-            }
+        // Mock SQLite's db.run function
+        run: (query, params, callback) => {
+            pool.query(query, params)
+                .then(res => callback(null, { lastID: res.insertId, changes: res.rowCount }))
+                .catch(err => callback(err));
         }
     };
-    console.log('Connected to PostgreSQL database');
-} else {
-    db = new sqlite3.Database(process.env.DATABASE_PATH);
-    console.log('Connected to SQLite database');
-}
 
+    console.log('Connected to PostgreSQL database');
+} else if (process.env.DB_TYPE === 'sqlite') {
+    // Use SQLite
+    const databasePath = process.env.DATABASE_PATH;
+
+    if (!databasePath || typeof databasePath !== 'string') {
+        throw new Error('DATABASE_PATH environment variable is not set or is not a valid string');
+    }
+
+    db = new sqlite3.Database(databasePath, (err) => {
+        if (err) {
+            console.error('Error opening SQLite database:', err.message);
+        } else {
+            console.log('Connected to SQLite database');
+        }
+    });
+} else {
+    throw new Error('DB_TYPE environment variable is not set or is not recognized');
+}
 
 
 // Set up multer for file uploads
