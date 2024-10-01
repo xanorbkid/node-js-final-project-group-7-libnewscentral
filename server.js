@@ -1,58 +1,53 @@
-require('dotenv').config();
+// server.js
 
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
-const sqlite3 = require('sqlite3').verbose();
-const { Pool } = require('pg');  // PostgreSQL client
 const session = require('express-session');
-const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const axios = require('axios');
+const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
-
-const { scrapeFrontPageAfrica } = require('./scraper');
+const { scrapeFrontPageAfrica, scrapeNewDawnLiberia } = require('./scraper');
+const { Sequelize } = require('sequelize'); // Import Sequelize
+const dbConfig = require('./config/config'); // Import the db configuration
 
 const app = express();
 
-let db;
+// Set up Sequelize connection using the environment
+const env = process.env.NODE_ENV || 'development'; // Set environment based on NODE_ENV
+const config = dbConfig[env];
+const sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    {
+        host: config.host,
+        dialect: config.dialect,
+        dialectOptions: config.dialectOptions,
+        logging: config.logging,
+    }
+);
 
-// Check if we are in a production or development environment
-if (process.env.DB_TYPE === 'postgres') {
-    // PostgreSQL (production)
-    const pool = new Pool({
-        connectionString: process.env.DATABASE_URL,  // Automatically set by Railway
-        ssl: {
-            rejectUnauthorized: false
-        }
+// Test the database connection
+sequelize.authenticate()
+    .then(() => {
+        console.log('Connection to the database has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
     });
 
-    // Mimic SQLite's db.all function for PostgreSQL
-    db = {
-        all: (query, params, callback) => {
-            pool.query(query, params)
-                .then((res) => callback(null, res.rows))
-                .catch((err) => callback(err, null));
-        }
-    };
-    console.log('Connected to PostgreSQL database');
-} else {
-    // SQLite (development)
-    db = new sqlite3.Database(process.env.DATABASE_PATH, (err) => {
-        if (err) {
-            console.error(err.message);
-        } else {
-            console.log('Connected to SQLite database');
-        }
-    });
-}
+// Scrape articles example
+scrapeFrontPageAfrica().then(articles => {
+    console.log('Scraped articles from FrontPageAfrica:', articles);
+});
 
-// ################################################
 // Middleware
-// ###############################################
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
@@ -61,7 +56,6 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layouts/base'); // Points to views/layouts/base.ejs
 app.set('views', [__dirname + '/views', __dirname + '/admin']);
-
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
@@ -74,6 +68,34 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+// Middleware to fetch categories and make them available in all templates
+app.use(async (req, res, next) => {
+    try {
+        const [results, metadata] = await sequelize.query('SELECT * FROM categories WHERE deleted_at IS NULL');
+        res.locals.topCategories = results.slice(0, 6); // Limit to first 6 categories
+        res.locals.categories = results;
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
+// Middleware to fetch articles with category names
+app.use(async (req, res, next) => {
+    const query = `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+    `;
+    try {
+        const [articles, metadata] = await sequelize.query(query);
+        res.locals.toparticles = articles.slice(0, 6); // Limit to first 6 articles
+        res.locals.articles = articles;
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 
 // Middleware to make moment.js available in all views
 app.use((req, res, next) => {
@@ -87,45 +109,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
-
-
-
-
-
-
-
-
-
-// Middleware to fetch categories and make them available in all templates
-app.use((req, res, next) => {
-    db.all('SELECT * FROM categories WHERE deleted_at IS NULL', [], (err, categories) => {
-        if (err) {
-            return next(err);
-        }
-        res.locals.topCategories = categories.slice(0, 6); // Limit to first 6 categories
-        res.locals.categories = categories;
-        next();
-    });
-});
-
-// Middleware to fetch articles with category names
-app.use((req, res, next) => {
-    const query = `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-    `;
-    db.all(query, [], (err, articles) => {
-        if (err) {
-            return next(err);
-        }
-        res.locals.toparticles = articles.slice(0, 6); // Limit to first 6 articles
-        res.locals.articles = articles;
-        next();
-    });
-});
-
 // Session management
 app.use(session({
     secret: 'secret-key',
@@ -133,21 +116,13 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-
-
-// Scraper functions (moved outside of app.listen to avoid multiple executions)
-scrapeFrontPageAfrica().then(articles => {
-    console.log('Scraped articles from FrontPageAfrica:', articles);
-});
-
-
-
 // Import routes
 const urlRoutes = require('./routes/route');
-app.use('/', urlRoutes); // Apply the routes from urlRoutes.js
+app.use('/', urlRoutes); // Apply the routes from urlroute.js
 
 // Start server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
+
