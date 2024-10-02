@@ -1,0 +1,42 @@
+{
+    "name": "LibNewsCentral",
+    "short_name": "LibNews",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2196f3",
+    "orientation": "portrait",
+    "description": "A central platform for all Liberian news",
+  
+    "display_override": ["window-controls-overlay"],
+    
+    "icons": [
+      {
+        "src": "/icons/libnews-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      },
+      {
+        "src": "/icons/libnews-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/icons/desktop_screenshot.png",
+        "sizes": "1280x720",
+        "type": "image/png",
+        "form_factor": "wide"
+      },
+      {
+        "src": "/icons/mobile_screenshot.png",
+        "sizes": "320x480",
+        "type": "image/png"
+      }
+    ]
+    
+  }
+  
+
+

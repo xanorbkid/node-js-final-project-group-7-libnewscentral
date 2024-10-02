@@ -406,25 +406,21 @@ router.post('/edit_category/:id', upload.single('image_url'), async (req, res) =
     const { name } = req.body;
     const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
-    let query = 'UPDATE categories SET name = $1';
-    let params = [name];
-
-    if (image_url) {
-        query += ', image_url = $2';
-        params.push(image_url);
-    }
-
-    query += ' WHERE id = $3';
-    params.push(categoryId);
-
     try {
-        await pool.query(query, params);
+        await pool.query(
+            `UPDATE categories 
+             SET name = $1, 
+                 image_url = COALESCE($2, image_url) 
+             WHERE id = $3`,
+            [name, image_url, categoryId]
+        );
         res.redirect('/admin/category_list');
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).send('Database error');
     }
 });
+
 
 // Delete Category (Soft Delete)
 router.get('/delete_category/:id', async (req, res) => {

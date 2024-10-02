@@ -14,11 +14,11 @@
         <div class="container max-w-xl">
             <div class="section-inner panel vstack gap-3 sm:gap-6 lg:gap-9" data-anime="targets: >*; translateY: [48, 0]; opacity: [0, 1]; easing: spring(1, 80, 10, 0); duration: 450; delay: anime.stagger(100);">
                 <header class="page-header vstack justify-center items-center gap-2 md:gap-4 text-center max-w-650px mx-auto">
-                    <h1 class="h4 m-0">Showing Results for <span class="text-secondary"> "<%= searchQuery %>"</span> </h1>
+                    <h1 class="h4 m-0">Showing Results for <span class="text-secondary"> "<%= searchTerm %>"</span> </h1>
                 </header>
                 <div class="row child-cols-12 sm:child-cols-6 lg:child-cols-4 xl:child-cols-3 col-match gy-4 xl:gy-6 gx-2 sm:gx-4">
-                    <% if (articles.length > 0) { %>
-                        <% articles.forEach(article => { %>
+                    <% if (searchResults.length > 0) { %>
+                        <% searchResults.forEach(article => { %>
                             <div>
                                 <article class="post type-post panel vstack gap-2">
                                     <div class="post-image panel overflow-hidden">
@@ -78,10 +78,9 @@
                                 </article>
                             </div>
                         <% }) %>
-                    </div>
                     <% } else { %>
                         <div class="no-results text-center">
-                            <h4>No results found for "<%= searchQuery %>". Please try again with different keywords.</h4>
+                            <h4>No results found for "<%= searchTerm %>". Please try again with different keywords.</h4>
                         </div>
                     <% } %>
             
@@ -110,5 +109,6 @@
         </div>
     </div>
 </div>
+
 
 <!-- Section end -->
