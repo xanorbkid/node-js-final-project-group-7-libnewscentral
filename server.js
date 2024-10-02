@@ -13,8 +13,8 @@ const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
 const { scrapeFrontPageAfrica, scrapeNewDawnLiberia } = require('./scraper');
-// const { Sequelize } = require('sequelize'); // Import Sequelize
 require('dotenv').config(); // Load environment variables
+// const { Sequelize } = require('sequelize'); // Import Sequelize
 // const dbConfig = require('./config/config'); // Import the db configuration
 
 const app = express();

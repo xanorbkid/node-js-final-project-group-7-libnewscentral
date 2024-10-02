@@ -139,7 +139,7 @@ router.get('/categories', async (req, res) => {
 });
 
 router.get('/coming_soon', async(req, res) =>{
-    
+
     res.render('coming_soon', {
     title: 'Coming soon | LibNewsCentral'
     });
@@ -223,6 +223,8 @@ router.get('/articles_details/:id', async (req, res) => {
                 articles.id, 
                 articles.title, 
                 articles.content, 
+                articles.image_url,
+                articles.source,
                 articles.published_at, 
                 categories.name AS category_name, 
                 COUNT(comments.id) AS comment_count
