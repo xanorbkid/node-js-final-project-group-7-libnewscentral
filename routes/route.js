@@ -218,6 +218,7 @@ router.get('/articles_details/:id', async (req, res) => {
     const articleId = req.params.id;
 
     try {
+        // Fetch article details including the article URL
         const articleResult = await pool.query(`
             SELECT 
                 articles.id, 
@@ -225,6 +226,7 @@ router.get('/articles_details/:id', async (req, res) => {
                 articles.content, 
                 articles.image_url,
                 articles.source,
+                articles.url,  -- Ensure that the URL field is selected
                 articles.published_at, 
                 categories.name AS category_name, 
                 COUNT(comments.id) AS comment_count
@@ -241,8 +243,14 @@ router.get('/articles_details/:id', async (req, res) => {
             return res.status(404).send('Article not found');
         }
 
+        // Fetch related articles and include the article URL
         const relatedArticlesResult = await pool.query(`
-            SELECT articles.id, articles.title, articles.published_at, categories.name AS category_name
+            SELECT 
+                articles.id, 
+                articles.title, 
+                articles.url,  -- Ensure that the URL field is selected
+                articles.published_at, 
+                categories.name AS category_name
             FROM articles
             LEFT JOIN categories ON articles.category_id = categories.id
             WHERE articles.category_id = $1 AND articles.id != $2
@@ -260,6 +268,7 @@ router.get('/articles_details/:id', async (req, res) => {
         res.status(500).send('Database error');
     }
 });
+
 
 // Global Search
 router.get('/search', async (req, res) => {
