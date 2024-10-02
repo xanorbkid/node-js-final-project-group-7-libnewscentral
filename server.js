@@ -12,7 +12,7 @@ const multer = require('multer');
 const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
-const { scrapeFrontPageAfrica, scrapeNewDawnLiberia } = require('./scraper');
+const { scrapeFrontPageAfrica, scrapeLiberianObserver } = require('./scraper');
 require('dotenv').config(); // Load environment variables
 // const { Sequelize } = require('sequelize'); // Import Sequelize
 // const dbConfig = require('./config/config'); // Import the db configuration
@@ -131,6 +131,13 @@ app.use(async (req, res, next) => {
 scrapeFrontPageAfrica().then(articles => {
     console.log('Scraped articles from FrontPageAfrica:', articles);
 });
+scrapeLiberianObserver().then(articles => {
+    console.log('Scraped articles from Liberian Observer:', articles);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+
 
 // Middleware
 app.use(cors());
