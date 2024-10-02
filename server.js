@@ -4,6 +4,7 @@ const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+const { Pool } = require('pg'); // Import pg (PostgreSQL)
 const cors = require('cors');
 const axios = require('axios');
 const bodyParser = require('body-parser');
@@ -13,33 +14,89 @@ const moment = require('moment');
 const truncateText = require('./truncate');
 const { scrapeFrontPageAfrica, scrapeNewDawnLiberia } = require('./scraper');
 const { Sequelize } = require('sequelize'); // Import Sequelize
-const dbConfig = require('./config/config'); // Import the db configuration
+require('dotenv').config(); // Load environment variables
+// const dbConfig = require('./config/config'); // Import the db configuration
 
 const app = express();
 
 // Set up Sequelize connection using the environment
-const env = process.env.NODE_ENV || 'development'; // Set environment based on NODE_ENV
-const config = dbConfig[env];
-const sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    {
-        host: config.host,
-        dialect: config.dialect,
-        dialectOptions: config.dialectOptions,
-        logging: config.logging,
-    }
-);
+// const env = process.env.NODE_ENV || 'development'; // Set environment based on NODE_ENV
+// const config = dbConfig[env];
+// const sequelize = new Sequelize(
+//     config.database,
+//     config.username,
+//     config.password,
+//     {
+//         host: config.host,
+//         dialect: config.dialect,
+//         dialectOptions: config.dialectOptions,
+//         logging: config.logging,
+//     }
+// );
 
-// Test the database connection
-sequelize.authenticate()
-    .then(() => {
-        console.log('Connection to the database has been established successfully.');
-    })
-    .catch(err => {
-        console.error('Unable to connect to the database:', err);
-    });
+// // Test the database connection
+// sequelize.authenticate()
+//     .then(() => {
+//         console.log('Connection to the database has been established successfully.');
+//     })
+//     .catch(err => {
+//         console.error('Unable to connect to the database:', err);
+//     });
+
+// Set environment based on NODE_ENV (development by default)
+const env = process.env.NODE_ENV || 'development';
+
+// Configure dbConfig based on environment
+let dbConfig;
+
+if (env === 'production') {
+    // Production environment uses DATABASE_URL
+    dbConfig = {
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            require: true, // Enforce SSL in production
+            rejectUnauthorized: false, // Allow self-signed certificates
+        }
+    };
+} else {
+    // Development environment uses separate DB variables
+    dbConfig = {
+        user: process.env.DB_USERNAME || 'bronax',
+        password: process.env.DB_PASSWORD || 'ilovecoding',
+        database: process.env.DB_NAME || 'newscentral',
+        host: process.env.DB_HOST || 'localhost',
+        port: process.env.DB_PORT || 5432,
+    };
+}
+
+// Set up PostgreSQL pool configuration
+const pool = new Pool(dbConfig);
+
+// Log connection environment
+if (env === 'production') {
+    console.log('Connected to the production database');
+} else {
+    console.log('Connected to the development database');
+}
+
+// Test the connection
+pool.connect((err, client, release) => {
+    if (err) {
+        return console.error('Error acquiring client', err.stack);
+    }
+    console.log('Database connection successful');
+    release();
+});
+
+// Set up Sequelize for ORM with proper config
+const sequelize = new Sequelize(dbConfig.connectionString || dbConfig.database, dbConfig.user, dbConfig.password, {
+    host: dbConfig.host,
+    dialect: 'postgres',
+    dialectOptions: dbConfig.ssl ? { ssl: dbConfig.ssl } : {}, // SSL settings for production
+    logging: console.log, // Enable logging in development only
+});
+
+
 
 // Scrape articles example
 scrapeFrontPageAfrica().then(articles => {

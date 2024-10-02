@@ -245,7 +245,7 @@ if (env === 'production') {
     };
 } else {
     dbConfig = {
-        user: process.env.DB_USER || 'postgres',
+        user: process.env.DB_USER || 'bronax',
         host: process.env.DB_HOST || 'localhost',
         database: process.env.DB_NAME || 'newscentral',
         password: process.env.DB_PASSWORD || 'ilovecoding',
