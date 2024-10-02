@@ -138,6 +138,13 @@ router.get('/categories', async (req, res) => {
   }
 });
 
+router.get('/coming_soon', async(req, res) =>{
+    
+    res.render('coming_soon', {
+    title: 'Coming soon | LibNewsCentral'
+    });
+});
+
 // List of articles in Category with Pagination
 router.get('/category/:id', async (req, res) => {
     const categoryId = req.params.id;

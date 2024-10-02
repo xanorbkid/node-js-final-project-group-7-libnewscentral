@@ -13,7 +13,7 @@ const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
 const { scrapeFrontPageAfrica, scrapeNewDawnLiberia } = require('./scraper');
-const { Sequelize } = require('sequelize'); // Import Sequelize
+// const { Sequelize } = require('sequelize'); // Import Sequelize
 require('dotenv').config(); // Load environment variables
 // const dbConfig = require('./config/config'); // Import the db configuration
 
@@ -89,13 +89,42 @@ pool.connect((err, client, release) => {
 });
 
 // Set up Sequelize for ORM with proper config
-const sequelize = new Sequelize(dbConfig.connectionString || dbConfig.database, dbConfig.user, dbConfig.password, {
-    host: dbConfig.host,
-    dialect: 'postgres',
-    dialectOptions: dbConfig.ssl ? { ssl: dbConfig.ssl } : {}, // SSL settings for production
-    logging: console.log, // Enable logging in development only
+// const sequelize = new Sequelize(dbConfig.connectionString || dbConfig.database, dbConfig.user, dbConfig.password, {
+//     host: dbConfig.host,
+//     dialect: 'postgres',
+//     dialectOptions: dbConfig.ssl ? { ssl: dbConfig.ssl } : {}, // SSL settings for production
+//     logging: console.log, // Enable logging in development only
+// });
+
+
+// Middleware to fetch categories and make them available in all templates
+app.use(async (req, res, next) => {
+    try {
+        const result = await pool.query('SELECT * FROM categories WHERE deleted_at IS NULL');
+        res.locals.topCategories = result.rows.slice(0, 6); // Limit to first 6 categories
+        res.locals.categories = result.rows;
+        next();
+    } catch (err) {
+        next(err);
+    }
 });
 
+// Middleware to fetch articles with category names
+app.use(async (req, res, next) => {
+    const query = `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+    `;
+    try {
+        const result = await pool.query(query);
+        res.locals.toparticles = result.rows.slice(0, 6); // Limit to first 6 articles
+        res.locals.articles = result.rows;
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 
 
 // Scrape articles example
@@ -125,34 +154,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Middleware to fetch categories and make them available in all templates
-app.use(async (req, res, next) => {
-    try {
-        const [results, metadata] = await sequelize.query('SELECT * FROM categories WHERE deleted_at IS NULL');
-        res.locals.topCategories = results.slice(0, 6); // Limit to first 6 categories
-        res.locals.categories = results;
-        next();
-    } catch (err) {
-        next(err);
-    }
-});
-
-// Middleware to fetch articles with category names
-app.use(async (req, res, next) => {
-    const query = `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-    `;
-    try {
-        const [articles, metadata] = await sequelize.query(query);
-        res.locals.toparticles = articles.slice(0, 6); // Limit to first 6 articles
-        res.locals.articles = articles;
-        next();
-    } catch (err) {
-        next(err);
-    }
-});
 
 // Middleware to make moment.js available in all views
 app.use((req, res, next) => {
