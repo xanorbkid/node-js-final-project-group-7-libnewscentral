@@ -150,16 +150,32 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/base'); // Points to views/layouts/base.ejs
 app.set('views', [__dirname + '/views', __dirname + '/admin']);
 
+
+
 // Set up multer for file uploads
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'public/uploads'); // Directory to store uploaded images
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+//     }
+// });
+// const upload = multer({ storage: storage });
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads'); // Directory to store uploaded images
+      if (env === 'production') {
+        cb(null, '/tmp');  // Temporary directory for Cloudinary uploads
+      } else {
+        cb(null, 'public/uploads'); // Local directory in development
+      }
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+      cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
     }
-});
-const upload = multer({ storage: storage });
+  });
+  const upload = multer({ storage: storage });
 
 
 // Middleware to make moment.js available in all views

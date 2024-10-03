@@ -3,6 +3,17 @@ const { Pool } = require('pg'); // Using PostgreSQL with connection pooling
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;  // Cloudinary SDK
+
+
+// Cloudinary configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+
 
 // Create a pool of connections based on environment variables (development/production)
 // Environment-based database configuration
@@ -29,14 +40,37 @@ const pool = new Pool(dbConfig);
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/uploads'); // Directory to store uploaded images
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    destination: function (req, file, cb) {
+      if (env === 'production') {
+        cb(null, '/tmp');  // Temporary directory for Cloudinary uploads
+      } else {
+        cb(null, 'public/uploads'); // Local directory in development
+      }
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    }
+  });
+  const upload = multer({ storage: storage });
+  
+  // Helper function to upload image to Cloudinary in production or save locally in development
+  async function saveImage(imagePath) {
+      try {
+          if (env === 'production') {
+              // Upload image to Cloudinary in production
+              const result = await cloudinary.uploader.upload(imagePath, {
+                  folder: 'scraped_images',
+              });
+              return result.secure_url;  // Return Cloudinary image URL
+          } else {
+              // Image is already saved locally by multer in development
+              return `/uploads/${path.basename(imagePath)}`;  // Return local image URL
+          }
+      } catch (error) {
+          console.error('Failed to save image:', imagePath, error.message);
+      }
   }
-});
-const upload = multer({ storage: storage });
+
 
 // Home Route
 router.get('/', async (req, res) => {
@@ -385,14 +419,15 @@ router.get('/admin/category_list', async (req, res) => {
 // Add Category Route
 router.post('/add_category', upload.single('image_url'), async (req, res) => {
     const { name } = req.body;
-    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+    const imageFile = req.file;
 
-    if (!name || !image_url) {
+    if (!name || !imageFile) {
         return res.status(400).send('All fields are required');
     }
 
     try {
-        await pool.query('INSERT INTO categories (name, image_url) VALUES ($1, $2)', [name, image_url]);
+        const imageUrl = await saveImage(imageFile.path);
+        await pool.query('INSERT INTO categories (name, image_url) VALUES ($1, $2)', [name, imageUrl]);
         res.redirect('/admin/category_list');
     } catch (error) {
         console.error('Database error:', error);
@@ -404,15 +439,22 @@ router.post('/add_category', upload.single('image_url'), async (req, res) => {
 router.post('/edit_category/:id', upload.single('image_url'), async (req, res) => {
     const categoryId = req.params.id;
     const { name } = req.body;
-    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+    const imageFile = req.file;
 
     try {
+        let imageUrl = null;
+        if (imageFile) {
+            // If a new image is uploaded, save it
+            imageUrl = await saveImage(imageFile.path);
+        }
+
+        // Update the category with the new image (if any) or retain the old one
         await pool.query(
             `UPDATE categories 
              SET name = $1, 
                  image_url = COALESCE($2, image_url) 
              WHERE id = $3`,
-            [name, image_url, categoryId]
+            [name, imageUrl, categoryId]
         );
         res.redirect('/admin/category_list');
     } catch (error) {
@@ -472,17 +514,24 @@ router.get('/admin/articleslist', async (req, res) => {
     }
 });
 
+
+
+
+// Edit Article Route with file upload handling
 router.post('/edit_article/:id', upload.single('image_url'), async (req, res) => {
     const articleId = req.params.id;
     const { title, content, category_id, source } = req.body;
-    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+    const imageUrl = req.file ? req.file.path : null;
 
+    // Start building the query and parameters
     let query = 'UPDATE articles SET title = $1, content = $2, category_id = $3, source = $4';
     let params = [title, content, category_id, source];
 
-    if (image_url) {
+    // Conditionally handle image upload
+    if (imageUrl) {
+        const savedImageUrl = await saveImage(imageUrl);  // Save image based on environment
         query += ', image_url = $5';
-        params.push(image_url);
+        params.push(savedImageUrl);
         query += ' WHERE id = $6';
         params.push(articleId);
     } else {
@@ -491,6 +540,7 @@ router.post('/edit_article/:id', upload.single('image_url'), async (req, res) =>
     }
 
     try {
+        // Execute the query with the correct number of parameters
         await pool.query(query, params);
         res.redirect('/admin/articleslist');
     } catch (error) {
@@ -498,6 +548,7 @@ router.post('/edit_article/:id', upload.single('image_url'), async (req, res) =>
         res.status(500).send('An error occurred while updating the article.');
     }
 });
+
 
 // Hard Delete Article
 router.get('/delete_article/:id', async (req, res) => {
