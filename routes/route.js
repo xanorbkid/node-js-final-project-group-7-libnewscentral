@@ -472,44 +472,29 @@ router.get('/admin/articleslist', async (req, res) => {
     }
 });
 
-// Edit Article Route
 router.post('/edit_article/:id', upload.single('image_url'), async (req, res) => {
     const articleId = req.params.id;
     const { title, content, category_id, source } = req.body;
-    
-    // Check for uploaded file
     const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // Validate inputs (basic validation example)
-    if (!title || !content || !category_id || !source) {
-        return res.status(400).send('All fields are required.');
-    }
-
-    // Construct the base query and params
     let query = 'UPDATE articles SET title = $1, content = $2, category_id = $3, source = $4';
     let params = [title, content, category_id, source];
 
-    // If there's an image uploaded, include it in the update query
     if (image_url) {
         query += ', image_url = $5';
         params.push(image_url);
+        query += ' WHERE id = $6';
+        params.push(articleId);
+    } else {
+        query += ' WHERE id = $5';
+        params.push(articleId);
     }
 
-    // Complete the query to update the specific article by id
-    query += ' WHERE id = $6';
-    params.push(articleId);
-
     try {
-        // Execute the query
         await pool.query(query, params);
-        
-        // Redirect or send success response
         res.redirect('/admin/articleslist');
     } catch (error) {
-        // Handle database errors
         console.error('Database error:', error);
-        
-        // Send an error message to the client
         res.status(500).send('An error occurred while updating the article.');
     }
 });

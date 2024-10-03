@@ -198,30 +198,14 @@
       <div class="modal-body">
         <div class="border-bottom card-body">
           <div class="row">
-            <!-- <div class="col-sm-auto mb-3 mb-sm-0">
-              <div class="d-sm-inline-block d-flex align-items-center">
-                <img
-                  class="wid-60 img-radius mb-2"
-                  src="../assets_admin/images/user/avatar-5.jpg"
-                  alt="Generic placeholder image "
-                />
-                <div class="ms-3 ms-sm-0 text-sm-center">
-                  <p>
-                    <i class="material-icons-two-tone f-18 text-primary"
-                      >thumb_up</i
-                    >
-                    4
-                  </p>
-                </div>
-              </div>
-            </div> -->
+           
             <div class="col-md-12">
               <div class="row">
                   <div class="">
                     <h4 class="d-inline-block"><%= article.title %></h4>
                     <!-- <span class="badge bg-light-secondary">replied</span> -->
                     <p class="text-muted"><%= moment(article.published_at).fromNow() %> | Posted on <%= moment(article.published_at).format('MMMM D, YYYY') %> at <%= moment(article.published_at).format('h:mm A') %></p>
-                    <img src="<%= article.image_url %>" height="" alt="">
+                    <img src="<%= article.image_url %>" height="300" alt="">
                   </div>
                   <div class="mt-3 ">
                     <p class="text-justify">
