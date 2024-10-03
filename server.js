@@ -12,36 +12,13 @@ const multer = require('multer');
 const path = require('path');
 const moment = require('moment');
 const truncateText = require('./truncate');
-const { scrapeFrontPageAfrica, scrapeLiberianObserver } = require('./scraper');
+const { scrapeFrontPageAfrica, scrapeLiberianObserver, scrapeNewDawn } = require('./scraper');
 require('dotenv').config(); // Load environment variables
-// const { Sequelize } = require('sequelize'); // Import Sequelize
-// const dbConfig = require('./config/config'); // Import the db configuration
+
 
 const app = express();
 
-// Set up Sequelize connection using the environment
-// const env = process.env.NODE_ENV || 'development'; // Set environment based on NODE_ENV
-// const config = dbConfig[env];
-// const sequelize = new Sequelize(
-//     config.database,
-//     config.username,
-//     config.password,
-//     {
-//         host: config.host,
-//         dialect: config.dialect,
-//         dialectOptions: config.dialectOptions,
-//         logging: config.logging,
-//     }
-// );
 
-// // Test the database connection
-// sequelize.authenticate()
-//     .then(() => {
-//         console.log('Connection to the database has been established successfully.');
-//     })
-//     .catch(err => {
-//         console.error('Unable to connect to the database:', err);
-//     });
 
 // Set environment based on NODE_ENV (development by default)
 const env = process.env.NODE_ENV || 'development';
@@ -133,6 +110,9 @@ scrapeFrontPageAfrica().then(articles => {
 });
 scrapeLiberianObserver().then(articles => {
     console.log('Scraped articles from Liberian Observer:', articles);
+});
+scrapeNewDawn().then(articles => {
+    console.log('Scraped articles from New Dawn:', articles);
 })
 .catch(error => {
     console.error('Error:', error);
