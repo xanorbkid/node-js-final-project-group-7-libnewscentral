@@ -162,26 +162,29 @@ document.addEventListener("DOMContentLoaded", function () {
   
       // Handle the install button click
       installBtn.addEventListener("click", () => {
-        // Hide the notification
-        notificationElement.classList.remove("show");
+        if (deferredPrompt) { // Check if deferredPrompt is available
+          // Hide the notification
+          notificationElement.classList.remove("show");
   
-        // Show the install prompt to the user
-        deferredPrompt.prompt();
+          // Show the install prompt to the user
+          deferredPrompt.prompt();
   
-        // Wait for the user to respond to the prompt
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === "accepted") {
-            console.log("User accepted the install prompt");
-            localStorage.setItem("installAccepted", "true"); // Mark as installed
-          } else {
-            console.log("User dismissed the install prompt");
-            localStorage.setItem("installAccepted", "false"); // Keep as not installed
-          }
+          // Wait for the user to respond to the prompt
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === "accepted") {
+              console.log("User accepted the install prompt");
+              localStorage.setItem("installAccepted", "true"); // Mark as installed
+            } else {
+              console.log("User dismissed the install prompt");
+              localStorage.setItem("installAccepted", "false"); // Keep as not installed
+            }
   
-          // Clear the deferredPrompt variable so it can be triggered again later if needed
-          deferredPrompt = null;
-        });
+            // Clear the deferredPrompt variable so it can be triggered again later if needed
+            deferredPrompt = null;
+          });
+        }
       });
     });
   });
+  
   

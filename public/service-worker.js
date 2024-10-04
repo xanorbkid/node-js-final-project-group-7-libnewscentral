@@ -27,8 +27,8 @@ const urlsToCache = [
   '../assets/js/app-head-bs.js',
   
   // Fonts & Icons
+  'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Inter:wght@400..700&amp;family=Lora:ital,wght@0,400..700;1,400..700&amp;family=Manrope:wght@400..700&amp;family=Onest:wght@400..700&amp;family=Montserrat+Display:ital,wght@0,400..700;1,400..700&amp;family=Poppins:wght@500;600;700&amp;family=Rajdhani:wght@500;600&amp;family=Teachers:ital,wght@0,500..700;1,500..700&amp;family=Work+Sans:ital,wght@0,400..700;1,400..700&amp;display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
-  // 'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Inter:wght@400..700&amp;family=Lora:ital,wght@0,400..700;1,400..700&amp;family=Manrope:wght@400..700&amp;family=Onest:wght@400..700&amp;family=Montserrat+Display:ital,wght@0,400..700;1,400..700&amp;family=Poppins:wght@500;600;700&amp;family=Rajdhani:wght@500;600&amp;family=Teachers:ital,wght@0,500..700;1,500..700&amp;family=Work+Sans:ital,wght@0,400..700;1,400..700&amp;display=swap',
 
 
   // Images
