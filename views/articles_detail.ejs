@@ -116,34 +116,43 @@
             </div>
             
             <!-- Related News Article -->
-            <div class="post-related panel border-top pt-2 mt-8 xl:mt-9">
-                <h4 class="h5 xl:h4 mb-5 xl:mb-6">Related to this topic:</h4>
-                <div class="row child-cols-6 md:child-cols-3 gx-2 gy-4 sm:gx-3 sm:gy-6">
-                    <% if (relatedArticles && relatedArticles.length > 0) { %>
-                        <% relatedArticles.forEach(function(relatedArticle) { %>
-                            <div>
-                                <article class="post type-post panel vstack gap-2">
-                                    <figure class="featured-image m-0 ratio ratio-4x3 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
-                                        <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= relatedArticle.image_url %>" alt="<%= relatedArticle.title %>">
-                                        <a href="/articles_details/<%= relatedArticle.id %>" class="position-cover"></a>
-                                    </figure>
-                                    <div class="post-header panel vstack gap-1">
-                                        <h5 class="h6 md:h5 m-0">
-                                            <a class="text-none" href="/articles_details/<%= relatedArticle.id %>"><%= relatedArticle.title %></a>
-                                        </h5>
-                                        <div class="post-date hstack gap-narrow fs-7 opacity-60">
-                                            <span><%= moment(relatedArticle.published_at).format('MMMM D, YYYY') %></span>
-                                        </div>
-                                    </div>
-                                </article>
+<div class="post-related panel border-top pt-2 mt-8 xl:mt-9">
+    <h4 class="h5 xl:h4 mb-5 xl:mb-6">Related to this topic:</h4>
+    <div class="row child-cols-6 md:child-cols-3 gx-2 gy-4 sm:gx-3 sm:gy-6">
+        <% if (relatedArticles && relatedArticles.length > 0) { %>
+            <% relatedArticles.forEach(function(relatedArticle) { %>
+                <div class="col">
+                    <article class="post type-post panel vstack gap-2">
+                        <figure class="featured-image m-0 ratio ratio-4x3 rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
+                            <img 
+                                class="media-cover image uc-transition-scale-up uc-transition-opaque" 
+                                src="<%= relatedArticle.image_url %>" 
+                                alt="Image for <%= relatedArticle.title %>" 
+                                loading="lazy" 
+                                width="300" 
+                                height="225"
+                            >
+                            <a href="/articles_details/<%= relatedArticle.id %>" class="position-cover" aria-label="Read more about <%= relatedArticle.title %>"></a>
+                        </figure>
+                        <div class="post-header panel vstack gap-1">
+                            <h5 class="h6 md:h5 m-0">
+                                <a class="text-none" href="/articles_details/<%= relatedArticle.id %>"><%= relatedArticle.title %></a>
+                            </h5>
+                            <div class="post-date hstack gap-narrow fs-7 opacity-60">
+                                <time datetime="<%= moment(relatedArticle.published_at).format('YYYY-MM-DD') %>">
+                                    <%= moment(relatedArticle.published_at).format('MMMM D, YYYY') %>
+                                </time>
                             </div>
-                        <% }); %>
-                    <% } else { %>
-                        <p>No Related Post</p>
-                    <% } %>
-                    
+                        </div>
+                    </article>
                 </div>
-            </div>
+            <% }); %>
+        <% } else { %>
+            <p>No Related Posts Available</p>
+        <% } %>
+    </div>
+</div>
+
 
             <a href="#commont" class="btn h-56px w-100 mt-8 xl:mt-9 text-black dark:text-white bg-gray-25 dark:bg-opacity-10 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <span>Be the first to write a comment.</span>

@@ -12,23 +12,22 @@ if ('serviceWorker' in navigator) {
   }
 
 //   Install App
-let deferredPrompt;
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-
-    // Show the install prompt here, e.g., add a button to the UI
-    document.querySelector('#install-btn').addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choiceResult => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the install prompt');
-            }
-            deferredPrompt = null;
-        });
-    });
+document.addEventListener('DOMContentLoaded', () => {
+  const installBtn = document.querySelector('#install-btn');
+  if (installBtn) {
+      installBtn.addEventListener('click', () => {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(choiceResult => {
+              if (choiceResult.outcome === 'accepted') {
+                  console.log('User accepted the install prompt');
+              }
+              deferredPrompt = null;
+          });
+      });
+  }
 });
+
 
 
 {

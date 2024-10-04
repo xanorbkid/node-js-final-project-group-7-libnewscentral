@@ -326,7 +326,7 @@ async function scrapeNewDawn() {
                 const url = titleElement ? titleElement.href : null;
 
                 // Scrape the category name
-                const categoryElement = article.querySelector('.post-cat-wrap .post-cat');
+                const categoryElement = article.querySelector('.post-cat-wrap tie-cat-77 .post-cat');
                 const category_name = categoryElement ? categoryElement.innerText.trim() : 'No Category';
 
                 // Scrape the image URL

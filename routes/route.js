@@ -179,6 +179,14 @@ router.get('/coming_soon', async(req, res) =>{
     });
 });
 
+router.get('/page_terms', async(req, res) =>{
+
+    res.render('page-terms', {
+    title: 'Terns of Use | LibNewsCentral'
+    });
+});
+
+
 // List of articles in Category with Pagination
 router.get('/category/:id', async (req, res) => {
     const categoryId = req.params.id;
@@ -252,15 +260,15 @@ router.get('/articles_details/:id', async (req, res) => {
     const articleId = req.params.id;
 
     try {
-        // Fetch article details including the article URL
-        const articleResult = await pool.query(`
+        // Fetch article details including comments count and associated category
+        const articleQuery = `
             SELECT 
                 articles.id, 
                 articles.title, 
                 articles.content, 
-                articles.image_url,
-                articles.source,
-                articles.url,  -- Ensure that the URL field is selected
+                articles.image_url, 
+                articles.source, 
+                articles.url, 
                 articles.published_at, 
                 categories.name AS category_name, 
                 COUNT(comments.id) AS comment_count
@@ -269,37 +277,41 @@ router.get('/articles_details/:id', async (req, res) => {
             LEFT JOIN comments ON articles.id = comments.article_id
             WHERE articles.id = $1
             GROUP BY articles.id, categories.name
-        `, [articleId]);
-
+        `;
+        const articleResult = await pool.query(articleQuery, [articleId]);
         const article = articleResult.rows[0];
 
+        // Return 404 if the article does not exist
         if (!article) {
             return res.status(404).send('Article not found');
         }
 
-        // Fetch related articles and include the article URL
-        const relatedArticlesResult = await pool.query(`
+        // Fetch related articles within the same category, excluding the current article
+        const relatedArticlesQuery = `
             SELECT 
                 articles.id, 
                 articles.title, 
-                articles.url,  -- Ensure that the URL field is selected
+                articles.url, 
                 articles.published_at, 
+                articles.image_url, 
                 categories.name AS category_name
             FROM articles
             LEFT JOIN categories ON articles.category_id = categories.id
             WHERE articles.category_id = $1 AND articles.id != $2
             ORDER BY articles.published_at DESC
             LIMIT 4
-        `, [article.category_id, articleId]);
+        `;
+        const relatedArticlesResult = await pool.query(relatedArticlesQuery, [article.category_id, articleId]);
 
+        // Render the article details and related articles
         res.render('articles_detail', {
             article,
             relatedArticles: relatedArticlesResult.rows,
-            title: 'News Details | LibNewsCentral'
+            title: `News Details | LibNewsCentral`
         });
     } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).send('Database error');
+        console.error('Database error:', error.message); // Improved logging
+        res.status(500).send('Internal server error');
     }
 });
 
