@@ -92,11 +92,11 @@ router.get('/', async (req, res) => {
         WHERE articles.category_id = 1
         ORDER BY articles.published_at DESC
       `,
-      healthNewsQuery: `
+      majorNewsQuery: `
         SELECT articles.*, categories.name AS category_name
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 7
+        WHERE articles.category_id = 2
         ORDER BY articles.published_at DESC
       `,
       sportNewsQuery: `
@@ -113,31 +113,44 @@ router.get('/', async (req, res) => {
         WHERE articles.category_id = 8
         ORDER BY articles.published_at DESC
       `,
+    //   Business News
+      businessNewsQuery: `
+        SELECT articles.*, categories.name AS category_name
+        FROM articles
+        LEFT JOIN categories ON articles.category_id = categories.id
+        WHERE articles.category_id = 23
+        ORDER BY articles.published_at DESC
+      `,
+
+    //   FRONTNEWS Query
       frontNewsQuery: `
         SELECT articles.*, categories.name AS category_name
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
         WHERE articles.category_id = 2
         ORDER BY articles.published_at DESC
+        LIMIT 6
       `,
     };
 
     // Execute queries using the pool
     const latestNews = await pool.query(latestNewsQuery);
     const topNews = await pool.query(queries.topNewsQuery);
-    const healthNews = await pool.query(queries.healthNewsQuery);
+    const majorNews = await pool.query(queries.majorNewsQuery);
     const sportNews = await pool.query(queries.sportNewsQuery);
     const ecoNews = await pool.query(queries.ecoNewsQuery);
     const frontNews = await pool.query(queries.frontNewsQuery);
+    const businessNews = await pool.query(queries.businessNewsQuery)
 
     // Render the homepage with the latest and top news articles
     res.render('index2', {
       latestNews: latestNews.rows,
       topNews: topNews.rows,
-      healthNews: healthNews.rows,
+      majorNews: majorNews.rows,
       sportNews: sportNews.rows,
       ecoNews: ecoNews.rows,
       frontNews: frontNews.rows,
+      businessNews: businessNews.rows,
       title: 'Home | LibNewsCentral'
     });
 

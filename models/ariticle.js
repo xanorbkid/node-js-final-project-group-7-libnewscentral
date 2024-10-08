@@ -1,4 +1,3 @@
-// models/articles.js
 module.exports = (sequelize, DataTypes) => {
     const Article = sequelize.define('Article', {
         id: {
@@ -50,10 +49,23 @@ module.exports = (sequelize, DataTypes) => {
         deleted_at: {
             type: DataTypes.DATE,
         },
+        // New fields
+        summary: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+        vectors: {
+            type: DataTypes.JSONB,
+            allowNull: true,  // Assuming vectors will be stored as JSON
+        },
+        keywords: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true,  // Assuming keywords will be stored as an array of strings
+        },
     }, {
         timestamps: false,
         tableName: 'articles',
     });
-    
+
     return Article;
 };

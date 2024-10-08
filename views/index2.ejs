@@ -202,13 +202,14 @@
                                                 <h3 class="post-title h5 lg:h4 m-0 text-truncate-2">
                                                     <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= topNews[0].id %>"><%= topNews[0].title %></a>
                                                 </h3>
-                                                <p class="fs-6 opacity-60 text-truncate-2 my-1"><%= topNews[0].excerpt %></p>
+                                               
+                                                <p class="fs-6 opacity-60 text-truncate-2 my-1"><%= topNews[0].content %></p>
                                                 <div class="post-meta panel hstack justify-between fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                     <div class="meta">
                                                         <div class="hstack gap-2">
                                                             <div>
                                                                 <div class="post-author hstack gap-1">
-                                                                    <a href="#" data-uc-tooltip="David Peterson"><img src="<%= topNews[0].image_url %>" alt="David Peterson" class="w-24px h-24px rounded-circle"></a>
+                                                                    <a href="#" data-uc-tooltip="David Peterson"><img src="<%= topNews[0].image_url %>" alt="<%= topNews[0].author_id %>" class="w-24px h-24px rounded-circle"></a>
                                                                     <a href="#" class="text-black dark:text-white text-none fw-bold"><%= topNews[0].source %></a>
                                                                 </div>
                                                             </div>
@@ -255,7 +256,7 @@
                                                             <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
                                                                 <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= topNews[i].id %>"><%= topNews[i].title %></a>
                                                             </h3>
-                                                        </div>
+                                                        </div>    
                                                     </div>
                                                 </div>
                                             </article>
@@ -263,7 +264,7 @@
                                         <% } %> 
                                     </div>
                                     <a href="/category/<%= topNews[0].category_id %>" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
-                                        <span>See all Tech</span>
+                                        <span>Full Coverage</span>
                                         <i class="icon icon-1 unicon-chevron-right"></i>
                                     </a>
                                 </div>
@@ -286,12 +287,12 @@
             <div class="container max-w-xl">
                 <div class="section-inner">
                     <div class="block-layout grid-layout vstack gap-3 lg:gap-4 panel overflow-hidden">
-                        <% if (healthNews.length > 0) { %>
+                        <% if (  majorNews.length > 0) { %>
 
                         <div class="block-header panel border-top pt-1">
                             <h2 class="h4 xl:h3 -ls-1 xl:-ls-2 m-0 text-inherit hstack gap-1">
                                 <span class="panel d-inline-block bg-primary w-8px h-8px translate-y-px"></span>
-                                <a class="text-none hover:text-primary duration-150" href="/category/<%= healthNews[0].category_id %>">Health News</a>
+                                <a class="text-none hover:text-primary duration-150" href="/category/<%=   majorNews[0].category_id %>">Major Headlines</a>
                             </h2>
                         </div>
                         <div class="block-content">
@@ -304,41 +305,41 @@
                                             <div class="post-media panel uc-transition-toggle overflow-hidden">
                                                 <div class="featured-image bg-gray-25 dark:bg-gray-800 overflow-hidden ratio ratio-16x9">
                                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
-                                                    src="<%= healthNews[0].image_url %>" 
-                                                    data-src="<%= healthNews[0].image_url %>" 
-                                                    alt="<%= healthNews[0].title %>" 
+                                                    src="<%=   majorNews[0].image_url %>" 
+                                                    data-src="<%=   majorNews[0].image_url %>" 
+                                                    alt="<%=   majorNews[0].title %>" 
                                                     data-uc-img="loading: lazy">
                                                 </div>
-                                                <a href="/articles_details/<%= healthNews[0].id %>" class="position-cover"></a>
+                                                <a href="/articles_details/<%=   majorNews[0].id %>" class="position-cover"></a>
                                             </div>
                                             <div class="post-header panel vstack gap-1">
                                                 <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                     <div>
                                                         <div class="post-category hstack gap-narrow fw-medium">
-                                                            <a class="text-none text-primary dark:text-white" href="/category/<%= healthNews[0].category_id %>"><%= healthNews[0].category_name %></a>
+                                                            <a class="text-none text-primary dark:text-white" href="/category/<%=   majorNews[0].category_id %>"><%=   majorNews[0].category_name %></a>
                                                         </div>
                                                     </div>
                                                     <div class="sep d-none md:d-block">❘</div>
                                                     <div class="d-none md:d-block">
                                                         <div class="post-date hstack gap-narrow">
-                                                            <span><%= new Date(healthNews[0].published_at).toLocaleDateString() %></span>
+                                                            <span><%= new Date(  majorNews[0].published_at).toLocaleDateString() %></span>
                                                         </div>
                                                     </div>
                                                     <div class="cstack w-16px h-16px ms-narrow d-none md:d-inline-flex position-absolute top-0 end-0">
-                                                        <a href="#" class="uc-bookmark-toggle w-16px h-16px text-none" data-uc-tooltip="Add to bookmark"><i class="icon-narrow unicon-bookmark-add"></i></a>
+                                                        <a href="#" class="uc-bookmark-toggle w-20px h-20px text-none" data-uc-tooltip="Save Article"><i class="icon-narrow unicon-bookmark-add"></i></a>
                                                     </div>
                                                 </div>
                                                 <h3 class="post-title h5 lg:h4 m-0 text-truncate-2">
-                                                    <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= healthNews[0].id %>"><%= healthNews[0].title %></a>
+                                                    <a class="text-dark hover:text-primary duration-150" href="/articles_details/<%=majorNews[0].id %>"><%=   majorNews[0].title %></a>
                                                 </h3>
-                                                <p class="fs-6 opacity-60 text-truncate-2 my-1"><%= healthNews[0].excerpt %></p>
+                                                <p class="fs-6 opacity-60 text-truncate-2 my-1"><%= truncateText(  majorNews[0].content, 200) %></p>
                                                 <div class="post-meta panel hstack justify-between fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                     <div class="meta">
                                                         <div class="hstack gap-2">
                                                             <div>
                                                                 <div class="post-author hstack gap-1">
-                                                                    <a href="#" data-uc-tooltip="David Peterson"><img src="<%= healthNews[0].image_url %>" alt="David Peterson" class="w-24px h-24px rounded-circle"></a>
-                                                                    <a href="#" class="text-black dark:text-white text-none fw-bold"><%= healthNews[0].source %></a>
+                                                                    <a href="#" data-uc-tooltip="David Peterson"><img src="<%=   majorNews[0].image_url %>" alt="David Peterson" class="w-24px h-24px rounded-circle"></a>
+                                                                    <a href="#" class="text-black dark:text-white text-none fw-bold"><%=   majorNews[0].source %></a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -354,16 +355,16 @@
                                 <div>
                                     <div class="row child-cols-12 g-4 sep-x">
                                         <!-- Show 5 article here from the category -->
-                                        <% for (let i = 1; i < healthNews.length && i < 6; i++) { %>
+                                        <% for (let i = 1; i <   majorNews.length && i < 6; i++) { %>
                                         <div>
                                             <article class="post type-post panel">
                                                 <div class="row child-cols g-2" data-uc-grid>
                                                     <div class="col-auto">
                                                         <div class="post-media panel uc-transition-toggle overflow-hidden max-w-150px min-w-100px lg:min-w-150px">
                                                             <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= healthNews[i].image_url %>" data-src="<%= healthNews[i].image_url %>" alt="<%= healthNews[i].title %>" data-uc-img="loading: lazy">
+                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%=   majorNews[i].image_url %>" data-src="<%=   majorNews[i].image_url %>" alt="<%=   majorNews[i].title %>" data-uc-img="loading: lazy">
                                                             </div>
-                                                            <a href="/articles_details/<%= healthNews[i].id %>" class="position-cover"></a>
+                                                            <a href="/articles_details/<%=   majorNews[i].id %>" class="position-cover"></a>
                                                         </div>
                                                     </div>
                                                     <div>
@@ -371,18 +372,25 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html"><%= healthNews[i].category_name %></a>
+                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html"><%=   majorNews[i].category_name %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
                                                                 <div class="d-none md:d-block">
                                                                     <div class="post-date hstack gap-narrow">
-                                                                        <span><%= new Date(healthNews[i].published_at).toLocaleDateString() %></span>
+                                                                        <span><%= new Date(  majorNews[i].published_at).toLocaleDateString() %></span>
+                                                                    </div>
+                                                                </div>
+                                                                <a href="#" class="text-black dark:text-white text-none fw-bold"></a>
+                                                                <div class="sep d-none md:d-block">❘</div>
+                                                                <div class="d-none md:d-block">
+                                                                    <div class="post-date hstack gap-narrow">
+                                                                        <span><%=   majorNews[0].source %></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
-                                                                <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= healthNews[i].id %>"><%= healthNews[i].title %></a>
+                                                                <a class="text-none hover:text-primary duration-150" href="/articles_details/<%=   majorNews[i].id %>"><%=   majorNews[i].title %></a>
                                                             </h3>
                                                         </div>
                                                     </div>
@@ -391,13 +399,13 @@
                                         </div>
                                         <% } %> 
                                     </div>
-                                    <a href="/category/<%= healthNews[0].category_id %>" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
-                                        <span>See all Tech</span>
+                                    <a href="/category/<%=   majorNews[0].category_id %>" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
+                                        <span>See Full Coverage</span>
                                         <i class="icon icon-1 unicon-chevron-right"></i>
                                     </a>
                                 </div>
                                 <% } else { %>
-                                    <p>No articles found in the Health News.</p>
+                                    <p>No articles found in the Major Headlines.</p>
                                 <% } %>
                             </div>
                         </div>
@@ -407,258 +415,6 @@
         </div>
     </div>
 
-    <!-- Section end -->
-
-    <!-- Section Business start -->
-    <!-- <div class="section panel overflow-hidden">
-        <div class="section-outer panel py-5 lg:py-8">
-            <div class="container max-w-xl">
-                <div class="section-inner">
-                    <div class="block-layout grid-layout vstack gap-3 lg:gap-4 panel overflow-hidden">
-                        <div class="block-header panel border-top pt-1">
-                            <h2 class="h4 xl:h3 -ls-1 xl:-ls-2 m-0 text-inherit hstack gap-1">
-                                <span class="panel d-inline-block bg-primary w-8px h-8px translate-y-px"></span>
-                                <a class="text-none hover:text-primary duration-150" href="blog-category.html">Business</a>
-                            </h2>
-                        </div>
-                        <div class="block-content">
-                            <div class="panel row child-cols-12 md:child-cols gy-4 md:gx-3 xl:gx-4">
-                                <div class="col-12 md:col-6 lg:col-7">
-                                    <div>
-                                        <article class="post type-post panel vstack gap-1 lg:gap-2">
-                                            <div class="post-media panel uc-transition-toggle overflow-hidden">
-                                                <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                    <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/img-fallback.png" data-src="../assets/images/main/posts/img-20.jpg" alt="Smart Homes, Smarter Living: Exploring IoT and AI" data-uc-img="loading: lazy">
-                                                </div>
-                                                <a href="blog-details.html" class="position-cover"></a>
-                                            </div>
-                                            <div class="post-header panel vstack gap-1">
-                                                <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
-                                                    <div>
-                                                        <div class="post-category hstack gap-narrow fw-medium">
-                                                            <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="sep d-none md:d-block">❘</div>
-                                                    <div class="d-none md:d-block">
-                                                        <div class="post-date hstack gap-narrow">
-                                                            <span>23d ago</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="cstack w-16px h-16px ms-narrow d-none md:d-inline-flex position-absolute top-0 end-0">
-                                                        <a href="#" class="uc-bookmark-toggle w-16px h-16px text-none" data-uc-tooltip="Add to bookmark"><i class="icon-narrow unicon-bookmark-add"></i></a>
-                                                    </div>
-                                                </div>
-                                                <h3 class="post-title h5 lg:h4 m-0 text-truncate-2">
-                                                    <a class="text-none hover:text-primary duration-150" href="blog-details.html">Smart Homes, Smarter Living: Exploring IoT and AI</a>
-                                                </h3>
-                                                <p class="fs-6 opacity-60 text-truncate-2 my-1">To spread the word, the company embarked on a mass marketing drive. TV campaigns launched in the platform’s key markets. Nisi dignissim tortor sed quam sed ipsum ut. Dolor sit amet, consectetur adipiscing elit.</p>
-                                                <div class="post-meta panel hstack justify-between fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                                    <div class="meta">
-                                                        <div class="hstack gap-2">
-                                                            <div>
-                                                                <div class="post-author hstack gap-1">
-                                                                    <a href="page-author.html" data-uc-tooltip="David Peterson"><img src="../assets/images/avatars/01.png" alt="David Peterson" class="w-24px h-24px rounded-circle"></a>
-                                                                    <a href="page-author.html" class="text-black dark:text-white text-none fw-bold">David Peterson</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="actions">
-                                                        <div class="hstack gap-1"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="row child-cols-12 g-4 sep-x">
-                                        <div>
-                                            <article class="post type-post panel">
-                                                <div class="row child-cols g-2" data-uc-grid>
-                                                    <div class="col-auto">
-                                                        <div class="post-media panel uc-transition-toggle overflow-hidden max-w-150px min-w-100px lg:min-w-150px">
-                                                            <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/img-fallback.png" data-src="../assets/images/main/posts/img-14.jpg" alt="A Guide to The Rise of Gourmet Street Food: Trends and Top Picks" data-uc-img="loading: lazy">
-                                                            </div>
-                                                            <a href="blog-details.html" class="position-cover"></a>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div class="post-header panel vstack justify-between gap-1">
-                                                            <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
-                                                                <div>
-                                                                    <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="sep d-none md:d-block">❘</div>
-                                                                <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
-                                                                        <span>6mo ago</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
-                                                                <a class="text-none hover:text-primary duration-150" href="blog-details.html">A Guide to The Rise of Gourmet Street Food: Trends and Top Picks</a>
-                                                            </h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                        </div>
-                                        <div>
-                                            <article class="post type-post panel">
-                                                <div class="row child-cols g-2" data-uc-grid>
-                                                    <div class="col-auto">
-                                                        <div class="post-media panel uc-transition-toggle overflow-hidden max-w-150px min-w-100px lg:min-w-150px">
-                                                            <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/img-fallback.png" data-src="../assets/images/main/posts/img-15.jpg" alt="Gaming in the Age of AI: Strategies for Startups" data-uc-img="loading: lazy">
-                                                            </div>
-                                                            <a href="blog-details.html" class="position-cover"></a>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div class="post-header panel vstack justify-between gap-1">
-                                                            <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
-                                                                <div>
-                                                                    <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html">Virtual Reality</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="sep d-none md:d-block">❘</div>
-                                                                <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
-                                                                        <span>9mo ago</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
-                                                                <a class="text-none hover:text-primary duration-150" href="blog-details.html">Gaming in the Age of AI: Strategies for Startups</a>
-                                                            </h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                        </div>
-                                        <div>
-                                            <article class="post type-post panel">
-                                                <div class="row child-cols g-2" data-uc-grid>
-                                                    <div class="col-auto">
-                                                        <div class="post-media panel uc-transition-toggle overflow-hidden max-w-150px min-w-100px lg:min-w-150px">
-                                                            <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/img-fallback.png" data-src="../assets/images/main/posts/img-16.jpg" alt="Top Independent Contractors to Invest in Best of Startups" data-uc-img="loading: lazy">
-                                                            </div>
-                                                            <a href="blog-details.html" class="position-cover"></a>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div class="post-header panel vstack justify-between gap-1">
-                                                            <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
-                                                                <div>
-                                                                    <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html">Media</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="sep d-none md:d-block">❘</div>
-                                                                <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
-                                                                        <span>1yr ago</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
-                                                                <a class="text-none hover:text-primary duration-150" href="blog-details.html">Top Independent Contractors to Invest in Best of Startups</a>
-                                                            </h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                        </div>
-                                        <div>
-                                            <article class="post type-post panel">
-                                                <div class="row child-cols g-2" data-uc-grid>
-                                                    <div class="col-auto">
-                                                        <div class="post-media panel uc-transition-toggle overflow-hidden max-w-150px min-w-100px lg:min-w-150px">
-                                                            <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/img-fallback.png" data-src="../assets/images/main/posts/img-17.jpg" alt="Potential of Immersive Technologies help your Business Grow" data-uc-img="loading: lazy">
-                                                            </div>
-                                                            <a href="blog-details.html" class="position-cover"></a>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div class="post-header panel vstack justify-between gap-1">
-                                                            <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
-                                                                <div>
-                                                                    <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html">Network</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="sep d-none md:d-block">❘</div>
-                                                                <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
-                                                                        <span>1yr ago</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
-                                                                <a class="text-none hover:text-primary duration-150" href="blog-details.html">Potential of Immersive Technologies help your Business Grow</a>
-                                                            </h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                        </div>
-                                        <div>
-                                            <article class="post type-post panel">
-                                                <div class="row child-cols g-2" data-uc-grid>
-                                                    <div class="col-auto">
-                                                        <div class="post-media panel uc-transition-toggle overflow-hidden max-w-150px min-w-100px lg:min-w-150px">
-                                                            <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="../assets/images/common/img-fallback.png" data-src="../assets/images/main/posts/img-18.jpg" alt="Virtual Reality and Mental Health: Exploring the Therapeutic" data-uc-img="loading: lazy">
-                                                            </div>
-                                                            <a href="blog-details.html" class="position-cover"></a>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div class="post-header panel vstack justify-between gap-1">
-                                                            <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
-                                                                <div>
-                                                                    <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html">Network</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="sep d-none md:d-block">❘</div>
-                                                                <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
-                                                                        <span>2mo ago</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
-                                                                <a class="text-none hover:text-primary duration-150" href="blog-details.html">Virtual Reality and Mental Health: Exploring the Therapeutic</a>
-                                                            </h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                        </div>
-                                    </div>
-                                    <a href="#" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
-                                        <span>See all Tech</span>
-                                        <i class="icon icon-1 unicon-chevron-right"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- Section end -->
 
 
     <!-- Section Sport start -->
@@ -792,8 +548,9 @@
             </div>
         </div>
     </div>
-
     <!-- Section end -->
+
+  
 
     <!-- Section start -->
     <div class="section panel overflow-hidden swiper-parent uc-dark">
