@@ -446,7 +446,7 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none custom_font text-primary dark:text-white" href="/category/<%= sportNews[i].category_id %>"><%= sportNews[i].category_name %></a>
+                                                                        <a class="text-none custom_font text-primary dark:text-white" href="/article_details/<%= sportNews[i].id %>"><%= sportNews[i].source %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
@@ -506,7 +506,7 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary custom_font dark:text-white" href="/category/<%= ecoNews[i].category_id %>"><%= ecoNews[i].category_name %></a>
+                                                                        <a class="text-none text-primary custom_font dark:text-white" href="/article_details/<%= ecoNews[i].id %>"><%= ecoNews[i].source %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
