@@ -37,7 +37,7 @@
                             <div class="post-header panel position-absolute bottom-0 vstack justify-between gap-2 xl:gap-4 max-w-600px mb-4 xl:mb-8">
                                 <div class="post-top hstack gap-narrow">
                                     <div class="post-category hstack gap-narrow fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                        <a class="text-none" href="/category/<%= article.category_id %>"><%- article.category_name %></a>
+                                        <a class="text-none" href="/articles_details/<%= article.id %>"><%- article.source %></a>
                                     </div>
                                 </div>
                                 <h3 class="post-title h4 lg:h3 xl:h2 m-0 text-truncate-2" data-swiper-parallax="-48">
@@ -61,7 +61,7 @@
                                                 <div>
                                                     <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
                                                         <i class="icon-narrow unicon-chat"></i>
-                                                        <span>15</span>
+                                                        <!-- <span>15</span> -->
                                                     </a>
                                                 </div>
                                             </div>
@@ -186,7 +186,7 @@
                                                 <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                     <div>
                                                         <div class="post-category hstack gap-narrow fw-medium">
-                                                            <a class="text-none text-primary dark:text-white" href="blog-category.html"><%= topNews[0].category_name %></a>
+                                                            <a class="text-none text-primary dark:text-white" href="#"><%= topNews[0].source %></a>
                                                         </div>
                                                     </div>
                                                     <div class="sep d-none md:d-block">❘</div>
@@ -243,7 +243,7 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="/category/<%= topNews[0].category_id %>"><%= topNews[i].category_name %></a>
+                                                                        <a class="text-none text-primary dark:text-white" href="/articles_details/<%= topNews[i].id %>"><%= topNews[i].source %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
@@ -316,7 +316,7 @@
                                                 <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                     <div>
                                                         <div class="post-category hstack gap-narrow fw-medium">
-                                                            <a class="text-none text-primary dark:text-white" href="/category/<%=   majorNews[0].category_id %>"><%=   majorNews[0].category_name %></a>
+                                                            <a class="text-none text-primary dark:text-white" href="/articles_details/<%= majorNews[0].id %>"><%=   majorNews[0].source %></a>
                                                         </div>
                                                     </div>
                                                     <div class="sep d-none md:d-block">❘</div>
@@ -372,7 +372,7 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="blog-category.html"><%=   majorNews[i].category_name %></a>
+                                                                        <a class="text-none text-primary dark:text-white" href="#"><%=   majorNews[i].source %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
@@ -382,12 +382,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <a href="#" class="text-black dark:text-white text-none fw-bold"></a>
-                                                                <div class="sep d-none md:d-block">❘</div>
-                                                                <div class="d-none md:d-block">
-                                                                    <div class="post-date hstack gap-narrow">
-                                                                        <span><%=   majorNews[0].source %></span>
-                                                                    </div>
-                                                                </div>
+                                                                
                                                             </div>
                                                             <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
                                                                 <a class="text-none hover:text-primary duration-150" href="/articles_details/<%=   majorNews[i].id %>"><%=   majorNews[i].title %></a>
@@ -670,7 +665,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Gadgets</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Gadgets</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -701,7 +696,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Startups</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Startups</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -732,7 +727,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Gadgets</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Gadgets</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -763,7 +758,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">AI Powered</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -794,7 +789,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">AI Powered</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -825,7 +820,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Tech</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Tech</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -856,7 +851,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Network</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Network</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -887,7 +882,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Virtual Reality</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Virtual Reality</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -918,7 +913,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">AI Powered</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -949,7 +944,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Trips</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Trips</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -980,7 +975,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Travel</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Travel</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1011,7 +1006,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Tech</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Tech</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1042,7 +1037,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Startups</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Startups</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1073,7 +1068,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">AI Powered</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1104,7 +1099,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Virtual Reality</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Virtual Reality</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1135,7 +1130,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Media</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Media</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1166,7 +1161,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Network</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Network</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1197,7 +1192,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">Network</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">Network</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1228,7 +1223,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">AI Powered</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>
@@ -1259,7 +1254,7 @@
                                         <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                             <div>
                                                 <div class="post-category hstack gap-narrow fw-medium">
-                                                    <a class="text-none text-primary dark:text-white" href="blog-category.html">AI Powered</a>
+                                                    <a class="text-none text-primary dark:text-white" href="#">AI Powered</a>
                                                 </div>
                                             </div>
                                             <div class="sep d-none md:d-block">❘</div>

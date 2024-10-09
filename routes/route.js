@@ -237,7 +237,7 @@ router.get('/category/:id', async (req, res) => {
 // Article list view with Pagination
 router.get('/articles', async (req, res) => {
     try {
-        const itemsPerPage = 12;
+        const itemsPerPage = 16;
         const currentPage = parseInt(req.query.page) || 1;
         const offset = (currentPage - 1) * itemsPerPage;
 

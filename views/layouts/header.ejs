@@ -60,22 +60,15 @@
                         <div class="uc-navbar-item" style="--uc-nav-height: 48px">
                             <ul class="nav-x fw-semibold custom_font flex-nowrap overflow-x-auto hide-scrollbar uc-horizontal-scroll w-screen md:w-auto md:mask-end-0 mx-n2 px-2 text-white">
                                 <li class=""><a href="/">Home</a></li>
+                                <li class=""><a href="/articles">Latest News</a></li>
+                                <li class=""><a href="/categories">Categories</a></li>
 
-                               <% if (topCategories && topCategories.length > 0) { %>
-                                <% topCategories.forEach(category => { %>
-                                    <li><a href="/category/<%= category.id %>"><%= category.name %></a></li>
-                                <% }) %>
-                            <% } else { %>
-                                <p>No categories available.</p>
-                            <% } %>
-
-                                
                                 <li class="nav-divider vr"></li>
                                 <li>
-                                    <a href="/coming_soon"><i class="icon icon-1 unicon-microphone"></i> Podcasts</a>
+                                    <a href="/coming_soon"><i class="icon icon-1 unicon-microphone"></i> Social Blog</a>
                                 </li>
                                 <li>
-                                    <a href="/articles"><i class="icon icon-1 unicon-play"></i> Latest News </a>
+                                    <a href="/"><i class="icon icon-1 unicon-play"></i> Contact </a>
                                 </li>
                             </ul>
                         </div>
