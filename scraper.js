@@ -141,8 +141,10 @@ const db = {
 
 // Function to generate summary, keywords, and vectors using Google Gemini API
 async function generateScrapeContent(content) {
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyD3b4A1ZqrofQCZ6tR9Cue3HAqIInaqbCE';
-    const embedUrl = 'https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=AIzaSyD3b4A1ZqrofQCZ6tR9Cue3HAqIInaqbCE';
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`;
 
     const headers = {
         'Content-Type': 'application/json'
@@ -537,6 +539,8 @@ async function saveScrapedArticles(scrapedArticles) {
 
             if (existingArticle) {
                 console.log(`Updating existing article: ${title}`);
+                console.log('Article  summary:', summary);
+
 
                 // Update only if summary, vectors, or keywords are null or empty
                 let updateFields = {};
@@ -565,6 +569,7 @@ async function saveScrapedArticles(scrapedArticles) {
                         existingArticle.id
                     ]);
                     console.log(`Article updated with new data: ${title}`);
+
                 } else {
                     console.log(`No updates needed for article: ${title}`);
                 }
