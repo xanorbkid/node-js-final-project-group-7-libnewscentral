@@ -147,7 +147,7 @@ async function generateScrapeContent(content) {
     const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`;
 
     const headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
     };
 
     try {
@@ -167,11 +167,14 @@ async function generateScrapeContent(content) {
         });
 
         const summaryData = await summaryResponse.json();
+        console.log('Summary Response:', summaryData); // Log response for debugging
 
         // Ensure the JSON structure and data exist before attempting to access them
         const summary = summaryData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
         if (!summary) {
             console.error('Summary not found or invalid response structure.');
+        } else {
+            console.log('Generated Summary:', summary);
         }
 
         // Extract Keywords request
@@ -190,12 +193,14 @@ async function generateScrapeContent(content) {
         });
 
         const keywordsData = await keywordsResponse.json();
-        const keywordsText = keywordsData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        console.log('Keywords Response:', keywordsData); // Log response for debugging
 
-        // Ensure keywords are a valid array
+        const keywordsText = keywordsData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
         const keywords = keywordsText ? keywordsText.split(',').map(kw => kw.trim()) : [];
         if (!keywords.length) {
             console.error('Keywords extraction failed or returned empty.');
+        } else {
+            console.log('Extracted Keywords:', keywords);
         }
 
         // Get embeddings request for article
@@ -205,21 +210,21 @@ async function generateScrapeContent(content) {
             body: JSON.stringify({
                 content: {
                     parts: [
-                        { text: content } // "content" should be the text of the article
+                        { text: content }
                     ]
                 }
             })
         });
 
         const embeddingData = await embeddingResponse.json();
+        console.log('Embedding Response:', embeddingData); // Log response for debugging
 
         // Extract embedding vectors if available
         const vectors = embeddingData?.embedding?.values || [];
-
         if (!Array.isArray(vectors) || vectors.length === 0) {
             console.error('Vectors are empty or invalid. Check the embedding model or input content.');
         } else {
-            console.log(`Vectors generated:`, vectors);
+            console.log('Vectors generated:', vectors);
         }
 
         return { summary, keywords, vectors };
@@ -228,6 +233,7 @@ async function generateScrapeContent(content) {
         return { summary: '', keywords: [], vectors: [] };
     }
 }
+
 
 // Scrape articles from FrontPageAfrica
 // Scraping function to extract content and process articles
@@ -523,8 +529,6 @@ async function scrapeNewDawn() {
 // Call the function and log the result (for testing)
 // scrapeNewDawn().then(articles => console.log(articles));
 
-
-
 // Save scraped articles into the database, ensuring no duplicates
 // Save scraped articles into the database, ensuring no duplicates
 // async function saveScrapedArticles(scrapedArticles) {
@@ -653,23 +657,23 @@ async function saveScrapedArticles(scrapedArticles) {
             if (existingArticle) {
                 console.log(`Updating existing article: ${title}`);
 
-                // Update only if summary, vectors, or keywords are null or empty
+                // Prepare update fields
                 let updateFields = {};
                 if (!existingArticle.summary || existingArticle.summary.trim() === '') {
                     updateFields.summary = summary;
                 }
                 if (!existingArticle.vectors || existingArticle.vectors.length === 0) {
-                    updateFields.vectors = vectors;
+                    updateFields.vectors = JSON.stringify(vectors);  // Serialize vectors
                 }
                 if (!existingArticle.keywords || existingArticle.keywords.length === 0) {
-                    updateFields.keywords = keywords;
+                    updateFields.keywords = Array.isArray(keywords) ? keywords : [];
                 }
 
                 if (Object.keys(updateFields).length > 0) {
                     const updateArticleQuery = `
                         UPDATE articles 
                         SET summary = COALESCE($1, summary), 
-                            vectors = COALESCE($2, vectors), 
+                            vectors = COALESCE($2::jsonb, vectors),  // Ensure valid JSON
                             keywords = COALESCE($3, keywords)
                         WHERE id = $4
                     `;
@@ -690,7 +694,7 @@ async function saveScrapedArticles(scrapedArticles) {
                 // Insert a new article
                 const insertArticleQuery = `
                     INSERT INTO articles (title, content, url, image_url, published_at, category_id, source, author_id, is_scraped, summary, vectors, keywords)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb, $12)
                 `;
                 await db.run(insertArticleQuery, [
                     title,
@@ -703,8 +707,8 @@ async function saveScrapedArticles(scrapedArticles) {
                     author_id,
                     1,
                     summary,
-                    vectors,
-                    keywords
+                    JSON.stringify(vectors),  // Serialize vectors
+                    Array.isArray(keywords) ? keywords : []
                 ]);
                 console.log('Article inserted with summary, vectors, and keywords:', title);
             }
