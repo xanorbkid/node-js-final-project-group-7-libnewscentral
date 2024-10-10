@@ -149,51 +149,63 @@ async function generateScrapeContent(content) {
     const headers = {
         'Content-Type': 'application/json'
     };
+
     try {
         // Generate summary request
         const summaryResponse = await fetch(url, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
-                "contents": [{
-                    "parts": [
-                        { "text": `Summarize this article: ${content}` }
-                    ]
-                }]
+                contents: [
+                    {
+                        parts: [
+                            { text: `Summarize this article: ${content}` }
+                        ]
+                    }
+                ]
             })
         });
 
         const summaryData = await summaryResponse.json();
-        // console.log('summary Data:', summaryData )
+
+        // Ensure the JSON structure and data exist before attempting to access them
         const summary = summaryData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        // console.log(`This is the summary:`, summary);
+        if (!summary) {
+            console.error('Summary not found or invalid response structure.');
+        }
 
         // Extract Keywords request
         const keywordsResponse = await fetch(url, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
-                "contents": [{
-                    "parts": [
-                        { "text": `Extract keywords from this article: ${content}` }
-                    ]
-                }]
+                contents: [
+                    {
+                        parts: [
+                            { text: `Extract keywords from this article: ${content}` }
+                        ]
+                    }
+                ]
             })
         });
 
         const keywordsData = await keywordsResponse.json();
-        const keywords = (keywordsData?.candidates?.[0]?.content?.parts?.[0]?.text || '').split(',').map(kw => kw.trim());
-        // console.log(`These are the keywords:`, keywords);
+        const keywordsText = keywordsData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
+        // Ensure keywords are a valid array
+        const keywords = keywordsText ? keywordsText.split(',').map(kw => kw.trim()) : [];
+        if (!keywords.length) {
+            console.error('Keywords extraction failed or returned empty.');
+        }
 
-       // Get embeddings request for article
+        // Get embeddings request for article
         const embeddingResponse = await fetch(embedUrl, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
-                "content": {
-                    "parts": [
-                        { "text": content } // "content" should be the text of the article
+                content: {
+                    parts: [
+                        { text: content } // "content" should be the text of the article
                     ]
                 }
             })
@@ -204,8 +216,8 @@ async function generateScrapeContent(content) {
         // Extract embedding vectors if available
         const vectors = embeddingData?.embedding?.values || [];
 
-        if (vectors.length === 0) {
-            console.error('Vectors are empty. Check the embedding model or input content.');
+        if (!Array.isArray(vectors) || vectors.length === 0) {
+            console.error('Vectors are empty or invalid. Check the embedding model or input content.');
         } else {
             console.log(`Vectors generated:`, vectors);
         }
@@ -216,7 +228,6 @@ async function generateScrapeContent(content) {
         return { summary: '', keywords: [], vectors: [] };
     }
 }
-
 
 // Scrape articles from FrontPageAfrica
 // Scraping function to extract content and process articles
@@ -516,6 +527,108 @@ async function scrapeNewDawn() {
 
 // Save scraped articles into the database, ensuring no duplicates
 // Save scraped articles into the database, ensuring no duplicates
+// async function saveScrapedArticles(scrapedArticles) {
+//     for (let article of scrapedArticles) {
+//         const { title, content, url, image_url, published_at, category_name, source, author_id } = article;
+
+//         const categoryQuery = 'SELECT id FROM categories WHERE name = $1';
+//         try {
+//             let category = await db.get(categoryQuery, [category_name]);
+
+//             if (!category) {
+//                 const insertCategoryQuery = 'INSERT INTO categories (name) VALUES ($1) RETURNING id';
+//                 const result = await db.run(insertCategoryQuery, [category_name]);
+//                 category = { id: result.lastID };
+//             }
+
+//             // Check for existing article
+//             const duplicateCheckQuery = `SELECT id, summary, vectors, keywords FROM articles WHERE title = $1 AND source = $2 AND url = $3`;
+//             const existingArticle = await db.get(duplicateCheckQuery, [title, source, url]);
+
+//             // Summarize and embed the article content
+//             const { summary, keywords, vectors } = await generateScrapeContent(article.content);
+
+//             if (existingArticle) {
+//                 console.log(`Updating existing article: ${title}`);
+//                 console.log('Article  summary:', summary);
+
+
+//                 // Update only if summary, vectors, or keywords are null or empty
+//                 let updateFields = {};
+//                 if (!existingArticle.summary || existingArticle.summary.trim() === '') {
+//                     updateFields.summary = summary;
+//                 }
+//                 if (!existingArticle.vectors || existingArticle.vectors.length === 0) {
+//                     updateFields.vectors = vectors;
+//                 }
+//                 if (!existingArticle.keywords || existingArticle.keywords.length === 0) {
+//                     updateFields.keywords = keywords;
+//                 }
+
+//                 if (Object.keys(updateFields).length > 0) {
+//                     const updateArticleQuery = `
+//                         UPDATE articles 
+//                         SET summary = COALESCE($1, summary), 
+//                             vectors = COALESCE($2, vectors), 
+//                             keywords = COALESCE($3, keywords)
+//                         WHERE id = $4
+//                     `;
+//                     await db.run(updateArticleQuery, [
+//                         updateFields.summary || null,
+//                         updateFields.vectors || null,
+//                         updateFields.keywords || null,
+//                         existingArticle.id
+//                     ]);
+//                     console.log(`Article updated with new data: ${title}`);
+
+//                 } else {
+//                     console.log(`No updates needed for article: ${title}`);
+//                 }
+
+
+//                 // Update the article with new summary, vectors, and keywords
+//                 // const updateArticleQuery = `
+//                 //     UPDATE articles 
+//                 //     SET summary = $1, vectors = $2, keywords = $3 
+//                 //     WHERE id = $4
+//                 // `;
+//                 // await db.run(updateArticleQuery, [summary, vectors, keywords, existingArticle.id]);
+//                 // console.log('Article updated with summary, vectors, and keywords:', title);
+//                 // console.log('Article  summary:', summary);
+                
+
+//             } else {
+//                 console.log(`Inserting new article: ${title}`);
+
+//                 // Insert a new article
+//                 const insertArticleQuery = `
+//                     INSERT INTO articles (title, content, url, image_url, published_at, category_id, source, author_id, is_scraped, summary, vectors, keywords)
+//                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+//                 `;
+//                 await db.run(insertArticleQuery, [
+//                     title,
+//                     content,
+//                     url,
+//                     image_url,
+//                     published_at,
+//                     category.id,
+//                     source,
+//                     author_id,
+//                     1,
+//                     summary,
+//                     vectors,
+//                     keywords
+//                 ]);
+//                 console.log('Article inserted with summary, vectors, and keywords:', title);
+//                 console.log('Article Vectors:', vectors)
+//             }
+//         } catch (err) {
+//             console.error('Database error:', err.message);
+//         }
+//     }
+// }
+
+// Save scraped articles into the database, ensuring no duplicates
 async function saveScrapedArticles(scrapedArticles) {
     for (let article of scrapedArticles) {
         const { title, content, url, image_url, published_at, category_name, source, author_id } = article;
@@ -539,8 +652,6 @@ async function saveScrapedArticles(scrapedArticles) {
 
             if (existingArticle) {
                 console.log(`Updating existing article: ${title}`);
-                console.log('Article  summary:', summary);
-
 
                 // Update only if summary, vectors, or keywords are null or empty
                 let updateFields = {};
@@ -569,22 +680,9 @@ async function saveScrapedArticles(scrapedArticles) {
                         existingArticle.id
                     ]);
                     console.log(`Article updated with new data: ${title}`);
-
                 } else {
                     console.log(`No updates needed for article: ${title}`);
                 }
-
-
-                // Update the article with new summary, vectors, and keywords
-                // const updateArticleQuery = `
-                //     UPDATE articles 
-                //     SET summary = $1, vectors = $2, keywords = $3 
-                //     WHERE id = $4
-                // `;
-                // await db.run(updateArticleQuery, [summary, vectors, keywords, existingArticle.id]);
-                // console.log('Article updated with summary, vectors, and keywords:', title);
-                // console.log('Article  summary:', summary);
-                
 
             } else {
                 console.log(`Inserting new article: ${title}`);
@@ -609,7 +707,6 @@ async function saveScrapedArticles(scrapedArticles) {
                     keywords
                 ]);
                 console.log('Article inserted with summary, vectors, and keywords:', title);
-                console.log('Article Vectors:', vectors)
             }
         } catch (err) {
             console.error('Database error:', err.message);

@@ -127,6 +127,14 @@
                   </div>
                   <input type="hidden" name="content" id="article-content<%= article.id %>" value="<%= article.content %>" />
                 </div>
+
+                <div class="mb-3 col-md-12">
+                  <label for="summary" class="custom_font fw-bold mb-1">Summary</label>
+                  <div id="editor-container<%= article.id %>" style="height: 300px;">
+                    <%- article.summary %>
+                  </div>
+                  <input type="hidden" name="summary" id="article-content<%= article.id %>" value="<%= article.summary %>" />
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -55,7 +55,15 @@
                                                     <div>
                                                         <!-- author or publisher -->
                                                         <div class="post-author hstack gap-1">
-                                                            <a href="#"><img src="<%= article.image_url %>" alt="<%= article.author %>" class="w-24px h-24px rounded-circle"></a>
+                                                            <a href="#" data-uc-tooltip="<%- article.source %>">
+                                                                <% if (article.source === 'FrontPageAfrica') { %>
+                                                                    <img src="../assets/images/newfpa-logo.png" alt="<%=article.author_id %>" class="w-24px h-24px rounded-circle">
+                                                                <% } else if (article.source === 'LiberianObserver') { %>
+                                                                    <img src="../assets/images/LO.png" alt="<%= article.author_id %>" class="w-24px h-24px rounded-circle">
+                                                                <% } else if (article.source === 'NewDawn') { %>
+                                                                    <img src="../assets/images/newdawn.png" alt="<%= article.author_id %>" class="w-24px h-24px rounded-circle">
+                                                                <% } %>
+                                                            </a>
                                                             <a href="#" class="text-black dark:text-white text-none fw-bold"><%= article.source || 'Anonymous' %></a>
                                                         </div>
                                                     </div>

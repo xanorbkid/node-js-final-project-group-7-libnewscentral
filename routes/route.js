@@ -96,7 +96,7 @@ router.get('/', async (req, res) => {
         SELECT articles.*, categories.name AS category_name
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 2
+        WHERE articles.category_id = 1
         ORDER BY articles.published_at DESC
       `,
       sportNewsQuery: `
@@ -281,6 +281,8 @@ router.get('/articles_details/:id', async (req, res) => {
                 articles.content, 
                 articles.image_url, 
                 articles.source, 
+                articles.summary,
+                articles.keywords,
                 articles.url, 
                 articles.published_at, 
                 categories.name AS category_name, 
@@ -307,6 +309,7 @@ router.get('/articles_details/:id', async (req, res) => {
                 articles.url, 
                 articles.published_at, 
                 articles.image_url, 
+                articles.summary,
                 categories.name AS category_name
             FROM articles
             LEFT JOIN categories ON articles.category_id = categories.id
@@ -545,11 +548,11 @@ router.get('/admin/articleslist', async (req, res) => {
 // Edit Article Route with file upload handling
 router.post('/edit_article/:id', upload.single('image_url'), async (req, res) => {
     const articleId = req.params.id;
-    const { title, content, category_id, source } = req.body;
+    const { title, content, category_id, source, summary } = req.body;
     const imageUrl = req.file ? req.file.path : null;
 
     // Start building the query and parameters
-    let query = 'UPDATE articles SET title = $1, content = $2, category_id = $3, source = $4';
+    let query = 'UPDATE articles SET title = $1, content = $2, category_id = $3, source = $4, summary =$7,';
     let params = [title, content, category_id, source];
 
     // Conditionally handle image upload

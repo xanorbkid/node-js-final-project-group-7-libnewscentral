@@ -64,7 +64,7 @@
                 <div class="panel mt-3">
                     <a href="#">
 
-                        <figure class="float-end ms-3 mb-1">
+                        <!-- <figure class="float-end ms-3 mb-1">
                             <figure class="featured-image m-0 ratio ratio-1x1 sm:w-300px rounded uc-transition-toggle overflow-hidden bg-gray-25 dark:bg-gray-800">
                                 <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= article.image_url %>" data-src="<%= article.image_url %>" alt="<%= article.source %>" data-uc-img="loading: lazy">
                                 <a href="<%= article.url %>" target="_blank" class="position-cover" data-caption="Source: <%= article.source %>"></a>
@@ -72,10 +72,13 @@
                             
                             
                             <p class="fs-7 mt-1 text-center fw-bold text-dark-400 dark:text-gray-200"><a href="<%= article.url %>" target="_blank">Source By: <%- article.source %></a></p>
-                        </figure>
+                        </figure> -->
                     </a>
+                    <h1>Summary</h1>
+                    <p class="post-content fs-6 md:fs-5 "><%- article.summary %></p>
                     
-                    <p class="post-content fs-6 md:fs-5 "><%- article.content %></p>
+                    <!-- <h1>Content Here</h1>
+                    <p class="post-content fs-6 md:fs-5 "><%- article.content %></p> -->
 
                     
                 </div>

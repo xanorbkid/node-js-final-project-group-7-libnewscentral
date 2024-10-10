@@ -157,12 +157,12 @@
             <div class="container max-w-xl">
                 <div class="section-inner">
                     <div class="block-layout grid-layout vstack gap-3 lg:gap-4 panel overflow-hidden">
-                        <% if (topNews.length > 0) { %>
+                        <% if (latestNews.length > 0) { %>
 
                         <div class="block-header panel border-top pt-1">
                             <h2 class="h4 xl:h3 -ls-1 xl:-ls-2 m-0 text-inherit hstack gap-1">
                                 <span class="panel d-inline-block bg-primary w-8px h-8px translate-y-px"></span>
-                                <a class="text-none hover:text-primary duration-150" href="/category/<%= topNews[0].category_id %>">Top News</a>
+                                <a class="text-none hover:text-primary duration-150" href="/articles">Top News</a>
                             </h2>
                         </div>
                         <div class="block-content">
@@ -175,24 +175,24 @@
                                             <div class="post-media panel uc-transition-toggle overflow-hidden">
                                                 <div class="featured-image bg-gray-25 dark:bg-gray-800 overflow-hidden ratio ratio-16x9">
                                                     <img class="media-cover image uc-transition-scale-up uc-transition-opaque" 
-                                                    src="<%= topNews[0].image_url %>" 
-                                                    data-src="<%= topNews[0].image_url %>" 
-                                                    alt="<%= topNews[0].title %>" 
+                                                    src="<%= latestNews[0].image_url %>" 
+                                                    data-src="<%= latestNews[0].image_url %>" 
+                                                    alt="<%= latestNews[0].title %>" 
                                                     data-uc-img="loading: lazy">
                                                 </div>
-                                                <a href="/articles_details/<%= topNews[0].id %>" class="position-cover"></a>
+                                                <a href="/articles_details/<%= latestNews[0].id %>" class="position-cover"></a>
                                             </div>
                                             <div class="post-header panel vstack gap-1">
                                                 <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                     <div>
                                                         <div class="post-category hstack gap-narrow fw-medium">
-                                                            <a class="text-none text-primary dark:text-white" href="#"><%= topNews[0].source %></a>
+                                                            <a class="text-none text-primary dark:text-white" href="#"><%= latestNews[0].source %></a>
                                                         </div>
                                                     </div>
                                                     <div class="sep d-none md:d-block">❘</div>
                                                     <div class="d-none md:d-block">
                                                         <div class="post-date hstack gap-narrow">
-                                                            <span><%= new Date(topNews[0].published_at).toLocaleDateString() %></span>
+                                                            <span><%= new Date(latestNews[0].published_at).toLocaleDateString() %></span>
                                                         </div>
                                                     </div>
                                                     <div class="cstack w-16px h-16px ms-narrow d-none md:d-inline-flex position-absolute top-0 end-0">
@@ -200,18 +200,29 @@
                                                     </div>
                                                 </div>
                                                 <h3 class="post-title h5 lg:h4 m-0 text-truncate-2">
-                                                    <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= topNews[0].id %>"><%= topNews[0].title %></a>
+                                                    <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= latestNews[0].id %>"><%= latestNews[0].title %></a>
                                                 </h3>
                                                
-                                                <p class="fs-6 opacity-60 text-truncate-2 my-1"><%= topNews[0].content %></p>
+                                                <p class="fs-6 opacity-80 text-truncate-2 my-1"><%= latestNews[0].content %></p>
                                                 <div class="post-meta panel hstack justify-between fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                     <div class="meta">
                                                         <div class="hstack gap-2">
                                                             <div>
                                                                 <div class="post-author hstack gap-1">
-                                                                    <a href="#" data-uc-tooltip="David Peterson"><img src="<%= topNews[0].image_url %>" alt="<%= topNews[0].author_id %>" class="w-24px h-24px rounded-circle"></a>
-                                                                    <a href="#" class="text-black dark:text-white text-none fw-bold"><%= topNews[0].source %></a>
+                                                                    <a href="#" data-uc-tooltip="latestNews[0].source">
+                                                                        <% if (latestNews[0].source === 'FrontPageAfrica') { %>
+                                                                            <img src="../assets/images/newfpa-logo.png" alt="<%= latestNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                        <% } else if (latestNews[0].source === 'LiberianObserver') { %>
+                                                                            <img src="../assets/images/LO.png" alt="<%= latestNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                        <% } else if (latestNews[0].source === 'NewDawn') { %>
+                                                                            <img src="../assets/images/newdawn.png" alt="<%= latestNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                        <% } %>
+                                                                    </a>
+                                                                    <a href="#" class="text-black dark:text-white text-none fw-bold">
+                                                                        <%= latestNews[0].source %>
+                                                                    </a>
                                                                 </div>
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
@@ -226,16 +237,16 @@
                                 <div>
                                     <div class="row child-cols-12 g-4 sep-x">
                                         <!-- Show 5 article here from the category -->
-                                        <% for (let i = 1; i < topNews.length && i < 6; i++) { %>
+                                        <% for (let i = 1; i < latestNews.length && i < 6; i++) { %>
                                         <div>
                                             <article class="post type-post panel">
                                                 <div class="row child-cols g-2" data-uc-grid>
                                                     <div class="col-auto">
                                                         <div class="post-media panel uc-transition-toggle overflow-hidden max-w-150px min-w-100px lg:min-w-150px">
                                                             <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-16x9">
-                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= topNews[i].image_url %>" data-src="<%= topNews[i].image_url %>" alt="<%= topNews[i].title %>" data-uc-img="loading: lazy">
+                                                                <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= latestNews[i].image_url %>" data-src="<%= latestNews[i].image_url %>" alt="<%= latestNews[i].title %>" data-uc-img="loading: lazy">
                                                             </div>
-                                                            <a href="/articles_details/<%= topNews[i].id %>" class="position-cover"></a>
+                                                            <a href="/articles_details/<%= latestNews[i].id %>" class="position-cover"></a>
                                                         </div>
                                                     </div>
                                                     <div>
@@ -243,18 +254,18 @@
                                                             <div class="post-meta panel hstack justify-start gap-1 fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex z-1">
                                                                 <div>
                                                                     <div class="post-category hstack gap-narrow fw-medium">
-                                                                        <a class="text-none text-primary dark:text-white" href="/articles_details/<%= topNews[i].id %>"><%= topNews[i].source %></a>
+                                                                        <a class="text-none text-primary dark:text-white" href="/articles_details/<%= latestNews[i].id %>"><%= latestNews[i].source %></a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="sep d-none md:d-block">❘</div>
                                                                 <div class="d-none md:d-block">
                                                                     <div class="post-date hstack gap-narrow">
-                                                                        <span><%= new Date(topNews[i].published_at).toLocaleDateString() %></span>
+                                                                        <span><%= new Date(latestNews[i].published_at).toLocaleDateString() %></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <h3 class="post-title h6 lg:h5 m-0 text-truncate-2">
-                                                                <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= topNews[i].id %>"><%= topNews[i].title %></a>
+                                                                <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= latestNews[i].id %>"><%= latestNews[i].title %></a>
                                                             </h3>
                                                         </div>    
                                                     </div>
@@ -263,7 +274,7 @@
                                         </div>
                                         <% } %> 
                                     </div>
-                                    <a href="/category/<%= topNews[0].category_id %>" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
+                                    <a href="/articles" class="animate-btn gap-0 btn btn-sm btn-alt-primary bg-transparent dark:text-white border w-100 mt-4">
                                         <span>Full Coverage</span>
                                         <i class="icon icon-1 unicon-chevron-right"></i>
                                     </a>
@@ -281,7 +292,7 @@
 
     <!-- Section end -->
 
-    <!-- Section Health start -->
+    <!-- Section Major News start -->
     <div class="section panel overflow-hidden">
         <div class="section-outer panel py-5 lg:py-8">
             <div class="container max-w-xl">
@@ -330,17 +341,25 @@
                                                     </div>
                                                 </div>
                                                 <h3 class="post-title h5 lg:h4 m-0 text-truncate-2">
-                                                    <a class="text-dark hover:text-primary duration-150" href="/articles_details/<%=majorNews[0].id %>"><%=   majorNews[0].title %></a>
+                                                    <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= majorNews[0].id %>"><%= majorNews[0].title %></a>
                                                 </h3>
                                                 <p class="fs-6 opacity-60 text-truncate-2 my-1"><%= truncateText(  majorNews[0].content, 200) %></p>
                                                 <div class="post-meta panel hstack justify-between fs-7 fw-medium text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                     <div class="meta">
                                                         <div class="hstack gap-2">
-                                                            <div>
-                                                                <div class="post-author hstack gap-1">
-                                                                    <a href="#" data-uc-tooltip="David Peterson"><img src="<%=   majorNews[0].image_url %>" alt="David Peterson" class="w-24px h-24px rounded-circle"></a>
-                                                                    <a href="#" class="text-black dark:text-white text-none fw-bold"><%=   majorNews[0].source %></a>
-                                                                </div>
+                                                            <div class="post-author hstack gap-1">
+                                                                <a href="#" data-uc-tooltip="latestNews[0].source">
+                                                                    <% if ( majorNews[0].source === 'FrontPageAfrica') { %>
+                                                                        <img src="../assets/images/newfpa-logo.png" alt="<%= majorNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                    <% } else if ( majorNews[0].source === 'LiberianObserver') { %>
+                                                                        <img src="../assets/images/LO.png" alt="<%=  majorNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                    <% } else if ( majorNews[0].source === 'NewDawn') { %>
+                                                                        <img src="../assets/images/newdawn.png" alt="<%=  majorNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                    <% } %>
+                                                                </a>
+                                                                <a href="#" class="text-black dark:text-white text-none fw-bold">
+                                                                    <%= majorNews[0].source %>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </div>
