@@ -49,18 +49,18 @@ module.exports = (sequelize, DataTypes) => {
         deleted_at: {
             type: DataTypes.DATE,
         },
-        // New fields
+        // Updated fields
         summary: {
             type: DataTypes.TEXT,
             allowNull: true,
         },
         vectors: {
             type: DataTypes.JSONB,
-            allowNull: true,  // Assuming vectors will be stored as JSON
+            allowNull: true,  // Storing vectors as JSONB
         },
         keywords: {
-            type: DataTypes.ARRAY(DataTypes.STRING(500)),
-            allowNull: true,  // Assuming keywords will be stored as an array of strings
+            type: DataTypes.ARRAY(DataTypes.TEXT),  // Changed to array of TEXT
+            allowNull: true,
         },
     }, {
         timestamps: false,
