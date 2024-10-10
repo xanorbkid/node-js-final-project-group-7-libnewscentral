@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,  // Assuming vectors will be stored as JSON
         },
         keywords: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
+            type: DataTypes.ARRAY(DataTypes.STRING(500)),
             allowNull: true,  // Assuming keywords will be stored as an array of strings
         },
     }, {
