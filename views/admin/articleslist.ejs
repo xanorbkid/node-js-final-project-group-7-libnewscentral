@@ -92,33 +92,33 @@
                 <!-- Title Field with Existing Value -->
                 <div class="mb-3 col-md-6">
                   <label for="title" class="custom_font fw-bold mb-1">Title</label>
-                  <input type="text" name="title" class="form-control" value="<%= article.title %>" placeholder="Enter title" />
+                  <input type="text" name="title" class="form-control" value="<%= article.title %>" placeholder="Enter title" required />
                 </div>
-  
+
                 <!-- Image Field -->
                 <div class="mb-3 col-md-6">
                   <label for="image_url" class="custom_font fw-bold mb-1">Image</label>
                   <input type="file" name="image_url" class="form-control" />
                   <img src="<%= article.image_url %>" alt="Article Image" style="width: 100px; height: 100px;" />
                 </div>
-  
+
                 <!-- Category Field -->
                 <div class="mb-3 col-md-6">
                   <label for="category_id" class="custom_font fw-bold mb-1">Category</label>
-                  <select name="category_id" class="form-control">
+                  <select name="category_id" class="form-control" required>
                     <option value="">Select</option>
                     <% categories.forEach(category => { %>
                     <option value="<%= category.id %>" <%= article.category_id === category.id ? 'selected' : '' %>><%= category.name %></option>
                     <% }); %>
                   </select>
                 </div>
-  
+
                 <!-- Source Field with Existing Value -->
                 <div class="mb-3 col-md-6">
                   <label for="source" class="custom_font fw-bold mb-1">Source</label>
-                  <input type="text" name="source" class="form-control" value="<%= article.source %>" placeholder="Enter source" />
+                  <input type="text" name="source" class="form-control" value="<%= article.source %>" placeholder="Enter source" required />
                 </div>
-  
+
                 <!-- Quill Editor for Content Field -->
                 <div class="mb-3 col-md-12">
                   <label for="content" class="custom_font fw-bold mb-1">Content</label>
@@ -128,12 +128,13 @@
                   <input type="hidden" name="content" id="article-content<%= article.id %>" value="<%= article.content %>" />
                 </div>
 
+                <!-- Quill Editor for Summary Field -->
                 <div class="mb-3 col-md-12">
                   <label for="summary" class="custom_font fw-bold mb-1">Summary</label>
-                  <div id="editor-container<%= article.id %>" style="height: 300px;">
+                  <div id="summary-editor-container<%= article.id %>" style="height: 150px;">
                     <%- article.summary %>
                   </div>
-                  <input type="hidden" name="summary" id="article-content<%= article.id %>" value="<%= article.summary %>" />
+                  <input type="hidden" name="summary" id="article-summary<%= article.id %>" value="<%= article.summary %>" />
                 </div>
               </div>
               <div class="modal-footer">
@@ -146,16 +147,16 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Quill.js Integration Script -->
   <script>
-  
     var fonts = ['sans-serif', 'serif', 'monospace', 'Roboto', 'Monsterrat', 'Poppins', 'Outfit', 'Open Sans'];
     var Font = Quill.import('formats/font');
     Font.whitelist = fonts; // Register the custom fonts
     Quill.register(Font, true);
 
-    var quill<%= article.id %> = new Quill('#editor-container<%= article.id %>', {
+    // Initialize Quill editor for content
+    var quillContent<%= article.id %> = new Quill('#editor-container<%= article.id %>', {
       theme: 'snow',
       modules: {
         toolbar: [
@@ -164,19 +165,38 @@
           ['bold', 'italic', 'underline'],
           ['link', 'blockquote', 'code-block'],
           [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }], // Added correct alignment toolbar
+          [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
           [{ color: [] }, { background: [] }]
         ]
       }
     });
 
-  
-    // Update hidden input on form submit
+    // Initialize Quill editor for summary
+    var quillSummary<%= article.id %> = new Quill('#summary-editor-container<%= article.id %>', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ font: fonts }],
+          [{ header: [1, 2, false] }],
+          ['bold', 'italic', 'underline'],
+          ['link', 'blockquote', 'code-block'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
+          [{ color: [] }, { background: [] }]
+        ]
+      }
+    });
+
+    // Update hidden input for content on form submit
     document.querySelector('#editarticle<%= article.id %>').onsubmit = function() {
-      document.querySelector('#article-content<%= article.id %>').value = quill<%= article.id %>.root.innerHTML;
+      document.querySelector('#article-content<%= article.id %>').value = quillContent<%= article.id %>.root.innerHTML;
+      document.querySelector('#article-summary<%= article.id %>').value = quillSummary<%= article.id %>.root.innerHTML; // Update summary
     };
   </script>
-  <% }); %>
+<% }); %>
+
+
+
   
 
 

@@ -673,10 +673,11 @@ async function saveScrapedArticles(scrapedArticles) {
                     const updateArticleQuery = `
                         UPDATE articles 
                         SET summary = COALESCE($1, summary), 
-                            vectors = COALESCE($2::jsonb, vectors),  // Ensure valid JSON
+                            vectors = COALESCE($2::jsonb, vectors),
                             keywords = COALESCE($3, keywords)
                         WHERE id = $4
                     `;
+
                     await db.run(updateArticleQuery, [
                         updateFields.summary || null,
                         updateFields.vectors || null,
