@@ -39,7 +39,7 @@
                                             <a href="/articles_details/<%= article.id %>" class="position-cover" data-caption="<%= article.title %>"></a>
                                         </figure>
                                         <div class="post-category hstack gap-narrow position-absolute top-0 start-0 m-1 fs-7 fw-bold h-24px px-1 rounded-1 shadow-xs bg-white text-primary">
-                                            <a class="text-none" href="/category/<%= article.category_id %>"><%= article.category_name %></a>
+                                            <a class="text-none" href="#"><%= article.source %></a>
                                         </div>
                                     </div>
                                     <div class="post-header panel vstack gap-1 lg:gap-2">
@@ -51,9 +51,18 @@
                                                 <div class="meta">
                                                     <div class="hstack gap-2">
                                                         <div>
+                                                            <!-- author or publisher -->
                                                             <div class="post-author hstack gap-1">
-                                                                <a href="#"><img src="<%= article.image_url %>" alt="<%= article.author %>" class="w-24px h-24px rounded-circle"></a>
-                                                                <a href="#" class="text-black dark:text-white custom_font text-none fw-bold"><%= article.source || 'Anonymous' %></a>
+                                                                <a href="#" data-uc-tooltip="<%- article.source %>">
+                                                                    <% if (article.source === 'FrontPageAfrica') { %>
+                                                                        <img src="../assets/images/newfpa-logo.png" alt="<%=article.author_id %>" class="w-24px h-24px rounded-circle">
+                                                                    <% } else if (article.source === 'LiberianObserver') { %>
+                                                                        <img src="../assets/images/LO.png" alt="<%= article.author_id %>" class="w-24px h-24px rounded-circle">
+                                                                    <% } else if (article.source === 'NewDawn') { %>
+                                                                        <img src="../assets/images/newdawn.png" alt="<%= article.author_id %>" class="w-24px h-24px rounded-circle">
+                                                                    <% } %>
+                                                                </a>
+                                                                <a href="#" class="text-black dark:text-white custom_font text-none "><%= article.source || 'Anonymous' %></a>
                                                             </div>
                                                         </div>
                                                         <div>
@@ -61,12 +70,12 @@
                                                                 <span class="custom_font"><%= new Date(article.published_at).toLocaleDateString() %></span>
                                                             </div>
                                                         </div>
-                                                        <div>
+                                                        <!-- <div>
                                                             <a href="#post_comment" class="post-comments custom_font text-none hstack gap-narrow">
                                                                 <i class="icon-narrow unicon-chat"></i>
                                                                 <span><%= article.comment_count || 0 %></span>
                                                             </a>
-                                                        </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                                 <div class="actions">

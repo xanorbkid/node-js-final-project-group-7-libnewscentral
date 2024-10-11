@@ -273,7 +273,7 @@ router.get('/articles_details/:id', async (req, res) => {
     const articleId = req.params.id;
 
     try {
-        // Fetch article details including comments count and associated category
+        // Fetch the article details
         const articleQuery = `
             SELECT 
                 articles.id, 
@@ -281,55 +281,147 @@ router.get('/articles_details/:id', async (req, res) => {
                 articles.content, 
                 articles.image_url, 
                 articles.source, 
-                articles.summary,
-                articles.keywords,
+                articles.summary, 
+                articles.keywords, 
                 articles.url, 
                 articles.published_at, 
                 categories.name AS category_name, 
+                categories.id AS category_id, 
                 COUNT(comments.id) AS comment_count
             FROM articles
             LEFT JOIN categories ON articles.category_id = categories.id
             LEFT JOIN comments ON articles.id = comments.article_id
             WHERE articles.id = $1
-            GROUP BY articles.id, categories.name
+            GROUP BY articles.id, categories.name, categories.id
         `;
         const articleResult = await pool.query(articleQuery, [articleId]);
         const article = articleResult.rows[0];
 
-        // Return 404 if the article does not exist
+        // If no article found, return 404
         if (!article) {
             return res.status(404).send('Article not found');
         }
 
-        // Fetch related articles within the same category, excluding the current article
+        // Fetch related articles from the same category, excluding the current article
         const relatedArticlesQuery = `
             SELECT 
-                articles.id, 
-                articles.title, 
-                articles.url, 
-                articles.published_at, 
-                articles.image_url, 
-                articles.summary,
-                categories.name AS category_name
+                id, 
+                title, 
+                image_url, 
+                summary, 
+                published_at 
             FROM articles
-            LEFT JOIN categories ON articles.category_id = categories.id
-            WHERE articles.category_id = $1 AND articles.id != $2
-            ORDER BY articles.published_at DESC
-            LIMIT 4
+            WHERE category_id = $1
+            AND id != $2
+            ORDER BY published_at DESC
+            LIMIT 5
         `;
         const relatedArticlesResult = await pool.query(relatedArticlesQuery, [article.category_id, articleId]);
 
         // Render the article details and related articles
         res.render('articles_detail', {
             article,
-            relatedArticles: relatedArticlesResult.rows,
+            relatedArticles: relatedArticlesResult.rows,  // Pass the related articles to the template
             title: `News Details | LibNewsCentral`
         });
     } catch (error) {
-        console.error('Database error:', error.message); // Improved logging
+        console.error('Database error:', error.message); // Log the error for debugging
         res.status(500).send('Internal server error');
     }
 });
+
+
+
+// Article Details Route with Related Articles
+// Article Details Route with Related Articles
+// router.get('/articles_details/:id', async (req, res) => {
+//     const articleId = req.params.id;
+
+//     try {
+//         // Fetch article details including comments count and associated category
+//         const articleQuery = `
+//             SELECT 
+//                 articles.id, 
+//                 articles.title, 
+//                 articles.content, 
+//                 articles.image_url, 
+//                 articles.source, 
+//                 articles.summary,
+//                 articles.keywords,
+//                 articles.vectors,  -- The vectors field from the embedding model
+//                 articles.url, 
+//                 articles.published_at, 
+//                 categories.name AS category_name, 
+//                 COUNT(comments.id) AS comment_count
+//             FROM articles
+//             LEFT JOIN categories ON articles.category_id = categories.id
+//             LEFT JOIN comments ON articles.id = comments.article_id
+//             WHERE articles.id = $1
+//             GROUP BY articles.id, categories.name
+//         `;
+        
+//         const articleResult = await pool.query(articleQuery, [articleId]);
+//         const article = articleResult.rows[0];
+
+//         // Return 404 if the article does not exist
+//         if (!article) {
+//             console.warn(`Article with ID ${articleId} not found`);
+//             return res.status(404).send('Article not found');
+//         }
+
+//         // Fetch related articles using vector similarity based on vectors
+//         const vectors = article.vectors;  // This is assumed to be stored as jsonb
+
+//         if (!vectors || vectors.length === 0) {
+//             console.warn(`No vectors available for article ID ${articleId}`);
+//             return res.status(400).send('Vectors not available for this article');
+//         }
+
+//         const relatedArticlesQuery = `
+//             SELECT 
+//                 a.id, 
+//                 a.title, 
+//                 a.url, 
+//                 a.published_at, 
+//                 a.image_url, 
+//                 a.summary, 
+//                 c.name AS category_name,
+//                 1 - (
+//                     SELECT SUM(x * y)
+//                     FROM unnest(ARRAY(
+//                         SELECT value::float8 
+//                         FROM jsonb_array_elements(a.vectors)
+//                     )) AS x,
+//                     unnest(ARRAY(
+//                         SELECT value::float8 
+//                         FROM jsonb_array_elements($1::jsonb)
+//                     )) AS y
+//                 ) AS similarity_score
+//             FROM articles a
+//             LEFT JOIN categories c ON a.category_id = c.id
+//             WHERE a.id != $2
+//             ORDER BY similarity_score DESC
+//             LIMIT 4;
+//         `;
+
+//         // Execute related articles query
+//         const relatedArticlesResult = await pool.query(relatedArticlesQuery, [vectors, articleId]);
+
+//         // Render the article details and related articles
+//         res.render('articles_detail', {
+//             article,
+//             relatedArticles: relatedArticlesResult.rows,
+//             title: `News Details | LibNewsCentral`
+//         });
+//     } catch (error) {
+//         // Log error details for debugging
+//         console.error(`Error fetching article details for ID ${articleId}:`, error.message);
+//         console.error('Full error object:', error);
+//         res.status(500).send('Internal server error');
+//     }
+// });
+
+
 
 
 // Global Search
