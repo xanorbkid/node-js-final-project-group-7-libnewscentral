@@ -309,12 +309,13 @@ router.get('/articles_details/:id', async (req, res) => {
                 title, 
                 image_url, 
                 summary, 
+                source,
                 published_at 
             FROM articles
             WHERE category_id = $1
             AND id != $2
             ORDER BY published_at DESC
-            LIMIT 5
+            LIMIT 4
         `;
         const relatedArticlesResult = await pool.query(relatedArticlesQuery, [article.category_id, articleId]);
 

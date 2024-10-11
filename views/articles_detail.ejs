@@ -54,9 +54,9 @@
                             <%= moment(article.published_at).format('MMMM D, YYYY') %> | Posted: <%= moment(article.published_at).fromNow() %>
                         </li>
                         <li>
-                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="#"><i class="fas fa-tags icon-1"></i> <!-- Tags Icon -->
+                            <a class="btn btn-md btn-outline-gray-100 p-0 w-32px lg:w-40px h-32px lg:h-40px text-dark dark:text-white dark:border-gray-600 hover:bg-primary hover:border-primary hover:text-white rounded-circle" href="<%- article.url %>" target="_blank"><i class="fas fa-tags icon-1"></i> <!-- Tags Icon -->
                             </a>
-                            <%= article.category_name %>
+                            <%= article.source %>
                         </li>
                         
                     </ul>
@@ -94,7 +94,7 @@
                 </ul>
 
                 <ul class="nav-x gap-narrow text-primary">
-                    <li><span class="text-black dark:text-white fw-bold me-narrow">Original Source:</span></li>
+                    <li><span class="text-black dark:text-white fw-bold me-narrow">See Full content Here:</span></li>
                     <li>
                         <a href="<%= article.url %>" class="uc-link gap-0 dark:text-white" target="_blank"><%= article.source %> <span class="text-black dark:text-white">,</span></a>
                     </li>
@@ -145,7 +145,21 @@
                                             <time datetime="<%= moment(relatedArticle.published_at).format('YYYY-MM-DD') %>">
                                                 <%= moment(relatedArticle.published_at).format('MMMM D, YYYY') %>
                                             </time>
+                                            
+                                            
                                         </div>
+                                        <a href="#" data-uc-tooltip="relatedArticle.source">
+                                            <% if (relatedArticle.source === 'FrontPageAfrica') { %>
+                                                <img src="../assets/images/newfpa-logo.png" alt="<%= relatedArticle.author_id %>" class="w-24px h-24px rounded-circle">
+                                            <% } else if (relatedArticle.source === 'LiberianObserver') { %>
+                                                <img src="../assets/images/LO.png" alt="<%= relatedArticle.author_id %>" class="w-24px h-24px rounded-circle">
+                                            <% } else if (relatedArticle.source === 'NewDawn') { %>
+                                                <img src="../assets/images/newdawn.png" alt="<%= relatedArticle.author_id %>" class="w-24px h-24px rounded-circle">
+                                            <% } %>
+                                        </a>
+                                        <a href="#" class="text-black dark:text-white text-none ">
+                                            <%= relatedArticle.source %>
+                                        </a>
                                     </div>
                                 </article>
                             </div>
