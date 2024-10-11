@@ -103,7 +103,7 @@ router.get('/', async (req, res) => {
         SELECT articles.*, categories.name AS category_name
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 3
+        WHERE articles.category_id = 20
         ORDER BY articles.published_at DESC
       `,
       ecoNewsQuery: `
@@ -118,7 +118,7 @@ router.get('/', async (req, res) => {
         SELECT articles.*, categories.name AS category_name
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 23
+        WHERE articles.category_id = 14
         ORDER BY articles.published_at DESC
       `,
 
@@ -129,9 +129,22 @@ router.get('/', async (req, res) => {
         LEFT JOIN categories ON articles.category_id = categories.id
         WHERE articles.category_id = 2
         ORDER BY articles.published_at DESC
-        LIMIT 6
+        LIMIT 4
       `,
+
+      //   FRONTNEWS Query
+      HealthNewsQuery: `
+      SELECT articles.*, categories.name AS category_name
+      FROM articles
+      LEFT JOIN categories ON articles.category_id = categories.id
+      WHERE articles.category_id = 2
+      ORDER BY articles.published_at DESC
+      LIMIT 4
+    `,
     };
+
+ 
+    
 
     // Execute queries using the pool
     const latestNews = await pool.query(latestNewsQuery);
@@ -141,11 +154,13 @@ router.get('/', async (req, res) => {
     const ecoNews = await pool.query(queries.ecoNewsQuery);
     const frontNews = await pool.query(queries.frontNewsQuery);
     const businessNews = await pool.query(queries.businessNewsQuery)
+    const healthNews = await pool.query(queries.HealthNewsQuery)
 
     // Render the homepage with the latest and top news articles
     res.render('index2', {
       latestNews: latestNews.rows,
       topNews: topNews.rows,
+      healthNews: healthNews.rows,
       majorNews: majorNews.rows,
       sportNews: sportNews.rows,
       ecoNews: ecoNews.rows,
