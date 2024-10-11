@@ -653,21 +653,74 @@ router.get('/admin/articleslist', async (req, res) => {
 
 
 
+// // Edit Article Route with file upload handling
+// router.post('/edit_article/:id', upload.single('image_url'), async (req, res) => {
+//     const articleId = req.params.id;
+//     const { title, content, category_id, source, summary, keywords, url } = req.body; // Include all fields from the form
+//     const imageFile = req.file; // Handle image file upload
+
+//     try {
+//         let imageUrl = null;
+
+//         // Conditionally handle image upload, save only if a new image is uploaded
+//         if (imageFile) {
+//             imageUrl = await saveImage(imageFile.path);  // Assuming saveImage is a function that stores the image and returns its URL
+//         }
+
+//         // Build the update query with placeholders
+//         const query = `
+//             UPDATE articles
+//             SET title = $1, 
+//                 content = $2, 
+//                 category_id = $3, 
+//                 source = $4, 
+//                 summary = $5, 
+//                 keywords = $6, 
+//                 url = $7,
+//                 image_url = COALESCE($8, image_url)  -- Update image only if a new one is provided
+//             WHERE id = $9
+//         `;
+
+//         // Define the parameters array
+//         const params = [
+//             title, content, category_id, source, summary, keywords, url, imageUrl, articleId
+//         ];
+
+//         // Execute the query to update the article
+//         await pool.query(query, params);
+
+//         // Redirect to the articles list after successful update
+//         res.redirect('/admin/articleslist');
+//     } catch (error) {
+//         console.error('Database error:', error.message);  // Log the error for debugging
+//         res.status(500).send('An error occurred while updating the article.');  // Respond with a generic error message
+//     }
+// });
+
+
 // Edit Article Route with file upload handling
 router.post('/edit_article/:id', upload.single('image_url'), async (req, res) => {
-    const articleId = req.params.id;
-    const { title, content, category_id, source, summary, keywords, url } = req.body; // Include all fields from the form
-    const imageFile = req.file; // Handle image file upload
+    const articleId = req.params.id;  // Ensure the article ID is correctly obtained
+    const { title, content, category_id, source, summary, keywords, url } = req.body; // Ensure all fields are correctly parsed from the form
+    const imageFile = req.file;  // File upload, may or may not be present
 
     try {
         let imageUrl = null;
 
-        // Conditionally handle image upload, save only if a new image is uploaded
+        // Only update image if a new one is uploaded
         if (imageFile) {
-            imageUrl = await saveImage(imageFile.path);  // Assuming saveImage is a function that stores the image and returns its URL
+            imageUrl = await saveImage(imageFile.path);  // Assuming saveImage is a function to store the image and return the URL
         }
 
-        // Build the update query with placeholders
+        // Check if the article exists to avoid inserting a new one by mistake
+        const articleCheckQuery = 'SELECT id FROM articles WHERE id = $1';
+        const articleCheckResult = await pool.query(articleCheckQuery, [articleId]);
+
+        if (articleCheckResult.rows.length === 0) {
+            return res.status(404).send('Article not found');
+        }
+
+        // Build the update query with placeholders, ensuring the image URL is only updated if a new one is uploaded
         const query = `
             UPDATE articles
             SET title = $1, 
@@ -693,11 +746,9 @@ router.post('/edit_article/:id', upload.single('image_url'), async (req, res) =>
         res.redirect('/admin/articleslist');
     } catch (error) {
         console.error('Database error:', error.message);  // Log the error for debugging
-        res.status(500).send('An error occurred while updating the article.');  // Respond with a generic error message
+        res.status(500).send('An error occurred while updating the article.');
     }
 });
-
-
 
 
 // Hard Delete Article

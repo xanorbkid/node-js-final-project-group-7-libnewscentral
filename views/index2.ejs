@@ -478,7 +478,7 @@
                                                                                     <img src="../assets/images/newdawn.png" alt="<%= sportNews[0].author_id %>" class="w-24px h-24px rounded-circle">
                                                                                 <% } %>
                                                                             </a>
-                                                                            <a href="#" class="text-black dark:text-white text-none fw-bold"><%= sportNews[0].author %></a>
+                                                                            <a href="#" class="text-black dark:text-white text-none fw-bold"><%= sportNews[0].source %></a>
                                                                         </div>
                                                                     </div>
                                                                     <div>
@@ -515,6 +515,7 @@
                                                                         <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                                             <span><%= moment(sportNews[i].published_at).fromNow() %></span>
                                                                         </div>
+                                                                        
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-auto">
@@ -537,14 +538,14 @@
                                 <p>No sports news found.</p>
                             <% } %>
                         </div>
-                        <!-- Eco -->
-                        <div class="lg:col-4">
-                            <% if (ecoNews.length) { %>
+                          <!-- Health -->
+                          <div class="lg:col-4">
+                            <% if (healthNews.length) { %>
                                 <div class="block-layout list-layout vstack gap-2 lg:gap-3 panel overflow-hidden">
                                     <div class="block-header panel pt-1 border-top">
                                         <h2 class="h6 ft-tertiary fw-bold ls-0 text-uppercase m-0 text-black dark:text-white">
-                                            <a class="hstack d-inline-flex gap-0 text-none hover:text-primary duration-150" href="/category/<%= ecoNews[0].category_id %>">
-                                                <span>Economy</span>
+                                            <a class="hstack d-inline-flex gap-0 text-none hover:text-primary duration-150" href="/category/<%= healthNews[0].category_id %>">
+                                                <span>Health</span>
                                                 <i class="icon-1 fw-bold unicon-chevron-right"></i>
                                             </a>
                                         </h2>
@@ -552,11 +553,11 @@
                                     <div class="block-content">
                                         <div class="row child-cols-12 g-2 lg:g-4 sep-x" data-uc-grid>
                                             <div>
-                                                <!-- Show the most recent eco news -->
+                                                <!-- Show the most recent health news -->
                                                 <article class="post type-post panel uc-transition-toggle vstack gap-2 lg:gap-3 overflow-hidden uc-dark">
                                                     <div class="post-media panel overflow-hidden">
                                                         <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-4x3">
-                                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= ecoNews[0].image_url %>" alt="<%= ecoNews[0].title %>" data-uc-img="loading: lazy">
+                                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= healthNews[0].image_url %>" alt="<%= healthNews[0].title %>" data-uc-img="loading: lazy">
                                                         </div>
                                                     </div>
                                                     <div class="position-cover bg-gradient-to-t from-black to-transparent opacity-90"></div>
@@ -566,62 +567,60 @@
                                                                 <div class="hstack gap-2">
                                                                     <div>
                                                                         <div class="post-author hstack gap-1">
-                                                                            <a href="#" data-uc-tooltip="<%= ecoNews[0].author %>">
-                                                                                
-                                                                                <% if (ecoNews[0].source === 'FrontPageAfrica') { %>
-                                                                                    <img src="../assets/images/newfpa-logo.png" alt="<%= ecoNews[0].author_id %>" class="w-24px h-24px rounded-circle">
-                                                                                <% } else if (ecoNews[0].source === 'LiberianObserver') { %>
-                                                                                    <img src="../assets/images/LO.png" alt="<%= ecoNews[0].author_id %>" class="w-24px h-24px rounded-circle">
-                                                                                <% } else if (ecoNews[0].source === 'NewDawn') { %>
-                                                                                    <img src="../assets/images/newdawn.png" alt="<%= ecoNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                            <a href="#" data-uc-tooltip="<%= healthNews[0].author %>">
+                                                                                <% if (healthNews[0].source === 'FrontPageAfrica') { %>
+                                                                                    <img src="../assets/images/newfpa-logo.png" alt="<%= healthNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (healthNews[0].source === 'LiberianObserver') { %>
+                                                                                    <img src="../assets/images/LO.png" alt="<%= healthNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (healthNews[0].source === 'NewDawn') { %>
+                                                                                    <img src="../assets/images/newdawn.png" alt="<%= healthNews[0].author_id %>" class="w-24px h-24px rounded-circle">
                                                                                 <% } %>
-                                                                            
-                                                                            </a>
-                                                                            <a href="#" class="text-black dark:text-white text-none fw-bold"><%= ecoNews[0].source %></a>
+                                                                                
+                                                                            <a href="#" class="text-black dark:text-white text-none fw-bold"><%= healthNews[0].source %></a>
                                                                         </div>
                                                                     </div>
                                                                     <div>
                                                                         <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
                                                                             <i class="icon-narrow unicon-chat"></i>
-                                                                            <span><%= ecoNews[0].comments_count %></span>
+                                                                            <span><%= healthNews[0].comments_count %></span>
                                                                         </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <h3 class="post-title h6 lg:h5 m-0 max-w-600px text-white text-truncate-2">
-                                                            <a class="text-none text-white" href="/articles_details/<%= ecoNews[0].id %>"><%= ecoNews[0].title %></a>
+                                                            <a class="text-none text-white" href="/articles_details/<%= healthNews[0].id %>"><%= healthNews[0].title %></a>
                                                         </h3>
                                                         <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                                            <span><%= moment(ecoNews[0].published_at).fromNow() %></span>
+                                                            <span><%= moment(healthNews[0].published_at).fromNow() %></span>
                                                         </div>
                                                     </div>
-                                                    <a href="/articles_details/<%= ecoNews[0].id %>" class="position-cover"></a>
+                                                    <a href="/articles_details/<%= healthNews[0].id %>" class="position-cover"></a>
                                                 </article>
                                             </div>
 
-                                            <!-- Loop for displaying the second eco news (up to the 6th most recent) -->
-                                            <% if (ecoNews.length > 1) { %>
-                                                <% for (let i = 1; i < ecoNews.length && i <= 6; i++) { %>
+                                            <!-- Loop for displaying additional health news (up to 6) -->
+                                            <% if (healthNews.length > 1) { %>
+                                                <% for (let i = 1; i < healthNews.length && i <= 3; i++) { %>
                                                     <div>
                                                         <article class="post type-post panel uc-transition-toggle">
                                                             <div class="row child-cols g-2 lg:g-3" data-uc-grid>
                                                                 <div>
                                                                     <div class="post-header panel vstack justify-between gap-1">
                                                                         <h3 class="post-title h6 m-0 text-truncate-2">
-                                                                            <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= ecoNews[i].id %>"><%= ecoNews[i].title %></a>
+                                                                            <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= healthNews[i].id %>"><%= healthNews[i].title %></a>
                                                                         </h3>
                                                                         <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                                                            <span><%= moment(ecoNews[i].published_at).fromNow() %></span>
+                                                                            <span><%= moment(healthNews[i].published_at).fromNow() %></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-auto">
                                                                     <div class="post-media panel overflow-hidden max-w-72px min-w-72px">
                                                                         <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-1x1">
-                                                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= ecoNews[i].image_url %>" alt="<%= ecoNews[i].title %>" data-uc-img="loading: lazy">
+                                                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= healthNews[i].image_url %>" alt="<%= healthNews[i].title %>" data-uc-img="loading: lazy">
                                                                         </div>
-                                                                        <a href="/articles_details/<%= ecoNews[i].id %>" class="position-cover"></a>
+                                                                        <a href="/articles_details/<%= healthNews[i].id %>" class="position-cover"></a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -633,13 +632,14 @@
                                     </div>
                                 </div>
                             <% } else { %>
-                                <p>No eco news found.</p>
+                                <p>No health news found.</p>
                             <% } %>
                         </div>
+                        
 
                         <!-- Business -->
                         <div class="lg:col-4">
-                            <% if (businessNews.length) { %>
+                            <% if (healthNews.length) { %>
                                 <div class="block-layout list-layout vstack gap-2 lg:gap-3 panel overflow-hidden">
                                     <div class="block-header panel pt-1 border-top">
                                         <h2 class="h6 ft-tertiary fw-bold ls-0 text-uppercase m-0 text-black dark:text-white">
@@ -675,7 +675,7 @@
                                                                                     <img src="../assets/images/newdawn.png" alt="<%= businessNews[0].author_id %>" class="w-24px h-24px rounded-circle">
                                                                                 <% } %>
                                                                             </a>
-                                                                            <a href="#" class="text-black dark:text-white text-none fw-bold"><%= businessNews[0].author %></a>
+                                                                            <a href="#" class="text-black dark:text-white text-none fw-bold"><%= businessNews[0].source %></a>
                                                                         </div>
                                                                     </div>
                                                                     <div>
@@ -735,95 +735,7 @@
                             <% } %>
                         </div>
 
-                        <!-- Health -->
-                        <div class="lg:col-4">
-                            <% if (healthNews.length) { %>
-                                <div class="block-layout list-layout vstack gap-2 lg:gap-3 panel overflow-hidden">
-                                    <div class="block-header panel pt-1 border-top">
-                                        <h2 class="h6 ft-tertiary fw-bold ls-0 text-uppercase m-0 text-black dark:text-white">
-                                            <a class="hstack d-inline-flex gap-0 text-none hover:text-primary duration-150" href="/category/<%= healthNews[0].category_id %>">
-                                                <span>Health</span>
-                                                <i class="icon-1 fw-bold unicon-chevron-right"></i>
-                                            </a>
-                                        </h2>
-                                    </div>
-                                    <div class="block-content">
-                                        <div class="row child-cols-12 g-2 lg:g-4 sep-x" data-uc-grid>
-                                            <div>
-                                                <!-- Show the most recent health news -->
-                                                <article class="post type-post panel uc-transition-toggle vstack gap-2 lg:gap-3 overflow-hidden uc-dark">
-                                                    <div class="post-media panel overflow-hidden">
-                                                        <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-4x3">
-                                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= healthNews[0].image_url %>" alt="<%= healthNews[0].title %>" data-uc-img="loading: lazy">
-                                                        </div>
-                                                    </div>
-                                                    <div class="position-cover bg-gradient-to-t from-black to-transparent opacity-90"></div>
-                                                    <div class="post-header panel vstack justify-start items-start flex-column-reverse gap-1 p-2 position-cover text-white">
-                                                        <div class="post-meta panel hstack justify-between fs-7 text-white text-opacity-60 mt-1">
-                                                            <div class="meta">
-                                                                <div class="hstack gap-2">
-                                                                    <div>
-                                                                        <div class="post-author hstack gap-1">
-                                                                            <a href="page-author.html" data-uc-tooltip="<%= healthNews[0].author %>"><img src="<%= healthNews[0].author_avatar %>" alt="<%= healthNews[0].author %>" class="w-24px h-24px rounded-circle"></a>
-                                                                            <a href="page-author.html" class="text-black dark:text-white text-none fw-bold"><%= healthNews[0].author %></a>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <a href="#post_comment" class="post-comments text-none hstack gap-narrow">
-                                                                            <i class="icon-narrow unicon-chat"></i>
-                                                                            <span><%= healthNews[0].comments_count %></span>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <h3 class="post-title h6 lg:h5 m-0 max-w-600px text-white text-truncate-2">
-                                                            <a class="text-none text-white" href="/articles_details/<%= healthNews[0].id %>"><%= healthNews[0].title %></a>
-                                                        </h3>
-                                                        <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                                            <span><%= moment(healthNews[0].published_at).fromNow() %></span>
-                                                        </div>
-                                                    </div>
-                                                    <a href="/articles_details/<%= healthNews[0].id %>" class="position-cover"></a>
-                                                </article>
-                                            </div>
-
-                                            <!-- Loop for displaying additional health news (up to 6) -->
-                                            <% if (healthNews.length > 1) { %>
-                                                <% for (let i = 1; i < healthNews.length && i <= 3; i++) { %>
-                                                    <div>
-                                                        <article class="post type-post panel uc-transition-toggle">
-                                                            <div class="row child-cols g-2 lg:g-3" data-uc-grid>
-                                                                <div>
-                                                                    <div class="post-header panel vstack justify-between gap-1">
-                                                                        <h3 class="post-title h6 m-0 text-truncate-2">
-                                                                            <a class="text-none hover:text-primary duration-150" href="/articles_details/<%= healthNews[i].id %>"><%= healthNews[i].title %></a>
-                                                                        </h3>
-                                                                        <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
-                                                                            <span><%= moment(healthNews[i].published_at).fromNow() %></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-auto">
-                                                                    <div class="post-media panel overflow-hidden max-w-72px min-w-72px">
-                                                                        <div class="featured-image bg-gray-25 dark:bg-gray-800 ratio ratio-1x1">
-                                                                            <img class="media-cover image uc-transition-scale-up uc-transition-opaque" src="<%= healthNews[i].image_url %>" alt="<%= healthNews[i].title %>" data-uc-img="loading: lazy">
-                                                                        </div>
-                                                                        <a href="/articles_details/<%= healthNews[i].id %>" class="position-cover"></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </article>
-                                                    </div>
-                                                <% } %>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } else { %>
-                                <p>No health news found.</p>
-                            <% } %>
-                        </div>
+                      
 
 
                     </div>
