@@ -332,7 +332,7 @@ router.get('/articles_details/:id', async (req, res) => {
 
 
 
-// Article Details Route with Related Articles
+// Article Details Route with Related Articles By Vector
 // Article Details Route with Related Articles
 // router.get('/articles_details/:id', async (req, res) => {
 //     const articleId = req.params.id;
@@ -640,34 +640,48 @@ router.get('/admin/articleslist', async (req, res) => {
 // Edit Article Route with file upload handling
 router.post('/edit_article/:id', upload.single('image_url'), async (req, res) => {
     const articleId = req.params.id;
-    const { title, content, category_id, source, summary } = req.body;
-    const imageUrl = req.file ? req.file.path : null;
-
-    // Start building the query and parameters
-    let query = 'UPDATE articles SET title = $1, content = $2, category_id = $3, source = $4, summary =$7,';
-    let params = [title, content, category_id, source];
-
-    // Conditionally handle image upload
-    if (imageUrl) {
-        const savedImageUrl = await saveImage(imageUrl);  // Save image based on environment
-        query += ', image_url = $5';
-        params.push(savedImageUrl);
-        query += ' WHERE id = $6';
-        params.push(articleId);
-    } else {
-        query += ' WHERE id = $5';
-        params.push(articleId);
-    }
+    const { title, content, category_id, source, summary, keywords, url } = req.body; // Include all fields from the form
+    const imageFile = req.file; // Handle image file upload
 
     try {
-        // Execute the query with the correct number of parameters
+        let imageUrl = null;
+
+        // Conditionally handle image upload, save only if a new image is uploaded
+        if (imageFile) {
+            imageUrl = await saveImage(imageFile.path);  // Assuming saveImage is a function that stores the image and returns its URL
+        }
+
+        // Build the update query with placeholders
+        const query = `
+            UPDATE articles
+            SET title = $1, 
+                content = $2, 
+                category_id = $3, 
+                source = $4, 
+                summary = $5, 
+                keywords = $6, 
+                url = $7,
+                image_url = COALESCE($8, image_url)  -- Update image only if a new one is provided
+            WHERE id = $9
+        `;
+
+        // Define the parameters array
+        const params = [
+            title, content, category_id, source, summary, keywords, url, imageUrl, articleId
+        ];
+
+        // Execute the query to update the article
         await pool.query(query, params);
+
+        // Redirect to the articles list after successful update
         res.redirect('/admin/articleslist');
     } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).send('An error occurred while updating the article.');
+        console.error('Database error:', error.message);  // Log the error for debugging
+        res.status(500).send('An error occurred while updating the article.');  // Respond with a generic error message
     }
 });
+
+
 
 
 // Hard Delete Article
