@@ -72,109 +72,101 @@ const storage = multer.diskStorage({
   }
 
 
-// Home Route
-router.get('/', async (req, res) => {
-  try {
-    // Query for latest articles of the day
-    const latestNewsQuery = `
-      SELECT articles.*, categories.name AS category_name
-      FROM articles
-      LEFT JOIN categories ON articles.category_id = categories.id
-      ORDER BY articles.published_at DESC
-    `;
-
-    // Other queries for top, health, sport, economy, and front news
-    const queries = {
-      topNewsQuery: `
+  router.get('/', async (req, res) => {
+    try {
+      const latestNewsQuery = `
         SELECT articles.*, categories.name AS category_name
         FROM articles
         LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 1
         ORDER BY articles.published_at DESC
-      `,
-      majorNewsQuery: `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 1
-        ORDER BY articles.published_at DESC
-      `,
-      sportNewsQuery: `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 20
-        ORDER BY articles.published_at DESC
-      `,
-      ecoNewsQuery: `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 8
-        ORDER BY articles.published_at DESC
-      `,
-    //   Business News
-      businessNewsQuery: `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 14
-        ORDER BY articles.published_at DESC
-      `,
-
-    //   FRONTNEWS Query
-      frontNewsQuery: `
-        SELECT articles.*, categories.name AS category_name
-        FROM articles
-        LEFT JOIN categories ON articles.category_id = categories.id
-        WHERE articles.category_id = 2
-        ORDER BY articles.published_at DESC
-        LIMIT 4
-      `,
-
-      //   FRONTNEWS Query
-      HealthNewsQuery: `
-      SELECT articles.*, categories.name AS category_name
-      FROM articles
-      LEFT JOIN categories ON articles.category_id = categories.id
-      WHERE articles.category_id = 2
-      ORDER BY articles.published_at DESC
-      LIMIT 4
-    `,
-    };
-
- 
-    
-
-    // Execute queries using the pool
-    const latestNews = await pool.query(latestNewsQuery);
-    const topNews = await pool.query(queries.topNewsQuery);
-    const majorNews = await pool.query(queries.majorNewsQuery);
-    const sportNews = await pool.query(queries.sportNewsQuery);
-    const ecoNews = await pool.query(queries.ecoNewsQuery);
-    const frontNews = await pool.query(queries.frontNewsQuery);
-    const businessNews = await pool.query(queries.businessNewsQuery)
-    const healthNews = await pool.query(queries.HealthNewsQuery)
-
-    // Render the homepage with the latest and top news articles
-    res.render('index2', {
-      latestNews: latestNews.rows,
-      topNews: topNews.rows,
-      healthNews: healthNews.rows,
-      majorNews: majorNews.rows,
-      sportNews: sportNews.rows,
-      ecoNews: ecoNews.rows,
-      frontNews: frontNews.rows,
-      businessNews: businessNews.rows,
-      title: 'Home | LibNewsCentral'
-    });
-
-  } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).send('An error occurred while retrieving the news.');
-  }
-});
-
+      `;
+  
+      const queries = {
+        topNewsQuery: `
+          SELECT articles.*, categories.name AS category_name
+          FROM articles
+          LEFT JOIN categories ON articles.category_id = categories.id
+          WHERE articles.category_id = 1
+          ORDER BY articles.published_at DESC
+        `,
+        majorNewsQuery: `
+          SELECT articles.*, categories.name AS category_name
+          FROM articles
+          LEFT JOIN categories ON articles.category_id = categories.id
+          WHERE articles.category_id = 1
+          ORDER BY articles.published_at DESC
+        `,
+        sportNewsQuery: `
+          SELECT articles.*, categories.name AS category_name
+          FROM articles
+          LEFT JOIN categories ON articles.category_id = categories.id
+          WHERE articles.category_id = 20
+          ORDER BY articles.published_at DESC
+        `,
+        ecoNewsQuery: `
+          SELECT articles.*, categories.name AS category_name
+          FROM articles
+          LEFT JOIN categories ON articles.category_id = categories.id
+          WHERE articles.category_id = 8
+          ORDER BY articles.published_at DESC
+        `,
+        businessNewsQuery: `
+          SELECT articles.*, categories.name AS category_name
+          FROM articles
+          LEFT JOIN categories ON articles.category_id = categories.id
+          WHERE articles.category_id = 14
+          ORDER BY articles.published_at DESC
+        `,
+        frontNewsQuery: `
+          SELECT articles.*, categories.name AS category_name
+          FROM articles
+          LEFT JOIN categories ON articles.category_id = categories.id
+          WHERE articles.category_id = 2
+          ORDER BY articles.published_at DESC
+          LIMIT 4
+        `,
+        HealthNewsQuery: `
+          SELECT articles.*, categories.name AS category_name
+          FROM articles
+          LEFT JOIN categories ON articles.category_id = categories.id
+          WHERE articles.category_id = 2
+          ORDER BY articles.published_at DESC
+          LIMIT 4
+        `,
+      };
+  
+      // Execute queries in parallel
+      const [
+        latestNews, topNews, majorNews, sportNews, ecoNews, businessNews, frontNews, healthNews
+      ] = await Promise.all([
+        pool.query(latestNewsQuery),
+        pool.query(queries.topNewsQuery),
+        pool.query(queries.majorNewsQuery),
+        pool.query(queries.sportNewsQuery),
+        pool.query(queries.ecoNewsQuery),
+        pool.query(queries.businessNewsQuery),
+        pool.query(queries.frontNewsQuery),
+        pool.query(queries.HealthNewsQuery)
+      ]);
+  
+      res.render('index2', {
+        latestNews: latestNews.rows,
+        topNews: topNews.rows,
+        healthNews: healthNews.rows,
+        majorNews: majorNews.rows,
+        sportNews: sportNews.rows,
+        ecoNews: ecoNews.rows,
+        frontNews: frontNews.rows,
+        businessNews: businessNews.rows,
+        title: 'Home | LibNewsCentral'
+      });
+  
+    } catch (error) {
+      console.error('Database error:', error);
+      res.status(500).send('An error occurred while retrieving the news.');
+    }
+  });
+  
 // Categories List Route with Pagination
 router.get('/categories', async (req, res) => {
   const perPage = 12; 
