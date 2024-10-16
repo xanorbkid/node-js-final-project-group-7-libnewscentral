@@ -515,7 +515,18 @@
                                                                         <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                                             <span><%= moment(sportNews[i].published_at).fromNow() %></span>
                                                                         </div>
-                                                                        
+                                                                        <div class="post-author hstack gap-1">
+                                                                            <a href="#" data-uc-tooltip="<%= sportNews[i].author %>">
+                                                                                <% if (sportNews[i].source === 'FrontPageAfrica') { %>
+                                                                                    <img src="../assets/images/newfpa-logo.png" alt="<%= sportNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (sportNews[i].source === 'LiberianObserver') { %>
+                                                                                    <img src="../assets/images/LO.png" alt="<%= sportNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (sportNews[i].source === 'NewDawn') { %>
+                                                                                    <img src="../assets/images/newdawn.png" alt="<%= sportNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } %>
+                                                                            </a>
+                                                                            <a href="#" class="text-black dark:text-white text-none "><%= sportNews[i].source %></a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-auto">
@@ -612,6 +623,18 @@
                                                                         </h3>
                                                                         <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                                             <span><%= moment(healthNews[i].published_at).fromNow() %></span>
+                                                                        </div>
+                                                                        <div class="post-author hstack gap-1">
+                                                                            <a href="#" data-uc-tooltip="<%= healthNews[0].author %>">
+                                                                                <% if (healthNews[i].source === 'FrontPageAfrica') { %>
+                                                                                    <img src="../assets/images/newfpa-logo.png" alt="<%= healthNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (healthNews[i].source === 'LiberianObserver') { %>
+                                                                                    <img src="../assets/images/LO.png" alt="<%= healthNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (healthNews[i].source === 'NewDawn') { %>
+                                                                                    <img src="../assets/images/newdawn.png" alt="<%= healthNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } %>
+                                                                                
+                                                                            <a href="#" class="text-black dark:text-white text-none fw-normal"><%= healthNews[i].source %></a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -711,6 +734,18 @@
                                                                         </h3>
                                                                         <div class="post-date hstack gap-narrow fs-7 text-gray-900 dark:text-white text-opacity-60 d-none md:d-flex">
                                                                             <span><%= moment(businessNews[i].published_at).fromNow() %></span>
+                                                                        </div>
+                                                                        <div class="post-author hstack gap-1">
+                                                                            <a href="#" data-uc-tooltip="<%= businessNews[0].author %>">
+                                                                                <% if (businessNews[0].source === 'FrontPageAfrica') { %>
+                                                                                    <img src="../assets/images/newfpa-logo.png" alt="<%= businessNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (businessNews[i].source === 'LiberianObserver') { %>
+                                                                                    <img src="../assets/images/LO.png" alt="<%= businessNews[i].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } else if (businessNews[i].source === 'NewDawn') { %>
+                                                                                    <img src="../assets/images/newdawn.png" alt="<%= businessNews[0].author_id %>" class="w-24px h-24px rounded-circle">
+                                                                                <% } %>
+                                                                            </a>
+                                                                            <a href="#" class="text-black dark:text-white text-none "><%= businessNews[i].source %></a>
                                                                         </div>
                                                                     </div>
                                                                 </div>

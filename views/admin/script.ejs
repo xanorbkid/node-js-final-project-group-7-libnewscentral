@@ -12,18 +12,74 @@
     <script src="../assets_admin/js/plugins/dataTables.min.js"></script>
     <script src="../assets_admin/js/plugins/dataTables.bootstrap5.min.js"></script>
     <script>
-        // [ base style ]
-        $("#base-style").DataTable();
-    
-        // [ no style ]
-        $("#no-style").DataTable();
-    
-        // [ compact style ]
-        $("#compact").DataTable();
-    
-        // [ hover style ]
-        $("#table-style-hover").DataTable();
-      </script>
+
+
+
+      // [ base style ]
+      $("#base-style").DataTable();
+  
+      
+      // $('#articlesTable').DataTable({
+      //     "processing": true, // Show processing indicator
+      //     "serverSide": true,  // Enable server-side processing
+      //     "ajax": {
+      //         "url": "/admin/articleslist", // Your endpoint for fetching articles
+      //         "type": "GET",
+      //     },
+      //     "columns": [
+      //         {
+      //             "data": "title",
+      //             "render": function (data, type, row) {
+      //                 return `<a href="#" title="${data}">
+      //                             ${truncateText(data, 50)}
+      //                         </a>`;
+      //             }
+      //         },
+      //         { "data": "category_name" }, // Category Name
+      //         { "data": "source" },        // Source Name
+      //         {
+      //             "data": "published_at",
+      //             "render": function (data) {
+      //                 return `${moment(data).format('MMMM D, YYYY')}<br />${moment(data).format('h:mm A')}`;
+      //             }
+      //         },
+      //         {
+      //             "data": "id",
+      //             "render": function (data, type, row) {
+      //                 return `
+      //                     <a href="#" data-bs-toggle="modal" data-bs-target="#ViewArticle${data}" class="avtar avtar-xs btn-link-secondary">
+      //                         <i class="ti ti-eye f-20"></i>
+      //                     </a>
+      //                     <a href="#" class="avtar avtar-xs btn-link-secondary" data-bs-toggle="modal" data-bs-target="#EditArticle${data}">
+      //                         <i class="ti ti-edit f-20"></i>
+      //                     </a>
+      //                     <a href="/delete_article/${data}" class="avtar avtar-xs btn-link-secondary text-danger" onclick="return confirm('Are you sure you want to permanently delete this article?');">
+      //                         <i class="ti ti-trash f-20"></i>
+      //                     </a>`;
+      //             }
+      //         }
+      //     ],
+      //     "order": [[3, 'desc']], // Default sorting by published_at
+      // });
+
+
+
+      
+      
+      
+      $("#no-style").DataTable();
+  
+      // [ compact style ]
+      $("#compact").DataTable();
+
+
+  
+      // [ hover style ]
+      $("#table-style-hover").DataTable();
+    </script>
+
+
+
 
     </div>
     <script>

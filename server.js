@@ -1,6 +1,8 @@
 // server.js
 
 const express = require('express');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
@@ -65,13 +67,7 @@ pool.connect((err, client, release) => {
     release();
 });
 
-// Set up Sequelize for ORM with proper config
-// const sequelize = new Sequelize(dbConfig.connectionString || dbConfig.database, dbConfig.user, dbConfig.password, {
-//     host: dbConfig.host,
-//     dialect: 'postgres',
-//     dialectOptions: dbConfig.ssl ? { ssl: dbConfig.ssl } : {}, // SSL settings for production
-//     logging: console.log, // Enable logging in development only
-// });
+
 
 
 // Middleware to fetch categories and make them available in all templates
@@ -104,7 +100,7 @@ app.use(async (req, res, next) => {
 });
 
 
-// Scrape articles example
+// Scrape articles 
 scrapeFrontPageAfrica().then(articles => {
     console.log('Scraped articles from FrontPageAfrica:', articles);
 });
@@ -116,6 +112,19 @@ scrapeNewDawn().then(articles => {
 })
 .catch(error => {
     console.error('Error:', error);
+});
+
+// Enable compression
+app.use(compression());
+
+app.use(express.static('public', {
+    maxAge: '1d', // Cache static files for 1 day
+    etag: false   // Disable ETag if you prefer Cache-Control
+}));
+
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'public, max-age=3600'); // Cache dynamic responses for 1 hour
+    next();
 });
 
 
@@ -130,18 +139,6 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/base'); // Points to views/layouts/base.ejs
 app.set('views', [__dirname + '/views', __dirname + '/admin']);
 
-
-
-// Set up multer for file uploads
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, 'public/uploads'); // Directory to store uploaded images
-//     },
-//     filename: function (req, file, cb) {
-//         cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-//     }
-// });
-// const upload = multer({ storage: storage });
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -176,6 +173,14 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
+
+// Apply rate limiting to all requests
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // Limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
 
 // Import routes
 const urlRoutes = require('./routes/route');

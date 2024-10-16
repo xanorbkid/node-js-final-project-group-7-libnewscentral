@@ -633,14 +633,43 @@ router.get('/admin/publishers', async (req, res) => {
 });
 
 router.get('/admin/articleslist', async (req, res) => {
+    // Get the page number from query params (default to page 1 if not provided)
+    const page = parseInt(req.query.page) || 1;
+    const limit = 300; // Set the number of articles per page
+    const offset = (page - 1) * limit; // Calculate the offset for pagination
+
     try {
-        const articles = await pool.query('SELECT articles.*, categories.name AS category_name FROM articles LEFT JOIN categories ON articles.category_id = categories.id');
-        res.render('admin/articleslist', { title: 'Articles | LibNews Central', layout: 'admin/base', articles: articles.rows });
+        // Optimize the SQL query: order by published_at, limit, and offset for pagination
+        const articlesQuery = `
+            SELECT articles.*, categories.name AS category_name 
+            FROM articles 
+            LEFT JOIN categories ON articles.category_id = categories.id
+            ORDER BY articles.published_at DESC
+            LIMIT $1 OFFSET $2
+        `;
+
+        const articles = await pool.query(articlesQuery, [limit, offset]);
+
+        // Fetch the total count of articles for pagination control
+        const countQuery = 'SELECT COUNT(*) FROM articles';
+        const totalResult = await pool.query(countQuery);
+        const totalArticles = parseInt(totalResult.rows[0].count);
+        const totalPages = Math.ceil(totalArticles / limit);
+
+        // Render the articles list with pagination info
+        res.render('admin/articleslist', {
+            title: 'Articles | LibNews Central',
+            layout: 'admin/base',
+            articles: articles.rows,
+            currentPage: page,
+            totalPages: totalPages
+        });
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).send('Database error');
     }
 });
+
 
 
 
@@ -691,6 +720,84 @@ router.get('/admin/articleslist', async (req, res) => {
 
 
 // Edit Article Route with file upload handling
+
+// router.get('/admin/articleslist', async (req, res) => {
+//     // DataTables parameters
+//     const draw = req.query.draw;
+//     const start = parseInt(req.query.start) || 0; // Start index for pagination
+//     const length = parseInt(req.query.length) || 10; // Number of records to fetch per page
+//     const searchValue = (req.query.search && req.query.search.value) ? req.query.search.value : ''; // Search value with null check
+//     const orderColumn = req.query.order?.[0]?.column || 'published_at'; // Column index for sorting
+//     const orderDirection = req.query.order?.[0]?.dir || 'DESC'; // Sorting direction (asc/desc)
+
+//     // Map DataTables' column index to database column names
+//     const columns = ['title', 'category_name', 'published_at']; // Define your column mappings here
+//     const orderBy = columns[orderColumn] || 'published_at'; // Default sort by published_at
+
+//     try {
+//         // Filter by search value (if provided)
+//         let filterQuery = '';
+//         let queryParams = [length, start]; // Default params for pagination
+
+//         if (searchValue) {
+//             filterQuery = `
+//                 WHERE articles.title ILIKE $3 
+//                 OR categories.name ILIKE $3 
+//             `;
+//             queryParams.push(`%${searchValue}%`); // Add the search value as a parameter
+//         }
+
+//         // SQL query with pagination, ordering, and search filter
+//         const articlesQuery = `
+//             SELECT articles.*, categories.name AS category_name 
+//             FROM articles 
+//             LEFT JOIN categories ON articles.category_id = categories.id
+//             ${filterQuery}
+//             ORDER BY ${orderBy} ${orderDirection}
+//             LIMIT $1 OFFSET $2
+//         `;
+        
+//         const articles = await pool.query(articlesQuery, queryParams);
+
+//         // Fetch total records for pagination
+//         const countQuery = 'SELECT COUNT(*) FROM articles';
+//         const totalResult = await pool.query(countQuery);
+//         const totalRecords = parseInt(totalResult.rows[0].count);
+
+//         // Fetch filtered records count (for search functionality)
+//         let filteredCountQuery = countQuery;
+//         let filteredQueryParams = [];
+
+//         if (searchValue) {
+//             filteredCountQuery = `
+//                 SELECT COUNT(*) FROM articles 
+//                 LEFT JOIN categories ON articles.category_id = categories.id
+//                 ${filterQuery}
+//             `;
+//             filteredQueryParams.push(`%${searchValue}%`); // Add the search value for filtered count
+//         }
+
+//         const filteredResult = await pool.query(filteredCountQuery, filteredQueryParams);
+//         const filteredRecords = searchValue ? parseInt(filteredResult.rows[0].count) : totalRecords;
+
+//         // Respond with the data in DataTables format
+//         res.json({
+//             draw: draw,
+//             recordsTotal: totalRecords, // Total records without filtering
+//             recordsFiltered: filteredRecords, // Total records with filtering
+//             data: articles.rows // The data to display
+//         });
+
+//     } catch (error) {
+//         console.error('Database error:', error);
+//         res.status(500).send('Database error');
+//     }
+// });
+
+
+
+
+
 router.post('/edit_article/:id', upload.single('image_url'), async (req, res) => {
     const articleId = req.params.id;  // Ensure the article ID is correctly obtained
     const { title, content, category_id, source, summary, keywords, url } = req.body; // Ensure all fields are correctly parsed from the form
@@ -735,7 +842,8 @@ router.post('/edit_article/:id', upload.single('image_url'), async (req, res) =>
         await pool.query(query, params);
 
         // Redirect to the articles list after successful update
-        res.redirect('/admin/articleslist');
+        res.re
+        
     } catch (error) {
         console.error('Database error:', error.message);  // Log the error for debugging
         res.status(500).send('An error occurred while updating the article.');
