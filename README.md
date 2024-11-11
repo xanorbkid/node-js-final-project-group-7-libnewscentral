@@ -31,12 +31,12 @@ LibNews Central is a comprehensive news platform that allows users to access div
 
 Open your PostgreSQL command line or preferred GUI tool.
 
-CREATE DATABASE libnews_db;
-CREATE USER libnews_user WITH ENCRYPTED PASSWORD 'your_password';
-ALTER ROLE libnews_user SET client_encoding TO 'utf8';
-ALTER ROLE libnews_user SET default_transaction_isolation TO 'read committed';
-ALTER ROLE libnews_user SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE libnews_db TO libnews_user;
+- CREATE DATABASE libnews_db;
+- CREATE USER libnews_user WITH ENCRYPTED PASSWORD 'your_password';
+- ALTER ROLE libnews_user SET client_encoding TO 'utf8';
+- ALTER ROLE libnews_user SET default_transaction_isolation TO 'read committed';
+- ALTER ROLE libnews_user SET timezone TO 'UTC';
+- GRANT ALL PRIVILEGES ON DATABASE libnews_db TO libnews_user;
 
 3. Database Migrations
     - After setting up the database, run migrations to initialize the database schema:
