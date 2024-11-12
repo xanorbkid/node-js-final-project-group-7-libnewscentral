@@ -1,5 +1,5 @@
 # LIBNEWS CENTRAL
-LibNews Central is a comprehensive news platform that allows users to access diverse content efficiently, providing clear and balanced attribution to the sources.
+LibNews Central is a comprehensive news  aggregation platform that allows users to access diverse content efficiently, providing clear and balanced attribution to the sources.
 
 # Table of Contents
 - Features

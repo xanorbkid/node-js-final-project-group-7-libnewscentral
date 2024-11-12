@@ -46,5 +46,4 @@ public/uploads/
 *.swp
 
 redis_config.js
-
-test.html
+test.html 
